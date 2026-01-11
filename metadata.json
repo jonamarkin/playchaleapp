@@ -1,0 +1,8 @@
+{
+  "name": "PlayChale",
+  "description": "The professional-grade social network for amateur athletes. Discover games, track stats, and climb leaderboards.",
+  "requestFramePermissions": [
+    "geolocation",
+    "camera"
+  ]
+}
