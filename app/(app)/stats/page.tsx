@@ -26,17 +26,18 @@ export default function StatsPage() {
   }
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }} 
-      animate={{ opacity: 1, y: 0 }} 
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
     >
-      <ProfileDashboard 
-        player={players[0]} 
-        onEditStats={() => openModal('stats', players[0])} 
+      <ProfileDashboard
+        player={players[0]}
+        isOwner={true}
+        onEditStats={() => openModal('stats', players[0])}
         onEditProfile={() => openModal('edit-profile', players[0])}
         onShareProfile={() => openModal('share-profile', players[0])}
-        onViewMatch={(match) => openModal('match-detail', match)} 
+        onViewMatch={(match) => router.push(`/game/${match.id}`)}
       />
     </motion.div>
   );

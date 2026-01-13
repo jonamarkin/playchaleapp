@@ -8,7 +8,7 @@ import { Button } from '@/components/ui/button';
 
 interface OnboardingData {
   name: string;
-  sport: string;
+  sports: string[];
   level: string;
   location: string;
   email: string;
@@ -22,9 +22,16 @@ interface OnboardingProps {
 const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState({
+  const [data, setData] = useState<{
+    name: string;
+    sports: string[];
+    level: string;
+    location: string;
+    email: string;
+    password: string;
+  }>({
     name: '',
-    sport: '',
+    sports: [],
     level: '',
     location: '',
     email: '',
@@ -35,7 +42,9 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
     { name: 'Football', icon: '⚽' },
     { name: 'Basketball', icon: '🏀' },
     { name: 'Tennis', icon: '🎾' },
-    { name: 'Padel', icon: '🎾' }
+    { name: 'Volleyball', icon: '🏐' },
+    { name: 'Swimming', icon: '🏊' },
+    { name: 'Athletics', icon: '🏃' }
   ];
 
   const LEVELS = [
@@ -61,7 +70,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
       setIsLoading(false);
       onComplete({
         name: data.name,
-        sport: data.sport,
+        sports: data.sports,
         level: data.level,
         location: data.location,
         email: data.email
@@ -76,7 +85,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
       setIsLoading(false);
       onComplete({
         name: data.name || 'Anonymous Pro',
-        sport: data.sport || 'Multi',
+        sports: data.sports.length > 0 ? data.sports : ['Multi'],
         level: data.level || 'Competitive',
         location: data.location || 'Local',
         email: data.email || 'guest@playchale.com'
@@ -143,20 +152,39 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
               >
                 <div className="space-y-4">
                   <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">PHASE 01: ARENA</span>
-                  <h2 className="text-5xl md:text-9xl font-black italic tracking-tighter uppercase leading-[0.85]">Select your <br /> discipline.</h2>
+                  <h2 className="text-5xl md:text-9xl font-black italic tracking-tighter uppercase leading-[0.85]">Select your <br /> disciplines.</h2>
+                  <p className="text-white/40 text-[10px] uppercase tracking-widest">Select all that apply</p>
                 </div>
 
-                <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                  {SPORTS.map(s => (
-                    <button
-                      key={s.name}
-                      onClick={() => { setData({ ...data, sport: s.name }); nextStep(); }}
-                      className="group bg-white/5 border-2 border-white/5 p-8 md:p-10 rounded-[40px] md:rounded-[48px] hover:bg-[#C6FF00] hover:text-black hover:scale-105 transition-all duration-500 flex flex-col items-center gap-4 md:gap-6"
-                    >
-                      <span className="text-4xl md:text-5xl group-hover:scale-125 transition-transform">{s.icon}</span>
-                      <span className="text-[10px] font-black uppercase tracking-[0.3em]">{s.name}</span>
-                    </button>
-                  ))}
+                <div className="flex flex-col items-center gap-8">
+                  <div className="grid grid-cols-2 md:grid-cols-3 gap-4 md:gap-6 w-full max-w-4xl">
+                    {SPORTS.map(s => {
+                      const isSelected = data.sports.includes(s.name);
+                      return (
+                        <button
+                          key={s.name}
+                          onClick={() => {
+                            const newSports = isSelected
+                              ? data.sports.filter(sport => sport !== s.name)
+                              : [...data.sports, s.name];
+                            setData({ ...data, sports: newSports });
+                          }}
+                          className={`group border-2 p-8 md:p-10 rounded-[40px] md:rounded-[48px] hover:scale-105 transition-all duration-500 flex flex-col items-center gap-4 md:gap-6 ${isSelected ? 'bg-[#C6FF00] border-[#C6FF00] text-black scale-105' : 'bg-white/5 border-white/5 hover:bg-white/10 text-white'}`}
+                        >
+                          <span className={`text-4xl md:text-5xl transition-transform ${isSelected ? 'scale-125' : 'group-hover:scale-125'}`}>{s.icon}</span>
+                          <span className="text-[10px] font-black uppercase tracking-[0.3em]">{s.name}</span>
+                        </button>
+                      );
+                    })}
+                  </div>
+
+                  <Button
+                    onClick={nextStep}
+                    disabled={data.sports.length === 0}
+                    className="px-12 py-6 rounded-full bg-white text-black font-black uppercase tracking-widest text-xs hover:bg-[#C6FF00] disabled:opacity-30 disabled:hover:bg-white transition-all"
+                  >
+                    Confirm Selection ({data.sports.length})
+                  </Button>
                 </div>
               </motion.div>
             )}
@@ -285,7 +313,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                   <div className="p-6 md:p-8 bg-black border border-white/10 rounded-[32px] md:rounded-[40px] shadow-2xl">
                     <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/30 mb-2">Potential Rivals</p>
                     <p className="text-4xl md:text-5xl font-black italic text-[#C6FF00]">{LEVEL_CONFIG[data.level]?.rivals || '0'}</p>
-                    <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/30 mt-2">Active {data.sport}</p>
+                    <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/30 mt-2">Active {data.sports.join(', ')}</p>
                   </div>
                   <div className="p-6 md:p-8 bg-black border border-white/10 rounded-[32px] md:rounded-[40px] shadow-2xl">
                     <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/30 mb-2">Starting Tier</p>

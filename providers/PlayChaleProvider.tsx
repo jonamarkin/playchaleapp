@@ -43,7 +43,7 @@ interface PlayChaleContextType {
   triggerToast: (msg: string) => void;
 
   // Actions
-  completeOnboarding: (userData: { name: string; sport: string; location: string }) => void;
+  completeOnboarding: (userData: { name: string; sports: string[]; location: string }) => void;
   handleNavigate: (path: string) => void;
 
   // Pending action for after onboarding
@@ -162,16 +162,37 @@ export function PlayChaleProvider({ children }: { children: ReactNode }) {
     setSelectedItem(null);
   }, []);
 
-  const completeOnboarding = useCallback((userData: { name: string; sport: string; location: string }) => {
+  const completeOnboarding = useCallback((userData: { name: string; sports: string[]; location: string }) => {
     setHasProfileState(true);
+
+    // Initial mock stats for new user. In a real app these start at 0.
+    // For demo purposes, we'll give them some starter "Rookie" stats.
+    const starterStats = {
+      gamesPlayed: 0,
+      winRate: '0%',
+      mvps: 0,
+      reliability: '100%',
+      rating: 6.0
+    };
+
+    // Initialize sportStats for all selected sports
+    const initialSportStats: Record<string, any> = {};
+    userData.sports.forEach(s => {
+      initialSportStats[s] = { ...starterStats };
+    });
+
+    const mainSport = userData.sports[0] || 'Football';
 
     // Personalize the primary player profile
     const updatedPlayer = {
       name: userData.name,
-      mainSport: userData.sport,
+      mainSport: mainSport,
+      sportStats: initialSportStats,
+      stats: initialSportStats[mainSport], // backward compatibility
       bio: `Signed into the league from ${userData.location || 'HQ'}`
     };
 
+    // Update global state
     setPlayers(prev => {
       const newPlayers = [...prev];
       if (newPlayers.length > 0) {

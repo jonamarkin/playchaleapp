@@ -5,20 +5,23 @@ import { motion } from 'framer-motion';
 import AppDashboard from '@/components/AppDashboard';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
 
+import { useRouter } from 'next/navigation';
+
 export default function HomePage() {
-  const { players, games, openModal, handleNavigate } = usePlayChale();
+  const { players, games, handleNavigate } = usePlayChale();
+  const router = useRouter();
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }} 
-      animate={{ opacity: 1, y: 0 }} 
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
       exit={{ opacity: 0, y: -20 }}
     >
-      <AppDashboard 
-        player={players[0]} 
-        upcomingGames={games.slice(0, 3)} 
-        onViewMatch={(game) => openModal('join', game)} 
-        onNavigate={handleNavigate} 
+      <AppDashboard
+        player={players[0]}
+        upcomingGames={games.slice(0, 3)}
+        onViewMatch={(game) => router.push(`/game/${game.id}`)}
+        onNavigate={handleNavigate}
       />
     </motion.div>
   );
