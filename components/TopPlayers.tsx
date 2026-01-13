@@ -163,7 +163,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                           <p className={`text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] transition-colors ${isFullPage ? 'text-black/30 group-hover:text-white/30' : 'text-white/30'} truncate`}>Win Rate</p>
                         </div>
                         <div className={`text-center border-x px-4 transition-colors ${isFullPage ? 'border-black/5 group-hover:border-white/10' : 'border-white/5'}`}>
-                          <p className="text-2xl md:text-3xl font-black italic text-[#C6FF00] drop-shadow-sm transition-transform group-hover:scale-110">
+                          <p className={`text-2xl md:text-3xl font-black italic drop-shadow-sm transition-transform group-hover:scale-110 ${isFullPage ? 'text-black group-hover:text-[#C6FF00]' : 'text-[#C6FF00]'}`}>
                             {previewStat.value}
                           </p>
                           <p className={`text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] transition-colors ${isFullPage ? 'text-black/30 group-hover:text-white/30' : 'text-white/30'} truncate`}>{previewStat.label}</p>

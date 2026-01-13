@@ -11,7 +11,7 @@ interface HeroProps {
 
 const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
   return (
-    <section className="relative min-h-[100svh] w-full flex items-end overflow-hidden bg-black">
+    <section className="relative min-h-[100svh] w-full flex items-center overflow-hidden bg-black">
       {/* Background Layer */}
       <div className="absolute inset-0 z-0">
         <motion.div
@@ -33,7 +33,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
       </div>
 
       {/* Live Activity Ticker (Top Floating) */}
-      <div className="absolute top-28 left-0 right-0 z-20 pointer-events-none hidden md:block overflow-hidden">
+      <div className="absolute top-10 left-0 right-0 z-20 pointer-events-none hidden md:block overflow-hidden">
         <div className="flex animate-marquee whitespace-nowrap gap-12 text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
           {[1, 2, 3].map(i => (
             <React.Fragment key={i}>
@@ -45,8 +45,8 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
         </div>
       </div>
 
-      <div className="relative z-10 w-full px-6 md:px-12 pb-24 md:pb-36 pt-40">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
+      <div className="relative z-10 w-full px-6 md:px-12 pb-24 md:pb-36 pt-8 md:pt-16">
+        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-8 text-white space-y-12">
             <motion.div
               initial={{ opacity: 0, y: 40 }}
@@ -58,8 +58,8 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
                 <span className="w-2 h-2 rounded-full bg-black animate-ping"></span>
                 ACTIVE IN YOUR CITY
               </div>
-              <h1 className="text-7xl sm:text-8xl md:text-9xl lg:text-[11rem] font-black leading-[0.8] tracking-tighter italic">
-                Step Out, <br /> <span className="text-[#C6FF00]">PlayChale.</span>
+              <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-[10rem] font-black leading-[0.85] tracking-tighter italic">
+                <span className="whitespace-nowrap">Step Out,</span> <br /> <span className="text-[#C6FF00] whitespace-nowrap">PlayChale.</span>
               </h1>
             </motion.div>
 
@@ -115,36 +115,36 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
             transition={{ delay: 1.2 }}
             className="lg:col-span-4 hidden lg:flex flex-col gap-6"
           >
-            <div className="glass rounded-[56px] p-10 border border-white/10 space-y-8 shadow-2xl relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-8 opacity-10 rotate-12 group-hover:rotate-45 transition-transform duration-[2s]"><ICONS.Logo /></div>
+            <div className="glass rounded-[48px] p-8 border border-white/10 space-y-6 shadow-2xl relative overflow-hidden group">
+              <div className="absolute top-0 right-0 p-6 opacity-10 rotate-12 group-hover:rotate-45 transition-transform duration-[2s]"><ICONS.Logo /></div>
 
               <div className="flex justify-between items-center">
-                <h4 className="text-[10px] font-black uppercase tracking-widest text-[#C6FF00]">Recruiting Nearby</h4>
+                <h4 className="text-[10px] font-black uppercase tracking-widest text-[#C6FF00]">Happening Nearby</h4>
                 <ICONS.MapPin />
               </div>
 
-              <div className="space-y-5">
+              <div className="space-y-4">
                 {[
                   { sport: 'Football', label: 'Dusk Kickoff', time: '19:00', spots: '3 Open', price: '$5' },
                   { sport: 'Basketball', label: 'Full Court 5s', time: '20:30', spots: '6 Open', price: 'Free' }
                 ].map((item, i) => (
-                  <div key={i} className="bg-white/5 p-6 rounded-[32px] border border-white/5 hover:bg-white/10 transition-all cursor-pointer group/item">
-                    <div className="flex justify-between items-center mb-3">
-                      <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">{item.sport}</span>
+                  <div key={i} className="bg-white/5 p-5 rounded-[24px] border border-white/5 hover:bg-white/10 transition-all cursor-pointer group/item">
+                    <div className="flex justify-between items-center mb-2">
+                      <span className="text-[9px] font-black text-white/60 uppercase tracking-widest">{item.sport}</span>
                       <span className="text-[9px] font-black text-[#C6FF00] uppercase tracking-widest bg-[#C6FF00]/10 px-2 py-0.5 rounded">{item.spots}</span>
                     </div>
-                    <h5 className="text-xl font-black italic uppercase group-hover/item:text-[#C6FF00] transition-colors">{item.label}</h5>
-                    <div className="mt-4 flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-[10px] font-black uppercase text-white/30 tracking-widest">
+                    <h5 className="text-lg font-black italic uppercase text-white group-hover/item:text-[#C6FF00] transition-colors">{item.label}</h5>
+                    <div className="mt-3 flex items-center justify-between">
+                      <div className="flex items-center gap-2 text-[10px] font-black uppercase text-white/50 tracking-widest">
                         <ICONS.Clock /> {item.time} Tonight
                       </div>
-                      <span className="text-sm font-black italic">{item.price}</span>
+                      <span className="text-sm font-black italic text-white">{item.price}</span>
                     </div>
                   </div>
                 ))}
               </div>
 
-              <button onClick={onOpenDiscover} className="w-full py-4 rounded-full border border-white/10 text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-white hover:bg-white/5 transition-all">View Full Marketplace</button>
+              <button onClick={onOpenDiscover} className="w-full py-3 rounded-full border border-white/10 text-[10px] font-black uppercase tracking-widest text-white/50 hover:text-white hover:bg-white/5 transition-all">Browse All Games</button>
             </div>
           </motion.div>
         </div>

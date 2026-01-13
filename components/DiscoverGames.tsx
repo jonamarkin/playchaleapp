@@ -21,8 +21,28 @@ const CalendarView = ({ games, onSelectDate, selectedDate }: { games: Game[], on
   const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
 
   const monthName = currentMonth.toLocaleString('default', { month: 'long' });
+  const monthShort = monthName.substring(0, 3);
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
   const blanks = Array.from({ length: firstDayOfMonth }, (_, i) => i);
+
+  // Calculate games in current month
+  const gamesThisMonth = games.filter(g => g.date.includes(monthShort)).length;
+
+  // Find next month with games (check up to 12 months ahead)
+  const findNextMonthWithGames = () => {
+    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+    for (let i = 1; i <= 12; i++) {
+      const checkDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + i, 1);
+      const checkMonthShort = months[checkDate.getMonth()];
+      const gamesInMonth = games.filter(g => g.date.includes(checkMonthShort)).length;
+      if (gamesInMonth > 0) {
+        return { date: checkDate, monthName: checkDate.toLocaleString('default', { month: 'long' }), count: gamesInMonth };
+      }
+    }
+    return null;
+  };
+
+  const nextMonthWithGames = gamesThisMonth === 0 ? findNextMonthWithGames() : null;
 
   return (
     <div className="bg-black text-white p-6 md:p-10 rounded-[48px] shadow-2xl">
@@ -43,26 +63,57 @@ const CalendarView = ({ games, onSelectDate, selectedDate }: { games: Game[], on
       <div className="grid grid-cols-7 gap-2 md:gap-3">
         {blanks.map(b => <div key={`b-${b}`} className="aspect-square"></div>)}
         {days.map(d => {
-          const gameCount = games.filter(g => g.date.includes(d.toString()) && g.date.includes(monthName.substring(0, 3))).length;
+          const gameCount = games.filter(g => g.date.includes(d.toString()) && g.date.includes(monthShort)).length;
           const isSelected = selectedDate === d.toString();
+          const isToday = d === new Date().getDate() && currentMonth.getMonth() === new Date().getMonth() && currentMonth.getFullYear() === new Date().getFullYear();
+
           return (
             <button
               key={d}
               onClick={() => onSelectDate(isSelected ? "" : d.toString())}
-              className={`aspect-square rounded-2xl md:rounded-[28px] flex flex-col items-center justify-center gap-1 transition-all relative border ${isSelected ? 'bg-[#C6FF00] text-black border-[#C6FF00]' : 'bg-white/5 border-white/5 hover:border-white/20'}`}
+              className={`aspect-square rounded-2xl md:rounded-[28px] flex flex-col items-center justify-center gap-1 transition-all relative border 
+                ${isSelected ? 'bg-[#C6FF00] text-black border-[#C6FF00] scale-105 shadow-lg shadow-[#C6FF00]/30' :
+                  isToday ? 'bg-white/10 border-[#C6FF00]/50' :
+                    gameCount > 0 ? 'bg-white/5 border-white/10 hover:border-[#C6FF00]/50 hover:bg-white/10' :
+                      'bg-white/5 border-white/5 hover:border-white/20'}`}
             >
-              <span className="text-sm md:text-lg font-black">{d}</span>
+              <span className={`text-sm md:text-lg font-black ${isToday && !isSelected ? 'text-[#C6FF00]' : ''}`}>{d}</span>
               {gameCount > 0 && !isSelected && (
-                <div className="flex gap-0.5">
+                <div className="flex items-center gap-0.5">
                   {Array.from({ length: Math.min(gameCount, 3) }).map((_, i) => (
-                    <div key={i} className="w-1 h-1 rounded-full bg-[#C6FF00]"></div>
+                    <div key={i} className={`w-1.5 h-1.5 rounded-full bg-[#C6FF00] ${isToday ? 'animate-pulse' : ''}`}></div>
                   ))}
+                  {gameCount > 3 && (
+                    <span className="text-[8px] font-black text-[#C6FF00] ml-0.5">+{gameCount - 3}</span>
+                  )}
                 </div>
+              )}
+              {isSelected && gameCount > 0 && (
+                <span className="text-[9px] font-black uppercase">{gameCount} Game{gameCount > 1 ? 's' : ''}</span>
               )}
             </button>
           );
         })}
       </div>
+
+      {/* No games this month - show next available */}
+      {gamesThisMonth === 0 && (
+        <div className="mt-8 p-6 bg-white/5 border border-white/10 rounded-[32px] text-center">
+          <p className="text-white/40 text-sm font-bold mb-4">No games scheduled in {monthName}</p>
+          {nextMonthWithGames ? (
+            <button
+              onClick={() => setCurrentMonth(nextMonthWithGames.date)}
+              className="inline-flex items-center gap-3 bg-[#C6FF00] text-black px-6 py-3 rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all"
+            >
+              <span>⚡</span>
+              Jump to {nextMonthWithGames.monthName} ({nextMonthWithGames.count} games)
+              <ICONS.ChevronRight />
+            </button>
+          ) : (
+            <p className="text-white/20 text-xs font-bold uppercase tracking-widest">No upcoming games found</p>
+          )}
+        </div>
+      )}
     </div>
   );
 };
@@ -105,7 +156,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
                 className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.5em] text-black/50"
               >
                 <span className="w-2 h-2 rounded-full bg-[#C6FF00] shadow-[0_0_10px_#C6FF00]"></span>
-                MARKETPLACE
+                GAME ARENA
               </motion.div>
               <h2 className="font-black text-black leading-[0.85] md:leading-[0.8] tracking-tighter italic text-5xl sm:text-7xl md:text-[9rem]">
                 Find Your <br className="hidden md:block" /> Perfect Match.
@@ -163,7 +214,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
             <div className="space-y-4">
               <div className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-black/30">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#C6FF00]"></span>
-                LIVE MARKETPLACE
+                LIVE GAMES
               </div>
               <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter">Games Near You</h2>
             </div>
