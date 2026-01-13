@@ -89,7 +89,8 @@ export interface PlayerProfile {
     aces?: number;
     winStreak?: number;
   };
-  recentActivity: string;
+  bio: string;
+  location?: string;
   matchHistory?: MatchRecord[];
 }
 

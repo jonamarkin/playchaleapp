@@ -46,17 +46,17 @@ const Header: React.FC<HeaderProps> = ({ onOpenCreate, activeView, onNavigate })
     <>
       <header className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 px-4 md:px-8 py-3 md:py-4 flex justify-between items-center ${headerTheme === 'light' ? 'bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100' : 'bg-transparent'}`}>
         <div className="flex items-center gap-3 md:gap-6">
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: -20 }}
             animate={{ opacity: 1, x: 0 }}
             className="flex items-center gap-3 md:gap-4 cursor-pointer group"
             onClick={() => onNavigate('home')}
           >
             <ICONS.Logo />
-            <span className={`font-black text-xl tracking-tighter transition-colors duration-300 ${headerTheme === 'light' ? 'text-black' : 'text-white'}`}>PlayChale</span>
+            <span className={`hidden sm:block font-black text-xl tracking-tighter transition-colors duration-300 ${headerTheme === 'light' ? 'text-black' : 'text-white'}`}>PlayChale</span>
           </motion.div>
 
-          <motion.nav 
+          <motion.nav
             initial={{ opacity: 0, x: -10 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 0.1 }}
@@ -74,22 +74,22 @@ const Header: React.FC<HeaderProps> = ({ onOpenCreate, activeView, onNavigate })
           </motion.nav>
         </div>
 
-        <motion.div 
+        <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0 }}
           className="flex items-center gap-2 md:gap-3"
         >
-          <button 
+          <button
             onClick={onOpenCreate}
-            className={`transition-all duration-300 px-5 md:px-7 py-2 md:py-2.5 rounded-full flex items-center gap-2 md:gap-3 group shadow-lg ${headerTheme === 'light' ? 'bg-black text-white hover:bg-[#C6FF00] hover:text-black' : 'bg-[#C6FF00] text-black hover:bg-white'}`}
+            className={`transition-all duration-300 px-3 sm:px-5 md:px-7 py-2 md:py-2.5 rounded-full flex items-center gap-2 md:gap-3 group shadow-lg ${headerTheme === 'light' ? 'bg-black text-white hover:bg-[#C6FF00] hover:text-black' : 'bg-[#C6FF00] text-black hover:bg-white'}`}
           >
-            <span className="text-[10px] md:text-xs font-black uppercase tracking-widest">Create Game</span>
+            <span className="hidden sm:block text-[10px] md:text-xs font-black uppercase tracking-widest">Create Game</span>
             <div className={`rounded-full p-1 transition-transform group-hover:translate-x-1 ${headerTheme === 'light' ? 'bg-white/10' : 'bg-black/10'}`}>
               <ICONS.Plus />
             </div>
           </button>
-          
-          <button 
+
+          <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
             className={`backdrop-blur-md w-10 h-10 md:w-11 md:h-11 flex items-center justify-center rounded-full shadow-sm transition-all border active:scale-90 ${headerTheme === 'light' ? 'bg-white/90 border-gray-100 text-black' : 'bg-white/10 border-white/20 text-white'}`}
           >
@@ -100,7 +100,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenCreate, activeView, onNavigate })
 
       <AnimatePresence>
         {isMenuOpen && (
-          <motion.div 
+          <motion.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
@@ -117,12 +117,12 @@ const Header: React.FC<HeaderProps> = ({ onOpenCreate, activeView, onNavigate })
 
             <div className="space-y-8 mt-12">
               {navItems.map((item, idx) => (
-                <button 
+                <button
                   key={item.id}
                   onClick={() => { onNavigate(item.id); setIsMenuOpen(false); }}
                   className="block text-5xl md:text-7xl font-black italic tracking-tighter hover:text-[#C6FF00] transition-all text-left group"
                 >
-                  <span className="text-xs not-italic opacity-30 mr-6">0{idx+1}</span>
+                  <span className="text-xs not-italic opacity-30 mr-6">0{idx + 1}</span>
                   {item.label}
                 </button>
               ))}

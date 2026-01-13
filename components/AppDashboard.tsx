@@ -120,7 +120,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, onVi
                   >
                     <Image src={game.imageUrl} alt={game.title} width={96} height={96} className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-[20px] sm:rounded-[28px] md:rounded-[32px] object-cover shadow-lg shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-[#C6FF00] mb-1 sm:mb-2 block">{game.sport}</span>
+                      <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-black/40 group-hover:text-[#C6FF00] mb-1 sm:mb-2 block">{game.sport}</span>
                       <h4 className="text-base sm:text-lg md:text-xl font-black italic uppercase tracking-tighter group-hover:text-white transition-colors truncate">{game.title}</h4>
                       <div className="flex items-center gap-3 sm:gap-4 mt-1 sm:mt-2 text-[9px] sm:text-[10px] font-black uppercase tracking-widest opacity-40">
                         <ICONS.Clock /> {game.time}
@@ -165,7 +165,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, onVi
 
             {/* Rising Legends Leaderboard Preview */}
             <div className="space-y-6 sm:space-y-8 bg-gray-50 p-6 sm:p-8 md:p-10 rounded-[40px] sm:rounded-[48px] md:rounded-[56px] border border-black/5">
-              <h3 className="text-xl sm:text-2xl font-black italic uppercase tracking-tighter">Rising Legends</h3>
+              <h3 className="text-xl sm:text-2xl font-black italic uppercase tracking-tighter">Rising Stars</h3>
               <div className="space-y-4 sm:space-y-5 md:space-y-6">
                 {[1, 2, 3].map(i => (
                   <div key={i} className="flex items-center justify-between group cursor-pointer gap-3">
