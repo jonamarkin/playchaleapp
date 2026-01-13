@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useState, useMemo } from 'react';
+import Image from 'next/image';
 import { ICONS } from '@/constants';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PlayerProfile } from '@/types';
@@ -40,24 +41,24 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
           <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-500/5 blur-[100px] rounded-full -ml-20 -mb-20 pointer-events-none"></div>
         </>
       )}
-      
+
       <div className="max-w-7xl mx-auto relative z-10 px-4 md:px-12">
         {/* Header Section */}
         <div className={`text-center space-y-6 md:space-y-10 mb-16 md:mb-24 ${isFullPage ? 'text-black' : 'text-white'}`}>
-          <motion.div 
-            initial={{ opacity: 0, y: 20 }} 
-            whileInView={{ opacity: 1, y: 0 }} 
-            viewport={{ once: true }} 
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
             className={`inline-flex items-center gap-4 text-[10px] font-black uppercase tracking-[0.6em] ${isFullPage ? 'text-black/30' : 'text-[#C6FF00]'}`}
           >
             <span className={`w-2.5 h-2.5 rounded-full ${isFullPage ? 'bg-black' : 'bg-white animate-pulse'}`}></span>
             {isFullPage ? 'THE COMMUNITY HUB' : 'CITY HALL OF FAME'}
           </motion.div>
-          
+
           <h2 className={`font-black leading-[0.85] tracking-tighter italic uppercase ${isFullPage ? 'text-6xl md:text-[9rem] text-black' : 'text-6xl md:text-9xl text-white'}`}>
             Built for <br className="hidden md:block" /> Glory.
           </h2>
-          
+
           <p className={`font-bold max-w-2xl mx-auto text-lg md:text-xl leading-tight tracking-tight ${isFullPage ? 'text-black/60' : 'text-white/50'}`}>
             Where the city's finest record their legacy. Find rivals, climb the ranks, and become an amateur legend.
           </p>
@@ -65,7 +66,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
           {isFullPage && (
             <div className="max-w-4xl mx-auto space-y-8 pt-6">
               <div className="relative group">
-                <input 
+                <input
                   type="text"
                   placeholder="Scout for athletes or search by name..."
                   value={search}
@@ -73,14 +74,14 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                   className="w-full bg-black/5 border-2 border-transparent focus:border-black rounded-full pl-16 pr-8 py-5 md:py-6 text-black font-black outline-none transition-all placeholder:text-black/20 shadow-sm"
                 />
                 <div className="absolute left-7 top-1/2 -translate-y-1/2 text-black/20 group-focus-within:text-black transition-colors">
-                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                  <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
                 </div>
               </div>
               <div className="flex flex-wrap justify-center gap-2 md:gap-3">
                 {sports.map(sport => (
-                  <button 
-                    key={sport} 
-                    onClick={() => setActiveSport(sport)} 
+                  <button
+                    key={sport}
+                    onClick={() => setActiveSport(sport)}
                     className={`px-6 md:px-8 py-3 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all ${activeSport === sport ? 'bg-black text-white shadow-xl scale-105' : 'bg-gray-100 text-black/40 hover:bg-gray-200'}`}
                   >
                     {sport}
@@ -96,14 +97,14 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
           <AnimatePresence mode="popLayout">
             {filteredPlayers.map((player, idx) => {
               const previewStat = getPreviewStat(player);
-              
+
               // Dynamic Theme Logic for the "Black-out" effect
-              const cardBaseClasses = isFullPage 
-                ? "bg-white border-black/5 text-black hover:bg-black hover:text-white" 
+              const cardBaseClasses = isFullPage
+                ? "bg-white border-black/5 text-black hover:bg-black hover:text-white"
                 : "bg-white/5 border-white/10 text-white hover:bg-white/10";
 
               return (
-                <motion.div 
+                <motion.div
                   key={player.id}
                   layout
                   initial={{ opacity: 0, y: 20 }}
@@ -124,10 +125,12 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                     {/* Identity Container */}
                     <div className="relative shrink-0">
                       <div className="relative">
-                        <img 
-                          src={player.avatar} 
-                          alt={player.name} 
-                          className="w-36 h-36 md:w-48 md:h-48 rounded-full object-cover border-[8px] border-black/5 group-hover:border-[#C6FF00] transition-all duration-500 shadow-2xl" 
+                        <Image
+                          src={player.avatar}
+                          alt={player.name}
+                          width={192}
+                          height={192}
+                          className="w-36 h-36 md:w-48 md:h-48 rounded-full object-cover border-[8px] border-black/5 group-hover:border-[#C6FF00] transition-all duration-500 shadow-2xl"
                         />
                         <div className="absolute -bottom-2 -right-2 bg-[#C6FF00] text-black w-14 h-14 rounded-full flex items-center justify-center font-black text-2xl shadow-2xl border-4 border-black group-hover:scale-110 transition-transform">
                           #{idx + 1}
@@ -195,13 +198,13 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
 
         {!isFullPage && (
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-24 md:mt-32 text-center">
-             <button 
-               onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} 
-               className="bg-white text-black px-12 md:px-20 py-6 md:py-8 rounded-full font-black uppercase tracking-[0.2em] text-[10px] md:text-[11px] hover:bg-[#C6FF00] hover:text-black transition-all hover:scale-105 shadow-2xl flex items-center gap-5 mx-auto"
-             >
-               View Full City Rankings
-               <div className="bg-black text-[#C6FF00] p-2 rounded-full"><ICONS.ChevronRight /></div>
-             </button>
+            <button
+              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="bg-white text-black px-12 md:px-20 py-6 md:py-8 rounded-full font-black uppercase tracking-[0.2em] text-[10px] md:text-[11px] hover:bg-[#C6FF00] hover:text-black transition-all hover:scale-105 shadow-2xl flex items-center gap-5 mx-auto"
+            >
+              View Full City Rankings
+              <div className="bg-black text-[#C6FF00] p-2 rounded-full"><ICONS.ChevronRight /></div>
+            </button>
           </motion.div>
         )}
       </div>

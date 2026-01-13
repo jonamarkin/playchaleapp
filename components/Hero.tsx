@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { ICONS } from '@/constants';
 import { motion } from 'framer-motion';
 
@@ -13,21 +14,28 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
     <section className="relative min-h-[100svh] w-full flex items-end overflow-hidden bg-black">
       {/* Background Layer */}
       <div className="absolute inset-0 z-0">
-        <motion.img
+        <motion.div
           initial={{ scale: 1.1, opacity: 0 }}
           animate={{ scale: 1, opacity: 0.5 }}
           transition={{ duration: 2.5, ease: 'easeOut' }}
-          src="https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?auto=format&fit=crop&q=80&w=2560"
-          alt="Sports Action"
-          className="w-full h-full object-cover"
-        />
+          className="w-full h-full"
+        >
+          <Image
+            src="https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?auto=format&fit=crop&q=80&w=2560"
+            alt="Sports Action"
+            fill
+            priority
+            sizes="100vw"
+            className="object-cover"
+          />
+        </motion.div>
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
       </div>
 
       {/* Live Activity Ticker (Top Floating) */}
       <div className="absolute top-28 left-0 right-0 z-20 pointer-events-none hidden md:block overflow-hidden">
         <div className="flex animate-marquee whitespace-nowrap gap-12 text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
-          {[1,2,3].map(i => (
+          {[1, 2, 3].map(i => (
             <React.Fragment key={i}>
               <span className="flex items-center gap-3"><span className="w-1.5 h-1.5 rounded-full bg-[#C6FF00]"></span> Marcus J. scored 3 goals in 5v5</span>
               <span className="flex items-center gap-3"><span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span> Elena R. climbed to Rank #12 in Basketball</span>
@@ -40,7 +48,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
       <div className="relative z-10 w-full px-6 md:px-12 pb-24 md:pb-36 pt-40">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-end">
           <div className="lg:col-span-8 text-white space-y-12">
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 40 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.4 }}
@@ -54,8 +62,8 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
                 Step Out, <br /> <span className="text-[#C6FF00]">PlayChale.</span>
               </h1>
             </motion.div>
-            
-            <motion.p 
+
+            <motion.p
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.6 }}
@@ -64,13 +72,13 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
               Don't just watch. Compete. Build your profile, find local legends, and take the amateur stage.
             </motion.p>
 
-            <motion.div 
+            <motion.div
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               transition={{ delay: 0.8 }}
               className="flex flex-col sm:flex-row items-center gap-8"
             >
-              <button 
+              <button
                 onClick={onOpenDiscover}
                 className="w-full sm:w-auto bg-[#C6FF00] text-black px-12 py-6 rounded-full font-black uppercase tracking-widest text-[11px] flex items-center justify-center gap-4 hover:scale-[1.05] hover:shadow-[0_0_40px_rgba(198,255,0,0.4)] transition-all group"
               >
@@ -79,11 +87,18 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
                   <ICONS.ChevronRight />
                 </div>
               </button>
-              
+
               <div className="flex items-center gap-5">
                 <div className="flex -space-x-3">
                   {[1, 2, 3].map(i => (
-                    <img key={i} className="w-10 h-10 rounded-full border-4 border-black" src={`https://i.pravatar.cc/100?u=${i+10}`} alt="user" />
+                    <Image
+                      key={i}
+                      className="w-10 h-10 rounded-full border-4 border-black"
+                      src={`https://i.pravatar.cc/100?u=${i + 10}`}
+                      alt="user"
+                      width={40}
+                      height={40}
+                    />
                   ))}
                 </div>
                 <div className="text-left">
@@ -94,7 +109,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
             </motion.div>
           </div>
 
-          <motion.div 
+          <motion.div
             initial={{ opacity: 0, x: 20 }}
             animate={{ opacity: 1, x: 0 }}
             transition={{ delay: 1.2 }}
@@ -102,12 +117,12 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
           >
             <div className="glass rounded-[56px] p-10 border border-white/10 space-y-8 shadow-2xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-8 opacity-10 rotate-12 group-hover:rotate-45 transition-transform duration-[2s]"><ICONS.Logo /></div>
-              
+
               <div className="flex justify-between items-center">
                 <h4 className="text-[10px] font-black uppercase tracking-widest text-[#C6FF00]">Recruiting Nearby</h4>
                 <ICONS.MapPin />
               </div>
-              
+
               <div className="space-y-5">
                 {[
                   { sport: 'Football', label: 'Dusk Kickoff', time: '19:00', spots: '3 Open', price: '$5' },
@@ -115,26 +130,26 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
                 ].map((item, i) => (
                   <div key={i} className="bg-white/5 p-6 rounded-[32px] border border-white/5 hover:bg-white/10 transition-all cursor-pointer group/item">
                     <div className="flex justify-between items-center mb-3">
-                       <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">{item.sport}</span>
-                       <span className="text-[9px] font-black text-[#C6FF00] uppercase tracking-widest bg-[#C6FF00]/10 px-2 py-0.5 rounded">{item.spots}</span>
+                      <span className="text-[9px] font-black text-white/40 uppercase tracking-widest">{item.sport}</span>
+                      <span className="text-[9px] font-black text-[#C6FF00] uppercase tracking-widest bg-[#C6FF00]/10 px-2 py-0.5 rounded">{item.spots}</span>
                     </div>
                     <h5 className="text-xl font-black italic uppercase group-hover/item:text-[#C6FF00] transition-colors">{item.label}</h5>
                     <div className="mt-4 flex items-center justify-between">
-                       <div className="flex items-center gap-2 text-[10px] font-black uppercase text-white/30 tracking-widest">
-                          <ICONS.Clock /> {item.time} Tonight
-                       </div>
-                       <span className="text-sm font-black italic">{item.price}</span>
+                      <div className="flex items-center gap-2 text-[10px] font-black uppercase text-white/30 tracking-widest">
+                        <ICONS.Clock /> {item.time} Tonight
+                      </div>
+                      <span className="text-sm font-black italic">{item.price}</span>
                     </div>
                   </div>
                 ))}
               </div>
-              
+
               <button onClick={onOpenDiscover} className="w-full py-4 rounded-full border border-white/10 text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-white hover:bg-white/5 transition-all">View Full Marketplace</button>
             </div>
           </motion.div>
         </div>
       </div>
-      
+
       <style>{`
         @keyframes marquee {
           0% { transform: translateX(100%); }

@@ -1,12 +1,23 @@
 'use client';
 
 import React from 'react';
+import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import { AnimatePresence, motion } from 'framer-motion';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
-import GameModal from '@/components/GameModal';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
+
+// Lazy load GameModal to reduce initial bundle size
+const GameModal = dynamic(() => import('@/components/GameModal'), {
+  ssr: false,
+  loading: () => (
+    <div className="fixed inset-0 bg-black/60 backdrop-blur-xl z-[200] flex items-center justify-center">
+      <div className="w-16 h-16 border-4 border-[#C6FF00] border-t-transparent rounded-full animate-spin" />
+    </div>
+  ),
+});
+
 
 export default function AppLayout({
   children,
@@ -14,12 +25,12 @@ export default function AppLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const { 
-    activeModal, 
-    selectedItem, 
-    closeModal, 
+  const {
+    activeModal,
+    selectedItem,
+    closeModal,
     openModal,
-    handleNavigate, 
+    handleNavigate,
     showToast,
     triggerToast,
     hasProfile,
@@ -38,23 +49,23 @@ export default function AppLayout({
 
   return (
     <div className="min-h-screen relative bg-[#FDFDFB]">
-      <Header 
-        activeView={getActiveView()} 
-        onNavigate={(view) => handleNavigate(`/${view}`)} 
-        onOpenCreate={() => openModal('create')} 
+      <Header
+        activeView={getActiveView()}
+        onNavigate={(view) => handleNavigate(`/${view}`)}
+        onOpenCreate={() => openModal('create')}
       />
       <main>
         {children}
       </main>
       <Footer onNavigate={handleNavigate} />
-      
+
       {/* Global Modal */}
       <AnimatePresence>
         {activeModal && (
-          <GameModal 
-            type={activeModal} 
-            item={selectedItem} 
-            onClose={closeModal} 
+          <GameModal
+            type={activeModal}
+            item={selectedItem}
+            onClose={closeModal}
             onJoin={(id) => {
               if (!hasProfile) {
                 setPendingAction({ type: 'modal', modalType: 'join', item: selectedItem });
@@ -81,10 +92,10 @@ export default function AppLayout({
       {/* Toast Notification */}
       <AnimatePresence>
         {showToast && (
-          <motion.div 
-            initial={{ opacity: 0, y: 50 }} 
-            animate={{ opacity: 1, y: 0 }} 
-            exit={{ opacity: 0, y: 50 }} 
+          <motion.div
+            initial={{ opacity: 0, y: 50 }}
+            animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: 50 }}
             className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[300] bg-black text-[#C6FF00] px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] shadow-2xl"
           >
             {showToast}

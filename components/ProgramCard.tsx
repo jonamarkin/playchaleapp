@@ -1,6 +1,7 @@
 'use client';
 
 import React from 'react';
+import Image from 'next/image';
 import { Program } from '@/types';
 import { ICONS } from '@/constants';
 import { motion } from 'framer-motion';
@@ -14,14 +15,14 @@ const ProgramCard: React.FC<ProgramCardProps> = ({ program, onClick }) => {
   const isPrimary = program.accentColor === '#C6FF00';
 
   return (
-    <motion.div 
+    <motion.div
       whileHover={{ y: -10 }}
       onClick={onClick}
       className={`w-[300px] md:w-[400px] h-[580px] md:h-[680px] rounded-[56px] flex flex-col p-8 md:p-12 transition-all duration-500 cursor-pointer shadow-lg hover:shadow-[0_40px_80px_rgba(0,0,0,0.05)] relative overflow-hidden group`}
       style={{ backgroundColor: isPrimary ? '#C6FF00' : '#F5F5F0' }}
     >
       <div className="absolute top-[-40px] right-[-40px] opacity-[0.03] group-hover:rotate-45 transition-transform duration-[2s] pointer-events-none">
-          <ICONS.TennisBall className="w-80 h-80" />
+        <ICONS.TennisBall className="w-80 h-80" />
       </div>
 
       <div className="relative z-10 flex flex-col gap-2 mb-12">
@@ -45,10 +46,12 @@ const ProgramCard: React.FC<ProgramCardProps> = ({ program, onClick }) => {
       </div>
 
       <div className="mt-auto relative rounded-[48px] overflow-hidden h-72 md:h-80 shadow-2xl group-hover:scale-[1.02] transition-transform duration-700">
-        <img 
-          src={program.imageUrl} 
-          alt={program.title} 
-          className="w-full h-full object-cover grayscale-[0.4] group-hover:grayscale-0 transition-all duration-700"
+        <Image
+          src={program.imageUrl}
+          alt={program.title}
+          fill
+          sizes="(max-width: 768px) 300px, 400px"
+          className="object-cover grayscale-[0.4] group-hover:grayscale-0 transition-all duration-700"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
         <div className="absolute bottom-6 left-6 right-6">
