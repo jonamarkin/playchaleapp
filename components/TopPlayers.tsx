@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { ICONS } from '@/constants';
 import { motion, AnimatePresence } from 'framer-motion';
 import { PlayerProfile } from '@/types';
+import { Input } from '@/components/ui/input';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface TopPlayersProps {
   players: PlayerProfile[];
@@ -21,7 +23,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
 
   // Extract unique locations dynamically
   const locations = useMemo(() => {
-    const locs = new Set(players.map(p => p.location).filter(Boolean));
+    const locs = new Set(players.map(p => p.location).filter((l): l is string => !!l));
     return ['All Locations', ...Array.from(locs)];
   }, [players]);
 
@@ -76,12 +78,12 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
               <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 px-2 sm:px-0">
                 {/* Search Input */}
                 <div className="sm:col-span-8 relative group">
-                  <input
+                  <Input
                     type="text"
                     placeholder="Scout for athletes..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full bg-black/5 border-2 border-transparent focus:border-black rounded-full pl-12 sm:pl-16 pr-6 sm:pr-8 py-4 sm:py-6 text-black font-black text-sm sm:text-base outline-none transition-all placeholder:text-black/20 shadow-sm"
+                    className="w-full bg-black/5 border-2 border-transparent focus:border-black rounded-full pl-12 sm:pl-16 pr-6 sm:pr-8 h-auto py-4 sm:py-6 text-black font-black text-sm sm:text-base outline-none transition-all placeholder:text-black/20 shadow-sm focus-visible:ring-0"
                   />
                   <div className="absolute left-6 sm:left-7 top-1/2 -translate-y-1/2 text-black/20 group-focus-within:text-black transition-colors">
                     <svg width="20" height="20" className="sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
@@ -90,15 +92,18 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
 
                 {/* Location Filter Dropdown */}
                 <div className="sm:col-span-4 relative group">
-                  <select
-                    value={activeLocation}
-                    onChange={(e) => setActiveLocation(e.target.value)}
-                    className="w-full bg-black/5 border-2 border-transparent focus:border-black rounded-full pl-6 pr-10 py-4 sm:py-6 text-black font-black text-sm sm:text-base outline-none transition-all appearance-none cursor-pointer shadow-sm hover:bg-black/10"
-                  >
-                    {locations.map(loc => (
-                      <option key={loc} value={loc}>{loc}</option>
-                    ))}
-                  </select>
+                  <Select value={activeLocation} onValueChange={setActiveLocation}>
+                    <SelectTrigger className="w-full bg-black/5 border-2 border-transparent focus:border-black rounded-full pl-6 pr-6 h-auto py-4 sm:py-6 text-black font-black text-sm sm:text-base outline-none transition-all shadow-sm hover:bg-black/10 focus:ring-0">
+                      <SelectValue placeholder="Select Location" />
+                    </SelectTrigger>
+                    <SelectContent className="bg-white/80 backdrop-blur-xl border border-black/5 rounded-3xl shadow-2xl p-2">
+                      {locations.map(loc => (
+                        <SelectItem key={loc} value={loc} className="rounded-xl font-bold py-3 text-black focus:bg-black focus:text-lime cursor-pointer">
+                          {loc}
+                        </SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
                   <div className="absolute right-6 sm:right-8 top-1/2 -translate-y-1/2 text-black/30 pointer-events-none">
                     <ICONS.MapPin />
                   </div>
