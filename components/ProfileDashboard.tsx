@@ -143,7 +143,7 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
             <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-16">
               <div className="space-y-10">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                  <h3 className="text-6xl md:text-8xl font-black leading-none italic tracking-tighter uppercase">Performance.</h3>
+                  <h3 className="text-4xl sm:text-6xl md:text-8xl font-black leading-none italic tracking-tighter uppercase">Performance.</h3>
 
                   {/* Sport Selector */}
                   <div className="w-full md:w-auto">
@@ -168,8 +168,8 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
                   {metrics.map((m) => (
-                    <div key={m.label} className="bg-white/5 rounded-[40px] p-10 border border-white/10 group hover:bg-white/10 transition-all">
-                      <span className={`text-7xl md:text-8xl font-black italic tracking-tighter block leading-none mb-4 ${m.color}`}>{m.value}</span>
+                    <div key={m.label} className="bg-white/5 rounded-[40px] p-8 md:p-10 border border-white/10 group hover:bg-white/10 transition-all">
+                      <span className={`text-5xl sm:text-6xl md:text-8xl font-black italic tracking-tighter block leading-none mb-4 ${m.color}`}>{m.value}</span>
                       <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.4em] text-white/40">{m.label}</span>
                     </div>
                   ))}

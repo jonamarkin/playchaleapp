@@ -117,7 +117,7 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                             <div className="space-y-4">
                                 <p className="text-[#C6FF00] font-black uppercase tracking-[0.3em] text-[10px]">Final Score</p>
                                 <div className="flex items-center gap-6">
-                                    <span className="text-7xl md:text-9xl font-black italic text-white leading-none tracking-tighter">{match.score}</span>
+                                    <span className="text-5xl sm:text-7xl md:text-9xl font-black italic text-white leading-none tracking-tighter">{match.score}</span>
                                 </div>
                             </div>
                             <div className="text-right">
@@ -176,8 +176,8 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                                     <Link href={`/profile/${p.id}`} key={p.id} className="group flex items-center justify-between bg-white/5 border border-white/5 hover:bg-white/10 p-4 rounded-3xl transition-all cursor-pointer">
                                         <div className="flex items-center gap-4">
                                             <img src={p.avatar} className="w-12 h-12 rounded-full border-2 border-white/10 group-hover:border-[#C6FF00] transition-colors" />
-                                            <div>
-                                                <p className="text-white font-black italic uppercase text-sm">{p.name}</p>
+                                            <div className="min-w-0">
+                                                <p className="text-white font-black italic uppercase text-sm truncate">{p.name}</p>
                                                 <p className="text-white/30 text-[9px] font-black uppercase tracking-widest">{p.role}</p>
                                             </div>
                                         </div>
