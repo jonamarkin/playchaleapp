@@ -14,8 +14,17 @@ interface PendingAction {
   viewPath?: string;
 }
 
+import { createClient } from '@/lib/supabase/client';
+import { User } from '@supabase/supabase-js';
+import { useGames, usePlayers, useProfile } from '@/hooks/useData';
+import { useUIStore } from '@/hooks/useUIStore';
+
+// ... other imports
+
 interface PlayChaleContextType {
   // Auth & Profile
+  user: User | null;
+  isLoading: boolean;
   hasProfile: boolean;
   setHasProfile: (value: boolean) => void;
 
@@ -45,10 +54,11 @@ interface PlayChaleContextType {
   // Actions
   completeOnboarding: (userData: { name: string; sports: string[]; location: string }) => void;
   handleNavigate: (path: string) => void;
+  signOut: () => Promise<void>;
 
   // Pending action for after onboarding
   pendingAction: PendingAction | null;
-  setPendingAction: React.Dispatch<React.SetStateAction<PendingAction | null>>;
+  setPendingAction: (action: PendingAction | null) => void;
 }
 
 const PlayChaleContext = createContext<PlayChaleContextType | null>(null);
@@ -57,14 +67,23 @@ const STORAGE_KEY = 'playchale_profile';
 
 export function PlayChaleProvider({ children }: { children: ReactNode }) {
   const router = useRouter();
-  const pathname = usePathname();
+  const supabase = createClient();
+  const [user, setUser] = useState<User | null>(null);
 
-  // Initialize from localStorage
-  const [hasProfile, setHasProfileState] = useState(false);
-  const [games, setGames] = useState<Game[]>(INITIAL_GAMES);
-  const [players, setPlayers] = useState<PlayerProfile[]>(INITIAL_PLAYERS);
-  const [showToast, setShowToast] = useState<string | null>(null);
-  const [pendingAction, setPendingAction] = useState<PendingAction | null>(null);
+  // -- Auth State (local) --
+  const [hasProfileState, setHasProfileState] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
+
+  // -- Data from React Query --
+  const { data: games = [] } = useGames();
+  const { data: players = [] } = usePlayers();
+
+  // -- UI State from Zustand --
+  const {
+    activeModal, openModal, closeModal, selectedItem,
+    showToast, triggerToast,
+    pendingAction, setPendingAction
+  } = useUIStore();
 
   const [messages, setMessages] = useState<Message[]>([
     {
@@ -79,35 +98,30 @@ export function PlayChaleProvider({ children }: { children: ReactNode }) {
       type: 'inquiry'
     }
   ]);
-
   const [archivedIds, setArchivedIds] = useState<string[]>([]);
-  const [activeModal, setActiveModal] = useState<ModalType>(null);
-  const [selectedItem, setSelectedItem] = useState<any>(null);
   const [userLocation, setUserLocation] = useState<{ lat: number; lng: number } | null>(null);
 
-  // Load profile state from localStorage on mount
+  // SUPABASE AUTH LISTENER
   useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const stored = localStorage.getItem(STORAGE_KEY);
-      if (stored) {
-        try {
-          const data = JSON.parse(stored);
-          setHasProfileState(data.hasProfile || false);
-          if (data.player) {
-            setPlayers(prev => {
-              const newPlayers = [...prev];
-              if (newPlayers.length > 0) {
-                newPlayers[0] = { ...newPlayers[0], ...data.player };
-              }
-              return newPlayers;
-            });
-          }
-        } catch (e) {
-          console.error('Failed to parse stored profile:', e);
-        }
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(async (event, session) => {
+      setUser(session?.user ?? null);
+      if (session?.user) {
+        // We can check profile existence here or via useProfile hook
+        // For Context compatibility, let's do a quick check or keep it simpler
+        // Ideally, we move 'hasProfile' logic into the useProfile hook too.
+        // For now, let's keep it manual to avoid breaking the complex Onboarding flow logic abruptly.
+        const { data: profile } = await supabase.from('profiles').select('onboarding_completed').eq('id', session.user.id).single();
+        setHasProfileState(profile?.onboarding_completed || false);
+      } else {
+        setHasProfileState(false);
       }
-    }
-  }, []);
+      setIsLoading(false);
+    });
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [supabase]);
 
   // Geolocation
   useEffect(() => {
@@ -119,20 +133,11 @@ export function PlayChaleProvider({ children }: { children: ReactNode }) {
     }
   }, []);
 
-  const setHasProfile = useCallback((value: boolean) => {
-    setHasProfileState(value);
-  }, []);
-
-  const triggerToast = useCallback((msg: string) => {
-    setShowToast(msg);
-    setTimeout(() => setShowToast(null), 3000);
-  }, []);
-
   const handleNavigate = useCallback((path: string) => {
     const protectedPaths = ['/stats', '/messages', '/home'];
     const targetPath = path.startsWith('/') ? path : `/${path}`;
 
-    if (protectedPaths.includes(targetPath) && !hasProfile) {
+    if (protectedPaths.includes(targetPath) && !hasProfileState) {
       setPendingAction({ type: 'view', viewPath: targetPath });
       router.push('/onboarding');
     } else {
@@ -142,99 +147,80 @@ export function PlayChaleProvider({ children }: { children: ReactNode }) {
     if (typeof window !== 'undefined') {
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
-  }, [hasProfile, router]);
+  }, [hasProfileState, router, setPendingAction]);
 
-  const openModal = useCallback((type: ModalType, item?: any) => {
+  const onOpenModal = useCallback((type: ModalType, item?: any) => {
     const gatedActions: ModalType[] = ['create', 'challenge'];
-
-    if (type && gatedActions.includes(type) && !hasProfile) {
+    if (type && gatedActions.includes(type) && !hasProfileState) {
       setPendingAction({ type: 'modal', modalType: type, item });
       router.push('/onboarding');
       return;
     }
+    openModal(type, item);
+  }, [hasProfileState, router, setPendingAction, openModal]);
 
-    setSelectedItem(item);
-    setActiveModal(type);
-  }, [hasProfile, router]);
+  const completeOnboarding = useCallback(async (userData: { name: string; sports: string[]; location: string }) => {
+    if (!user) return;
+    triggerToast('Saving Profile...');
 
-  const closeModal = useCallback(() => {
-    setActiveModal(null);
-    setSelectedItem(null);
-  }, []);
+    const starterStats = { gamesPlayed: 0, winRate: '0%', mvps: 0, reliability: '100%', rating: 6.0 };
 
-  const completeOnboarding = useCallback((userData: { name: string; sports: string[]; location: string }) => {
-    setHasProfileState(true);
+    const { error: profileError } = await supabase.from('profiles').upsert({
+      id: user.id,
+      full_name: userData.name,
+      username: userData.name.replace(/\s+/g, '').toLowerCase(),
+      location: userData.location,
+      sports: userData.sports,
+      onboarding_completed: true,
+      attributes: { pace: 80, shooting: 75, passing: 78, dribbling: 82, defending: 60, physical: 70 }
+    }).eq('id', user.id);
 
-    // Initial mock stats for new user. In a real app these start at 0.
-    // For demo purposes, we'll give them some starter "Rookie" stats.
-    const starterStats = {
-      gamesPlayed: 0,
-      winRate: '0%',
-      mvps: 0,
-      reliability: '100%',
-      rating: 6.0
-    };
-
-    // Initialize sportStats for all selected sports
-    const initialSportStats: Record<string, any> = {};
-    userData.sports.forEach(s => {
-      initialSportStats[s] = { ...starterStats };
-    });
-
-    const mainSport = userData.sports[0] || 'Football';
-
-    // Personalize the primary player profile
-    const updatedPlayer = {
-      name: userData.name,
-      mainSport: mainSport,
-      sportStats: initialSportStats,
-      stats: initialSportStats[mainSport], // backward compatibility
-      bio: `Signed into the league from ${userData.location || 'HQ'}`
-    };
-
-    // Update global state
-    setPlayers(prev => {
-      const newPlayers = [...prev];
-      if (newPlayers.length > 0) {
-        newPlayers[0] = {
-          ...newPlayers[0],
-          ...updatedPlayer
-        };
-      }
-      return newPlayers;
-    });
-
-    // Persist to localStorage
-    if (typeof window !== 'undefined') {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        hasProfile: true,
-        player: updatedPlayer
-      }));
+    if (profileError) {
+      console.error(profileError);
+      triggerToast('Error saving profile');
+      return;
     }
 
+    for (const sport of userData.sports) {
+      await supabase.from('user_sport_stats').upsert({
+        user_id: user.id,
+        sport,
+        stats: starterStats
+      });
+    }
+
+    setHasProfileState(true);
     triggerToast(`COMMISSIONED. WELCOME TO THE ARENA, ${userData.name.toUpperCase()}.`);
 
     if (pendingAction) {
       if (pendingAction.type === 'view' && pendingAction.viewPath) {
         router.push(pendingAction.viewPath);
       } else if (pendingAction.type === 'modal' && pendingAction.modalType) {
-        setSelectedItem(pendingAction.item);
-        setActiveModal(pendingAction.modalType);
+        // We use the store action here
+        if (pendingAction.modalType) openModal(pendingAction.modalType, pendingAction.item);
         router.push('/discover');
       }
       setPendingAction(null);
     } else {
       router.push('/home');
     }
-  }, [pendingAction, router, triggerToast]);
+  }, [user, pendingAction, router, triggerToast, supabase, openModal, setPendingAction]);
+
+  const signOut = useCallback(async () => {
+    await supabase.auth.signOut();
+    setUser(null);
+    setHasProfileState(false);
+    router.push('/discover');
+  }, [supabase, router]);
 
   const value: PlayChaleContextType = {
-    hasProfile,
-    setHasProfile,
+    user,
+    hasProfile: hasProfileState,
+    setHasProfile: setHasProfileState,
     games,
-    setGames,
+    setGames: () => { }, // No-op, data is managed by Server State now
     players,
-    setPlayers,
+    setPlayers: () => { }, // No-op
     messages,
     setMessages,
     archivedIds,
@@ -242,14 +228,16 @@ export function PlayChaleProvider({ children }: { children: ReactNode }) {
     userLocation,
     activeModal,
     selectedItem,
-    openModal,
+    openModal: onOpenModal,
     closeModal,
     showToast,
     triggerToast,
     completeOnboarding,
     handleNavigate,
+    signOut,
     pendingAction,
     setPendingAction,
+    isLoading
   };
 
   return (

@@ -4,14 +4,42 @@ import React from 'react';
 import Image from 'next/image';
 import { ICONS } from '@/constants';
 import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import { usePlayChale } from '@/providers/PlayChaleProvider';
 
 interface HeroProps {
   onOpenDiscover: () => void;
 }
 
 const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
+  const { user } = usePlayChale();
+  const router = useRouter();
+
   return (
-    <section className="relative min-h-[100svh] w-full flex items-center overflow-hidden bg-black">
+    <section className="relative min-h-[90vh] md:min-h-screen bg-black text-white overflow-hidden rounded-b-[60px] md:rounded-b-[100px] z-10">
+      {/* Navbar */}
+      <nav className="absolute top-0 left-0 right-0 p-6 md:p-10 flex justify-between items-center z-50">
+        <div className="flex items-center gap-3">
+          <ICONS.Logo />
+          <span className="font-black text-xl md:text-2xl tracking-tighter italic uppercase">PRO DRAFT.</span>
+        </div>
+        {!user ? (
+          <button
+            onClick={() => router.push('/login')}
+            className="hidden md:block text-[10px] font-black uppercase tracking-[0.2em] hover:text-[#C6FF00] transition-colors"
+          >
+            Member Sign In
+          </button>
+        ) : (
+          <button
+            onClick={() => router.push('/home')}
+            className="hidden md:block text-[10px] font-black uppercase tracking-[0.2em] text-[#C6FF00] hover:text-white transition-colors"
+          >
+            Go to Dashboard
+          </button>
+        )}
+      </nav>
+
       {/* Background Layer */}
       <div className="absolute inset-0 z-0">
         <motion.div

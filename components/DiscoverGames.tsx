@@ -118,7 +118,14 @@ const CalendarView = ({ games, onSelectDate, selectedDate }: { games: Game[], on
   );
 };
 
+import { useRouter } from 'next/navigation';
+import { usePlayChale } from '@/providers/PlayChaleProvider';
+
+// ... existing code ...
+
 const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage = false, userLocation }) => {
+  const router = useRouter();
+  const { user } = usePlayChale();
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [priceFilter, setPriceFilter] = useState<'All' | 'Free' | 'Paid'>('All');
@@ -144,7 +151,26 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
   }, [games, filter, search, priceFilter, skillFilter, selectedDay]);
 
   return (
-    <section className={`px-4 md:px-12 ${isFullPage ? 'pt-28 md:pt-36 pb-32 min-h-screen bg-white' : 'py-24 md:py-32 bg-transparent'}`}>
+    <section className={`px-4 md:px-12 ${isFullPage ? 'pt-28 md:pt-36 pb-32 min-h-screen bg-white relative' : 'py-24 md:py-32 bg-transparent'}`}>
+      {isFullPage && (
+        <div className="absolute top-8 right-8 z-50">
+          {user ? (
+            <button
+              onClick={() => router.push('/home')}
+              className="bg-black text-[#C6FF00] px-6 py-3 rounded-full font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all shadow-lg"
+            >
+              Go to Dashboard
+            </button>
+          ) : (
+            <button
+              onClick={() => router.push('/login')}
+              className="bg-black text-white px-6 py-3 rounded-full font-black uppercase tracking-widest text-[10px] hover:bg-gray-900 transition-all shadow-lg"
+            >
+              Member Sign In
+            </button>
+          )}
+        </div>
+      )}
       <div className="max-w-7xl mx-auto">
         {isFullPage ? (
           <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-10 md:mb-16 gap-8">
@@ -280,7 +306,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
           <div className="py-20 text-center opacity-20 font-black italic uppercase text-xl">No games recruiting in your area</div>
         )}
       </div>
-    </section>
+    </section >
   );
 };
 

@@ -5,6 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ICONS } from '@/constants';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { createClient } from '@/lib/supabase/client';
 
 interface OnboardingData {
   name: string;
@@ -20,6 +21,7 @@ interface OnboardingProps {
 }
 
 const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
+  const supabase = createClient();
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<{
@@ -62,36 +64,91 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(Math.max(1, step - 1));
 
-  const handleFinalSign = (e: React.FormEvent) => {
+  const handleFinalSign = async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
-    // Simulate API registration call
-    setTimeout(() => {
-      setIsLoading(false);
-      onComplete({
-        name: data.name,
-        sports: data.sports,
-        level: data.level,
-        location: data.location,
-        email: data.email
+
+    try {
+      const { data: authData, error } = await supabase.auth.signUp({
+        email: data.email,
+        password: data.password,
+        options: {
+          data: {
+            full_name: data.name,
+          }
+        }
       });
-    }, 2000);
+
+      if (error) throw error;
+
+      // Ensure user is signed in before proceeding
+      if (authData.user) {
+        onComplete({
+          name: data.name,
+          sports: data.sports,
+          level: data.level,
+          location: data.location,
+          email: data.email
+        });
+      } else {
+        // Handle "Check your email" case if email confirmation is on
+        // In a real app, you'd show a UI step for "Verify Email"
+        alert('Please check your email to confirm your account!');
+        setIsLoading(false);
+      }
+
+    } catch (error: any) {
+      console.error('Signup error:', error);
+      alert(error.message || 'Failed to sign up');
+      setIsLoading(false);
+    }
   };
 
-  const handleSocialAuth = (provider: string) => {
+  // ... existing code ...
+
+  const handleSocialAuth = async (provider: 'google' | 'github') => {
     setIsLoading(true);
-    // Simulate Social OAuth
-    setTimeout(() => {
-      setIsLoading(false);
-      onComplete({
-        name: data.name || 'Anonymous Pro',
-        sports: data.sports.length > 0 ? data.sports : ['Multi'],
-        level: data.level || 'Competitive',
-        location: data.location || 'Local',
-        email: data.email || 'guest@playchale.com'
+    // Save draft state before redirecting
+    localStorage.setItem('playchale_onboarding_temp', JSON.stringify(data));
+    try {
+      const { error } = await supabase.auth.signInWithOAuth({
+        provider: provider,
+        options: {
+          redirectTo: `${window.location.origin}/auth/callback`,
+        }
       });
-    }, 1500);
+      if (error) throw error;
+    } catch (error: any) {
+      console.error('Social auth error:', error);
+      setIsLoading(false);
+    }
   };
+
+  // Resume onboarding after OAuth redirect
+  React.useEffect(() => {
+    const checkResume = async () => {
+      const saved = localStorage.getItem('playchale_onboarding_temp');
+      if (saved) {
+        const { data: { user } } = await supabase.auth.getUser();
+        if (user) {
+          setIsLoading(true);
+          try {
+            const parsed = JSON.parse(saved);
+            // Restore state slightly for UI context if needed, or just submit
+            setData(parsed);
+            // Trigger completion logic
+            onComplete(parsed);
+            localStorage.removeItem('playchale_onboarding_temp');
+          } catch (e) {
+            console.error('Failed to parse saved onboarding data', e);
+            localStorage.removeItem('playchale_onboarding_temp');
+            setIsLoading(false);
+          }
+        }
+      }
+    };
+    checkResume();
+  }, []);
 
   // Total steps is now 6 (Sport, Level, Location, Name, Report, Auth)
   const TOTAL_STEPS = 6;
@@ -353,7 +410,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                     <div className="grid grid-cols-1 gap-4">
                       {/* ... Social Buttons kept as native for custom icons layout ... */}
                       <button
-                        onClick={() => handleSocialAuth('Google')}
+                        onClick={() => handleSocialAuth('google')}
                         className="bg-white text-black p-5 rounded-full flex items-center justify-center gap-4 hover:bg-gray-200 transition-all group"
                       >
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.908 3.152-1.928 4.172-1.224 1.224-3.136 2.584-6.392 2.584-5.112 0-9.216-4.144-9.216-9.256s4.104-9.256 9.216-9.256c2.784 0 4.888 1.104 6.384 2.504l2.312-2.312c-2.128-2.024-4.88-3.192-8.696-3.192-7.392 0-13.432 6.04-13.432 13.432s6.04 13.432 13.432 13.432c4.016 0 7.04-1.32 9.424-3.792 2.448-2.448 3.216-5.888 3.216-8.544 0-.816-.064-1.584-.2-2.312h-12.42z" /></svg>

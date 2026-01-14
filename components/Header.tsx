@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from 'react';
 import { ICONS } from '@/constants';
 import { motion, AnimatePresence } from 'framer-motion';
+import { usePlayChale } from '@/providers/PlayChaleProvider';
 
 interface HeaderProps {
   onOpenCreate: () => void;
@@ -11,6 +12,7 @@ interface HeaderProps {
 }
 
 const Header: React.FC<HeaderProps> = ({ onOpenCreate, activeView, onNavigate }) => {
+  const { user, signOut } = usePlayChale();
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -126,6 +128,16 @@ const Header: React.FC<HeaderProps> = ({ onOpenCreate, activeView, onNavigate })
                   {item.label}
                 </button>
               ))}
+
+              {user && (
+                <button
+                  onClick={() => { signOut(); setIsMenuOpen(false); }}
+                  className="block text-5xl md:text-7xl font-black italic tracking-tighter text-red-500 hover:text-red-400 transition-all text-left mt-8 group"
+                >
+                  <span className="text-xs not-italic opacity-30 mr-6 text-white">0{navItems.length + 1}</span>
+                  Log Out
+                </button>
+              )}
             </div>
           </motion.div>
         )}

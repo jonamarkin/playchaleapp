@@ -7,9 +7,28 @@ import { usePlayChale } from '@/providers/PlayChaleProvider';
 
 import { useRouter } from 'next/navigation';
 
+import { useEffect } from 'react';
+import { useProfile } from '@/hooks/useData';
+
 export default function HomePage() {
-  const { players, games, handleNavigate } = usePlayChale();
+  const { games, handleNavigate, user } = usePlayChale();
   const router = useRouter();
+  const { data: profile, isLoading } = useProfile(user?.id);
+
+  useEffect(() => {
+    if (!isLoading && !profile) {
+      router.replace('/onboarding');
+    }
+  }, [isLoading, profile, router]);
+
+  if (isLoading || !profile) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center space-y-4">
+        <div className="w-10 h-10 border-4 border-white/10 border-t-[#C6FF00] rounded-full animate-spin"></div>
+        <div className="text-white/50 font-mono text-xs uppercase tracking-widest animate-pulse">Loading Identity...</div>
+      </div>
+    );
+  }
 
   return (
     <motion.div
@@ -18,7 +37,7 @@ export default function HomePage() {
       exit={{ opacity: 0, y: -20 }}
     >
       <AppDashboard
-        player={players[0]}
+        player={profile}
         upcomingGames={games.slice(0, 3)}
         onViewMatch={(game) => router.push(`/game/${game.id}`)}
         onNavigate={handleNavigate}

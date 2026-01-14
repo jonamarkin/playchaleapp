@@ -3,7 +3,7 @@ import { Inter } from 'next/font/google';
 import './globals.css';
 import { PlayChaleProvider } from '@/providers/PlayChaleProvider';
 
-const inter = Inter({ 
+const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
 });
@@ -14,6 +14,10 @@ export const metadata: Metadata = {
   keywords: ['sports', 'amateur sports', 'football', 'basketball', 'tennis', 'padel', 'community'],
 };
 
+import { QueryProvider } from '@/providers/QueryProvider';
+
+// ...
+
 export default function RootLayout({
   children,
 }: {
@@ -22,9 +26,11 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="font-sans">
-        <PlayChaleProvider>
-          {children}
-        </PlayChaleProvider>
+        <QueryProvider>
+          <PlayChaleProvider>
+            {children}
+          </PlayChaleProvider>
+        </QueryProvider>
       </body>
     </html>
   );
