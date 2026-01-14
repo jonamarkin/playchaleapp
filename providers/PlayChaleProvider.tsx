@@ -38,9 +38,6 @@ interface PlayChaleContextType {
   archivedIds: string[];
   setArchivedIds: React.Dispatch<React.SetStateAction<string[]>>;
 
-  // Location
-  userLocation: { lat: number; lng: number } | null;
-
   // Modal
   activeModal: ModalType;
   selectedItem: any;
@@ -124,15 +121,6 @@ export function PlayChaleProvider({ children }: { children: ReactNode }) {
     };
   }, [supabase]);
 
-  // Geolocation
-  useEffect(() => {
-    if (typeof navigator !== 'undefined' && navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(
-        (position) => setUserLocation({ lat: position.coords.latitude, lng: position.coords.longitude }),
-        (error) => console.log("Location access denied", error)
-      );
-    }
-  }, []);
 
   const handleNavigate = useCallback((path: string) => {
     const protectedPaths = ['/stats', '/messages', '/home'];
@@ -264,7 +252,6 @@ export function PlayChaleProvider({ children }: { children: ReactNode }) {
     setMessages,
     archivedIds,
     setArchivedIds,
-    userLocation,
     activeModal,
     selectedItem,
     openModal: onOpenModal,

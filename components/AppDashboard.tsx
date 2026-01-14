@@ -10,11 +10,12 @@ interface AppDashboardProps {
   player: PlayerProfile;
   upcomingGames: Game[];
   myGames?: { hostedGames: Game[], joinedGames: Game[] };
+  risingStars?: PlayerProfile[];
   onViewMatch: (game: Game) => void;
   onNavigate: (view: any) => void;
 }
 
-const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGames, onViewMatch, onNavigate }) => {
+const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGames, risingStars, onViewMatch, onNavigate }) => {
   return (
     <section className="pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20 px-4 sm:px-6 md:px-12 min-h-screen bg-[#FDFDFB]">
       <div className="max-w-7xl mx-auto space-y-8 sm:space-y-10 md:space-y-16">
@@ -200,18 +201,43 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
             <div className="space-y-6 sm:space-y-8 bg-gray-50 p-6 sm:p-8 md:p-10 rounded-[40px] sm:rounded-[48px] md:rounded-[56px] border border-black/5">
               <h3 className="text-xl sm:text-2xl font-black italic uppercase tracking-tighter">Rising Stars</h3>
               <div className="space-y-4 sm:space-y-5 md:space-y-6">
-                {[1, 2, 3].map(i => (
-                  <div key={i} className="flex items-center justify-between group cursor-pointer gap-3">
-                    <div className="flex items-center gap-3 sm:gap-4 md:gap-5 min-w-0">
-                      <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-xl sm:rounded-2xl bg-black text-[#C6FF00] flex items-center justify-center font-black text-[10px] sm:text-xs italic shrink-0">#{i + 1}</div>
-                      <div className="min-w-0">
-                        <p className="font-black italic text-sm sm:text-base uppercase tracking-tight group-hover:text-black transition-colors truncate">Legend_Athlete_{i}</p>
-                        <p className="text-[8px] sm:text-[9px] font-black uppercase text-black/30 tracking-widest">Unbeaten Streak: {i * 4}</p>
+                {risingStars && risingStars.length > 0 ? (
+                  risingStars.map((star, i) => (
+                    <div
+                      key={star.id}
+                      className="flex items-center justify-between group cursor-pointer gap-3 hover:bg-black/5 rounded-xl p-2 -mx-2 transition-colors"
+                      onClick={() => onNavigate(`/profile/${star.id}`)}
+                    >
+                      <div className="flex items-center gap-3 sm:gap-4 md:gap-5 min-w-0">
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-xl sm:rounded-2xl bg-black text-[#C6FF00] flex items-center justify-center font-black text-[10px] sm:text-xs italic shrink-0">#{i + 1}</div>
+                        {star.avatar ? (
+                          <Image
+                            src={star.avatar}
+                            alt={star.name}
+                            width={44}
+                            height={44}
+                            className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-xl object-cover shrink-0"
+                          />
+                        ) : (
+                          <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-xl bg-gradient-to-br from-[#C6FF00] to-[#8BC34A] flex items-center justify-center text-black font-black text-sm shrink-0">
+                            {star.name.charAt(0).toUpperCase()}
+                          </div>
+                        )}
+                        <div className="min-w-0">
+                          <p className="font-black italic text-sm sm:text-base uppercase tracking-tight group-hover:text-black transition-colors truncate">{star.name}</p>
+                          <p className="text-[8px] sm:text-[9px] font-black uppercase text-black/30 tracking-widest">{star.mainSport}</p>
+                        </div>
+                      </div>
+                      <div className="text-black/30 group-hover:text-black transition-colors shrink-0">
+                        <svg className="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+                        </svg>
                       </div>
                     </div>
-                    <div className="text-black bg-[#C6FF00] px-3 sm:px-4 py-1 sm:py-1.5 rounded-full text-[8px] sm:text-[9px] font-black uppercase tracking-widest shadow-sm hover:scale-110 transition-all shrink-0">Follow</div>
-                  </div>
-                ))}
+                  ))
+                ) : (
+                  <p className="text-black/40 text-sm text-center py-4">No players found yet</p>
+                )}
               </div>
               <button onClick={() => onNavigate('community')} className="w-full py-3 sm:py-4 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] sm:tracking-[0.3em] text-black/30 hover:text-black transition-colors">View Global Rankings</button>
             </div>
