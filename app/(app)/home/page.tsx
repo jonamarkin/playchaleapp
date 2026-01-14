@@ -1,6 +1,6 @@
 'use client';
 
-import React from 'react';
+import React, { useMemo } from 'react';
 import { motion } from 'framer-motion';
 import AppDashboard from '@/components/AppDashboard';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
@@ -14,6 +14,14 @@ export default function HomePage() {
   const { games, handleNavigate, user } = usePlayChale();
   const router = useRouter();
   const { data: profile, isLoading } = useProfile(user?.id);
+
+  const myGames = useMemo(() => {
+    if (!user) return [];
+    return games.filter((g: any) =>
+      g.organizer_id === user.id ||
+      g.participants?.some((p: any) => p.id === user.id)
+    );
+  }, [games, user]);
 
   useEffect(() => {
     if (!isLoading && !profile) {
@@ -38,7 +46,7 @@ export default function HomePage() {
     >
       <AppDashboard
         player={profile}
-        upcomingGames={games.slice(0, 3)}
+        upcomingGames={myGames.slice(0, 3)}
         onViewMatch={(game) => router.push(`/game/${game.id}`)}
         onNavigate={handleNavigate}
       />

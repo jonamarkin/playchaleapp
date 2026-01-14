@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ICONS } from '@/constants';
+import { ICONS, DEFAULT_SPORT_IMAGES, CURRENCIES } from '@/constants';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Game, PlayerProfile, Challenge, Participant, JoinRequest, MatchRecord } from '@/types';
 import { Input } from '@/components/ui/input';
@@ -9,6 +9,11 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 import { Button } from '@/components/ui/button';
 import ImageUpload from '@/components/ImageUpload';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
+import { format } from "date-fns"
+import { Calendar as CalendarIcon } from "lucide-react"
+import { cn } from "@/lib/utils"
+import { Calendar } from "@/components/ui/calendar"
+import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
 
 interface ModalProps {
   type: 'join' | 'create' | 'profile' | 'stats' | 'match-detail' | 'edit-profile' | 'share-profile' | 'contact-organizer' | 'challenge' | 'detailed-stats' | 'manage-game' | null;
@@ -102,6 +107,9 @@ const GameModal: React.FC<ModalProps> = ({
   const { uploadAvatar } = usePlayChale();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
+  const [date, setDate] = useState<Date | undefined>(new Date());
+  const [currency, setCurrency] = useState('GHS');
+  const [amount, setAmount] = useState('');
   const [type, setType] = useState(initialType);
   const [item, setItem] = useState(initialItem);
   const [history, setHistory] = useState<{ type: any, item: any }[]>([]);
@@ -121,7 +129,8 @@ const GameModal: React.FC<ModalProps> = ({
     date: 'Today',
     spotsTotal: 10,
     skillLevel: 'All Levels',
-    price: '$5'
+    price: '$5',
+    visibility: 'public'
   });
 
   useEffect(() => {
@@ -173,8 +182,17 @@ const GameModal: React.FC<ModalProps> = ({
   const handleCreateSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
+    const sport = createForm.sport || 'Football';
+    const images = DEFAULT_SPORT_IMAGES[sport] || DEFAULT_SPORT_IMAGES['Football'];
+    const randomImage = images[Math.floor(Math.random() * images.length)];
+
+    const gameData = {
+      ...createForm,
+      imageUrl: createForm.imageUrl || randomImage
+    };
+
     setTimeout(() => {
-      onCreate?.(createForm);
+      onCreate?.(gameData);
       setLoading(false);
       setStep(2);
       setTimeout(onClose, 2000);
@@ -595,16 +613,53 @@ const GameModal: React.FC<ModalProps> = ({
                     />
                   </div>
 
+                  <div className="bg-white/5 p-1 rounded-full flex relative mb-6">
+                    <div className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-[#C6FF00] rounded-full transition-transform duration-300 ${createForm.visibility === 'private' ? 'translate-x-full' : 'translate-x-0'}`} />
+                    <button
+                      type="button"
+                      onClick={() => setCreateForm({ ...createForm, visibility: 'public' })}
+                      className={`flex-1 flex justify-center items-center py-3 text-[10px] font-black uppercase tracking-widest z-10 relative transition-colors ${createForm.visibility === 'public' ? 'text-black' : 'text-white/40 hover:text-white'}`}
+                    >
+                      Public Match
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() => setCreateForm({ ...createForm, visibility: 'private' })}
+                      className={`flex-1 flex justify-center items-center py-3 text-[10px] font-black uppercase tracking-widest z-10 relative transition-colors ${createForm.visibility === 'private' ? 'text-black' : 'text-white/40 hover:text-white'}`}
+                    >
+                      Private Invite-Only
+                    </button>
+                  </div>
+
                   <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div className="space-y-2">
                       <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-4">Date</label>
-                      <Input
-                        required
-                        value={createForm.date}
-                        onChange={e => setCreateForm({ ...createForm, date: e.target.value })}
-                        placeholder="e.g. Tomorrow"
-                        className="w-full h-auto bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-full px-6 py-4 text-white font-bold outline-none transition-all focus-visible:ring-0 placeholder:text-white/20"
-                      />
+                      <Popover>
+                        <PopoverTrigger asChild>
+                          <Button
+                            variant={"ghost"}
+                            className={cn(
+                              "w-full h-auto bg-white/5 border-2 border-white/5 data-[state=open]:border-[#C6FF00] rounded-full px-6 py-4 text-white font-bold outline-none transition-all justify-start text-left hover:bg-white/5 hover:text-white",
+                              !date && "text-muted-foreground"
+                            )}
+                          >
+                            <CalendarIcon className="mr-2 h-4 w-4 text-[#C6FF00]" />
+                            {date ? format(date, "EEE, MMM d") : <span>Pick a date</span>}
+                          </Button>
+                        </PopoverTrigger>
+                        <PopoverContent className="w-auto p-0 border-white/10" align="start">
+                          <Calendar
+                            mode="single"
+                            selected={date}
+                            onSelect={(d) => {
+                              setDate(d);
+                              if (d) setCreateForm({ ...createForm, date: format(d, "EEE, MMM d") });
+                            }}
+                            initialFocus
+                            disabled={(date) => date < new Date(new Date().setHours(0, 0, 0, 0))}
+                          />
+                        </PopoverContent>
+                      </Popover>
                     </div>
                     <div className="space-y-2">
                       <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-4">Kickoff Time</label>
@@ -632,12 +687,46 @@ const GameModal: React.FC<ModalProps> = ({
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-4">Entry Fee</label>
-                      <Input
-                        value={createForm.price}
-                        onChange={e => setCreateForm({ ...createForm, price: e.target.value })}
-                        placeholder="e.g. Free or $5"
-                        className="w-full h-auto bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-full px-6 py-4 text-white font-bold outline-none transition-all focus-visible:ring-0 placeholder:text-white/20"
-                      />
+                      <div className="flex gap-3">
+                        <div className="w-[120px]">
+                          <Select
+                            value={currency}
+                            onValueChange={(v) => {
+                              setCurrency(v);
+                              const newPrice = (!amount || parseInt(amount) === 0) ? 'Free' : `${CURRENCIES.find(c => c.code === v)?.symbol || '$'}${amount}`;
+                              setCreateForm({ ...createForm, price: newPrice });
+                            }}
+                          >
+                            <SelectTrigger className="w-full bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-full px-4 py-4 h-auto text-white font-bold outline-none transition-all shadow-sm focus:ring-0">
+                              <SelectValue placeholder="GHS" />
+                            </SelectTrigger>
+                            <SelectContent className="bg-zinc-900 border border-white/10 rounded-[20px] shadow-2xl max-h-[300px] overflow-y-auto p-1 z-[250]">
+                              {CURRENCIES.map(c => (
+                                <SelectItem key={c.code} value={c.code} className="focus:bg-white/10 focus:text-white rounded-xl py-3 px-4 font-bold cursor-pointer text-white/80">
+                                  <div className="flex items-center gap-3">
+                                    <span className="text-[#C6FF00] font-black tracking-wider">{c.code}</span>
+                                    <span className="text-white/50 font-serif italic">{c.symbol}</span>
+                                  </div>
+                                </SelectItem>
+                              ))}
+                            </SelectContent>
+                          </Select>
+                        </div>
+                        <Input
+                          type="number"
+                          min="0"
+                          value={amount}
+                          onChange={e => {
+                            const val = e.target.value;
+                            setAmount(val);
+                            const symbol = CURRENCIES.find(c => c.code === currency)?.symbol || '$';
+                            const newPrice = (!val || parseInt(val) === 0) ? 'Free' : `${symbol}${val}`;
+                            setCreateForm({ ...createForm, price: newPrice });
+                          }}
+                          placeholder="0.00"
+                          className="flex-1 h-auto bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-full px-6 py-4 text-white font-bold outline-none transition-all focus-visible:ring-0 placeholder:text-white/20"
+                        />
+                      </div>
                     </div>
                     <div className="space-y-2">
                       <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-4">Skill Required</label>

@@ -302,8 +302,11 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
           </motion.div>
         )}
 
-        {filteredGames.length === 0 && !isFullPage && (
-          <div className="py-20 text-center opacity-20 font-black italic uppercase text-xl">No games recruiting in your area</div>
+        {filteredGames.length === 0 && (
+          <div className="py-20 text-center flex flex-col items-center justify-center gap-2">
+            <p className="opacity-20 font-black italic uppercase text-xl">No games found</p>
+            {isFullPage && <p className="text-black/30 text-sm font-medium">Try adjusting your search or filters to see more results.</p>}
+          </div>
         )}
       </div>
     </section >

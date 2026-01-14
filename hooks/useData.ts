@@ -1,3 +1,4 @@
+
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { createClient } from '@/lib/supabase/client';
 import { Game, PlayerProfile } from '@/types';
@@ -14,24 +15,45 @@ export const QUERY_KEYS = {
 // --- Fetchers ---
 const fetchGames = async (): Promise<Game[]> => {
     const supabase = createClient();
-    // Join with profiles to get the organizer's name
+    // Join with profiles to get the organizer's name, and nested profiles for participants
     const { data, error } = await supabase
         .from('games')
-        .select('*, profiles(full_name)');
+        .select(`
+            *,
+            profiles:organizer_id(full_name),
+            game_participants(
+                user_id,
+                status,
+                profiles:user_id(id, full_name, avatar_url)
+            )
+        `);
 
-    if (error) throw error;
+    if (error) {
+        console.error(' Supabase Fetch Error:', error);
+        return INITIAL_GAMES;
+    }
 
     if (!data || data.length === 0) return INITIAL_GAMES;
 
+    // Client-side filter: only show public games (or games with no visibility set)
+    const visibleGames = data.filter((g: any) => g.visibility === 'public' || !g.visibility);
+
     // Transform snake_case DB fields to camelCase App types
-    return data.map((g: any) => ({
+    return visibleGames.map((g: any) => ({
         ...g,
         imageUrl: g.image_url,
         spotsTotal: g.max_participants,
-        spotsTaken: g.spots_taken,
+        spotsTaken: g.game_participants ? g.game_participants.length : g.spots_taken,
         skillLevel: g.skill_level,
         // Map the joined profile name to the organizer string
         organizer: g.profiles?.full_name || 'Unknown Organizer',
+        participants: g.game_participants?.map((p: any) => ({
+            id: p.user_id,
+            name: p.profiles?.full_name || 'User',
+            avatar: p.profiles?.avatar_url || 'https://i.pravatar.cc/150', // Fallback
+            role: p.user_id === g.organizer_id ? 'Host' : (p.status === 'confirmed' ? 'Player' : 'Pending'),
+            rating: '5.0' // Mock rating for now
+        })) || []
     })) as Game[];
 };
 
@@ -93,6 +115,51 @@ const fetchMyProfile = async (userId: string): Promise<PlayerProfile | null> => 
     } as PlayerProfile;
 };
 
+// --- Mutations ---
+const createGame = async (gameData: Partial<Game>, userId: string): Promise<string> => {
+    const supabase = createClient();
+    const newId = crypto.randomUUID();
+
+    const dbPayload = {
+        id: newId,
+        organizer_id: userId,
+        title: gameData.title,
+        sport: gameData.sport,
+        status: 'upcoming',
+        location: gameData.location,
+        time: gameData.time,
+        date: gameData.date,
+        max_participants: gameData.spotsTotal,
+        spots_taken: 1, // Organizer takes a spot
+        price: gameData.price,
+        image_url: gameData.imageUrl || `https://source.unsplash.com/800x600/?${gameData.sport?.toLowerCase() || 'sport'}`, // Fallback image
+        skill_level: gameData.skillLevel,
+        visibility: gameData.visibility || 'public'
+    };
+
+    const { error } = await supabase.from('games').insert(dbPayload);
+    if (error) throw error;
+
+    // Add organizer as participant
+    await supabase.from('game_participants').insert({
+        game_id: newId,
+        user_id: userId,
+        status: 'confirmed'
+    });
+
+    return newId;
+};
+
+const joinGame = async (gameId: string, userId: string): Promise<void> => {
+    const supabase = createClient();
+    const { error } = await supabase.from('game_participants').insert({
+        game_id: gameId,
+        user_id: userId,
+        status: 'confirmed' // or pending
+    });
+    if (error) throw error;
+};
+
 // --- Hooks ---
 
 export const useGames = () => {
@@ -113,6 +180,26 @@ export const useProfile = (userId: string | undefined) => {
     return useQuery({
         queryKey: QUERY_KEYS.profile(userId || ''),
         queryFn: () => fetchMyProfile(userId!),
-        enabled: !!userId, // Only fetch if we have a User ID
+        enabled: !!userId,
+    });
+};
+
+export const useCreateGame = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ game, userId }: { game: Partial<Game>, userId: string }) => createGame(game, userId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.games });
+        },
+    });
+};
+
+export const useJoinGame = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ gameId, userId }: { gameId: string, userId: string }) => joinGame(gameId, userId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.games });
+        },
     });
 };

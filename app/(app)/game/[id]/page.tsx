@@ -1,100 +1,81 @@
-'use client';
+import { Metadata } from 'next';
+import { createClient } from '@/lib/supabase/server';
+import GameClientPage from '@/components/GameClientPage';
 
-import React, { useEffect, useState } from 'react';
-import { useParams, useRouter } from 'next/navigation';
-import { usePlayChale } from '@/providers/PlayChaleProvider';
-import GameDetailView from '@/components/GameDetailView';
-import { Game, MatchRecord } from '@/types';
-import { ICONS } from '@/constants';
+// Helper to fetch game data server-side
+async function getGame(id: string) {
+    const supabase = await createClient();
+    const { data, error } = await supabase
+        .from('games')
+        .select(`
+            *,
+            profiles:organizer_id(full_name),
+            game_participants(
+                user_id,
+                status,
+                profiles:user_id(id, full_name, avatar_url)
+            )
+        `)
+        .eq('id', id)
+        .single();
 
-export default function GamePage() {
-    const params = useParams();
-    const router = useRouter();
-    const { games, players, activeModal } = usePlayChale();
-    const [viewType, setViewType] = useState<'join' | 'manage' | 'report' | null>(null);
-    const [data, setData] = useState<Game | MatchRecord | null>(null);
+    if (error || !data) return null;
 
-    const id = params?.id as string;
-    const currentUser = players[0]; // Assuming first player is current user as per convention
+    // Transform to match app type
+    return {
+        ...data,
+        imageUrl: data.image_url,
+        spotsTotal: data.max_participants,
+        spotsTaken: data.game_participants ? data.game_participants.length : data.spots_taken,
+        skillLevel: data.skill_level,
+        organizer: data.profiles?.full_name || 'Unknown Organizer',
+        participants: data.game_participants?.map((p: any) => ({
+            id: p.user_id,
+            name: p.profiles?.full_name || 'User',
+            avatar: p.profiles?.avatar_url || '',
+            role: p.user_id === data.organizer_id ? 'Host' : (p.status === 'confirmed' ? 'Player' : 'Pending'),
+            rating: 5.0
+        })) || []
+    };
+}
 
-    useEffect(() => {
-        if (!id) return;
+type Props = {
+    params: Promise<{ id: string }>
+}
 
-        // 1. Search in Upcoming Games
-        const foundGame = games.find(g => g.id === id);
-        if (foundGame) {
-            // Check if current user is the organizer
-            // In mock data, organizer is a name string e.g. "Alex K."
-            // In a real app we'd compare IDs. For now, let's assume if it's in 'games' list and user is host, it is manage.
-            // But PlayChaleProvider doesn't have a robust 'user is host' check other than name matching or if we just created it.
-            // Let's rely on basic logic: if I created it, I manage it.
-            // For now, default to 'join' unless we can prove ownership. 
-            // Simplified: If the modal would have been 'manage-game' (which we can't check easily without triggering), 
-            // let's just check if the current user name matches organizer.
-            const isOrganizer = foundGame.organizer === currentUser.name;
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+    const id = (await params).id;
+    const game = await getGame(id);
 
-            setViewType(isOrganizer ? 'manage' : 'join');
-            setData(foundGame);
-            return;
-        }
-
-        // 2. Search in Match Histories (Completed Matches)
-        // We search across all players in the mock db to find the match record
-        // This is inefficient in real life but fine for mock
-        let foundMatch: MatchRecord | undefined;
-        for (const p of players) {
-            if (p.matchHistory) {
-                foundMatch = p.matchHistory.find(m => m.id === id);
-                if (foundMatch) break;
-            }
-        }
-
-        if (foundMatch) {
-            setViewType('report');
-            setData(foundMatch);
-            return;
-        }
-
-        // If not found, redirect to home or 404
-        // router.push('/home'); 
-    }, [id, games, players, currentUser]);
-
-    if (!data || !viewType) {
-        return (
-            <div className="min-h-screen bg-black flex items-center justify-center text-white">
-                <div className="animate-pulse flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 bg-[#C6FF00] rounded-full animate-bounce"></div>
-                    <p className="font-black uppercase tracking-widest text-xs opacity-50">Loading Arena...</p>
-                </div>
-            </div>
-        );
+    if (!game) {
+        return {
+            title: 'Game Not Found - PlayChale',
+            description: 'This game does not exist or has been removed.'
+        };
     }
 
-    return (
-        <div className="min-h-screen bg-black pt-20 relative">
-            {/* Background Ambient */}
-            <div className="fixed top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-[#C6FF00]/5 to-transparent pointer-events-none" />
+    return {
+        title: `${game.title} | PlayChale`,
+        description: `Join ${game.organizer}'s ${game.sport} game at ${game.location} on ${game.date}.`,
+        openGraph: {
+            title: `Join ${game.title}`,
+            description: `Play ${game.sport} at ${game.location}. ${game.spotsTotal - game.spotsTaken} spots left!`,
+            images: [
+                {
+                    url: game.imageUrl || 'https://playchale.app/og-default.jpg', // Ensure this fallback works or is valid
+                    width: 1200,
+                    height: 630,
+                    alt: game.title,
+                }
+            ],
+            type: 'website',
+        },
+    };
+}
 
-            <button
-                onClick={() => router.back()}
-                className="fixed top-24 left-4 md:left-8 z-50 w-10 h-10 bg-black/50 backdrop-blur-md border border-white/10 text-white rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all"
-            >
-                <ICONS.ChevronRight className="rotate-180" />
-            </button>
+export default async function GamePage({ params }: Props) {
+    const id = (await params).id;
+    const game = await getGame(id);
 
-            <GameDetailView
-                type={viewType}
-                data={data}
-                currentUser={currentUser}
-                onJoin={() => {
-                    console.log('Joined game', data.id);
-                    // In a real app calls API. For mock, maybe show toast?
-                    // The extraction of onJoin logic from provider/modal is needed if we want it to actually update mock state.
-                }}
-                onShare={() => {
-                    console.log('Sharing', data.id);
-                }}
-            />
-        </div>
-    );
+    return <GameClientPage id={id} initialGame={game} />;
 }

@@ -23,6 +23,7 @@ export const GAMES: Game[] = [
     imageUrl: 'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=1200',
     price: '$5',
     status: 'upcoming',
+    visibility: 'public',
     participants: [
       { id: 'p1', name: 'Marcus J.', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200' },
       { id: 'p3', name: 'Alex K.', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200', role: 'Host' },
@@ -46,6 +47,7 @@ export const GAMES: Game[] = [
     imageUrl: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&q=80&w=1200',
     price: 'Free',
     status: 'upcoming',
+    visibility: 'public',
     participants: [
       { id: 'p2', name: 'Elena R.', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200' },
       { id: 'p5', name: 'Jordan B.', avatar: 'https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=200', role: 'Host' }
@@ -65,6 +67,7 @@ export const GAMES: Game[] = [
     imageUrl: 'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&q=80&w=1200',
     price: '$12',
     status: 'upcoming',
+    visibility: 'public',
     participants: [
       { id: 'p4', name: 'Sarah L.', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200', role: 'Host' },
       { id: 'p6', name: 'Mike D.', avatar: 'https://images.unsplash.com/photo-1531427186611-ecfd6d936c79?auto=format&fit=crop&q=80&w=200' }
@@ -84,6 +87,7 @@ export const GAMES: Game[] = [
     imageUrl: 'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&q=80&w=1200',
     price: '$15',
     status: 'upcoming',
+    visibility: 'public',
     participants: [
       { id: 'p7', name: 'Carlos M.', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200', role: 'Host' }
     ]
@@ -459,3 +463,45 @@ export const ICONS = {
     </svg>
   )
 };
+
+export const DEFAULT_SPORT_IMAGES: Record<string, string[]> = {
+  'Football': [
+    'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=1200',
+    'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&q=80&w=1200',
+    'https://images.unsplash.com/photo-1552318965-56d8d4a044aa?auto=format&fit=crop&q=80&w=1200',
+    'https://images.unsplash.com/photo-1624880357913-a8539238245b?auto=format&fit=crop&q=80&w=1200'
+  ],
+  'Basketball': [
+    'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&q=80&w=1200',
+    'https://images.unsplash.com/photo-1504450759520-6139970175cc?auto=format&fit=crop&q=80&w=1200',
+    'https://images.unsplash.com/photo-1518063319789-7217e6706b04?auto=format&fit=crop&q=80&w=1200',
+    'https://images.unsplash.com/photo-1628779238951-bd5c9e99c4dd?auto=format&fit=crop&q=80&w=1200'
+  ],
+  'Tennis': [
+    'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&q=80&w=1200',
+    'https://images.unsplash.com/photo-1622279457486-62dcc4a431d6?auto=format&fit=crop&q=80&w=1200',
+    'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&q=80&w=1200'
+  ],
+  'Padel': [
+    'https://images.unsplash.com/photo-1626245228616-c340df4d101c?auto=format&fit=crop&q=80&w=1200',
+    'https://images.unsplash.com/photo-1626245228108-9993338575a7?auto=format&fit=crop&q=80&w=1200'
+  ],
+  'Volleyball': [
+    'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&q=80&w=1200',
+    'https://images.unsplash.com/photo-1592656094267-764a45160876?auto=format&fit=crop&q=80&w=1200'
+  ],
+  'Badminton': [
+    'https://images.unsplash.com/photo-1626224583764-847890e045b5?auto=format&fit=crop&q=80&w=1200',
+    'https://images.unsplash.com/photo-1613918110539-7c9d74775d7f?auto=format&fit=crop&q=80&w=1200'
+  ]
+};
+
+export const CURRENCIES = [
+  { code: 'GHS', symbol: '₵', name: 'Ghanaian Cedi' },
+  { code: 'NGN', symbol: '₦', name: 'Nigerian Naira' },
+  { code: 'KES', symbol: 'KSh', name: 'Kenyan Shilling' },
+  { code: 'ZAR', symbol: 'R', name: 'South African Rand' },
+  { code: 'USD', symbol: '$', name: 'US Dollar' },
+  { code: 'EUR', symbol: '€', name: 'Euro' },
+  { code: 'GBP', symbol: '£', name: 'British Pound' },
+];

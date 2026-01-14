@@ -18,6 +18,7 @@ const GameModal = dynamic(() => import('@/components/GameModal'), {
   ),
 });
 
+import { useCreateGame, useJoinGame } from '@/hooks/useData';
 
 export default function AppLayout({
   children,
@@ -25,7 +26,10 @@ export default function AppLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+  const { mutate: createGame } = useCreateGame();
+  const { mutate: joinGame } = useJoinGame();
   const {
+    user,
     activeModal,
     selectedItem,
     closeModal,
@@ -66,6 +70,13 @@ export default function AppLayout({
             type={activeModal}
             item={selectedItem}
             onClose={closeModal}
+            onCreate={(gameData) => {
+              if (user) {
+                createGame({ game: gameData, userId: user.id });
+                // We don't trigger toast here because GameModal has its own success state
+                // but we could if we wanted to.
+              }
+            }}
             onJoin={(id) => {
               if (!hasProfile) {
                 setPendingAction({ type: 'modal', modalType: 'join', item: selectedItem });
@@ -73,8 +84,11 @@ export default function AppLayout({
                 handleNavigate('/onboarding');
                 return;
               }
-              triggerToast("JOIN REQUEST SENT!");
-              closeModal();
+              if (user) {
+                joinGame({ gameId: id, userId: user.id });
+                triggerToast("JOIN REQUEST SENT!");
+                closeModal();
+              }
             }}
             onSendMessage={(gameId, content) => {
               if (!hasProfile) {

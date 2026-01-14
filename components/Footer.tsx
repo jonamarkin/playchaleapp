@@ -17,10 +17,10 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
     <footer className="relative bg-black text-white pt-32 pb-12 px-6 md:px-12 overflow-hidden rounded-t-[60px] md:rounded-t-[100px] mt-[-60px] z-20 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
       {/* Background Decor */}
       <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#C6FF00]/5 blur-[120px] rounded-full -mr-20 -mt-20 pointer-events-none opacity-50"></div>
-      
+
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 mb-24">
-          
+
           {/* Brand & Newsletter */}
           <div className="lg:col-span-5 space-y-12">
             <div className="space-y-6">
@@ -36,9 +36,9 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <div className="space-y-4">
               <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#C6FF00]">Elite Access</h4>
               <div className="relative max-w-md">
-                <input 
-                  type="email" 
-                  placeholder="Enter your email for match alerts..." 
+                <input
+                  type="email"
+                  placeholder="Enter your email for match alerts..."
                   className="w-full bg-white/5 border border-white/10 rounded-full px-8 py-5 text-sm font-bold outline-none focus:border-[#C6FF00] transition-all"
                 />
                 <button className="absolute right-2 top-2 bottom-2 bg-[#C6FF00] text-black px-6 rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 active:scale-95 transition-all">
@@ -54,9 +54,14 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <div className="space-y-8">
               <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">The Arena</h4>
               <ul className="space-y-4">
-                {['Discover Games', 'Local Rankings', 'Tournament Hub', 'Pitch Partners'].map(link => (
-                  <li key={link}>
-                    <button className="text-sm font-black italic uppercase tracking-tight hover:text-[#C6FF00] transition-colors text-left">{link}</button>
+                {[
+                  { label: 'Discover Games', path: '/discover' },
+                  { label: 'Local Rankings', path: '/community' },
+                  { label: 'Tournament Hub', path: '/discover' },
+                  { label: 'Pitch Partners', path: '/discover' }
+                ].map(item => (
+                  <li key={item.label}>
+                    <button onClick={() => onNavigate(item.path)} className="text-sm font-black italic uppercase tracking-tight hover:text-[#C6FF00] transition-colors text-left">{item.label}</button>
                   </li>
                 ))}
               </ul>
@@ -65,9 +70,14 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
             <div className="space-y-8">
               <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">Community</h4>
               <ul className="space-y-4">
-                {['Sport Tribes', 'Hall of Fame', 'Athlete Blogs', 'Guidelines'].map(link => (
-                  <li key={link}>
-                    <button className="text-sm font-black italic uppercase tracking-tight hover:text-[#C6FF00] transition-colors text-left">{link}</button>
+                {[
+                  { label: 'Sport Tribes', path: '/community' },
+                  { label: 'Hall of Fame', path: '/community' },
+                  { label: 'Athlete Blogs', path: '/home' },
+                  { label: 'Guidelines', path: '/home' }
+                ].map(item => (
+                  <li key={item.label}>
+                    <button onClick={() => onNavigate(item.path)} className="text-sm font-black italic uppercase tracking-tight hover:text-[#C6FF00] transition-colors text-left">{item.label}</button>
                   </li>
                 ))}
               </ul>
@@ -82,7 +92,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   </button>
                 ))}
               </div>
-              <button 
+              <button
                 onClick={scrollToTop}
                 className="group flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-white transition-colors"
               >
