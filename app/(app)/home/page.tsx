@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useMemo } from 'react';
+import React from 'react';
 import { motion } from 'framer-motion';
 import AppDashboard from '@/components/AppDashboard';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
@@ -8,20 +8,13 @@ import { usePlayChale } from '@/providers/PlayChaleProvider';
 import { useRouter } from 'next/navigation';
 
 import { useEffect } from 'react';
-import { useProfile } from '@/hooks/useData';
+import { useProfile, useMyGames } from '@/hooks/useData';
 
 export default function HomePage() {
   const { games, handleNavigate, user } = usePlayChale();
   const router = useRouter();
   const { data: profile, isLoading } = useProfile(user?.id);
-
-  const myGames = useMemo(() => {
-    if (!user) return [];
-    return games.filter((g: any) =>
-      g.organizer_id === user.id ||
-      g.participants?.some((p: any) => p.id === user.id)
-    );
-  }, [games, user]);
+  const { data: myGamesData } = useMyGames(user?.id);
 
   useEffect(() => {
     if (!isLoading && !profile) {
@@ -46,7 +39,8 @@ export default function HomePage() {
     >
       <AppDashboard
         player={profile}
-        upcomingGames={myGames.slice(0, 3)}
+        upcomingGames={games.slice(0, 3)}
+        myGames={myGamesData}
         onViewMatch={(game) => router.push(`/game/${game.id}`)}
         onNavigate={handleNavigate}
       />

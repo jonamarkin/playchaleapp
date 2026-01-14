@@ -2,11 +2,12 @@
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { createClient } from '@/lib/supabase/client';
 import { Game, PlayerProfile } from '@/types';
-import { GAMES as INITIAL_GAMES, TOP_PLAYERS as INITIAL_PLAYERS } from '@/constants';
+
 
 // --- Keys ---
 export const QUERY_KEYS = {
     games: ['games'],
+    myGames: (userId: string) => ['myGames', userId],
     players: ['players'],
     profile: (userId: string) => ['profile', userId],
     stats: (userId: string) => ['stats', userId],
@@ -30,10 +31,10 @@ const fetchGames = async (): Promise<Game[]> => {
 
     if (error) {
         console.error(' Supabase Fetch Error:', error);
-        return INITIAL_GAMES;
+        throw error;
     }
 
-    if (!data || data.length === 0) return INITIAL_GAMES;
+    if (!data) return [];
 
     // Client-side filter: only show public games (or games with no visibility set)
     const visibleGames = data.filter((g: any) => g.visibility === 'public' || !g.visibility);
@@ -64,7 +65,7 @@ const fetchPlayers = async (): Promise<PlayerProfile[]> => {
     const { data: profiles, error } = await supabase.from('profiles').select('*');
     if (error) throw error;
 
-    if (!profiles || profiles.length === 0) return INITIAL_PLAYERS;
+    if (!profiles) return [];
 
     // We need to join with stats to form the full PlayerProfile object
     // For optimization, we could do this via a View or a Joined Query.
@@ -201,5 +202,76 @@ export const useJoinGame = () => {
         onSuccess: () => {
             queryClient.invalidateQueries({ queryKey: QUERY_KEYS.games });
         },
+    });
+};
+
+// --- My Games (Hosted + Joined) ---
+const fetchMyGames = async (userId: string): Promise<{ hostedGames: Game[], joinedGames: Game[] }> => {
+    const supabase = createClient();
+
+    // Games where user is the organizer
+    const { data: hosted, error: hostedError } = await supabase
+        .from('games')
+        .select(`
+            *,
+            profiles:organizer_id(full_name),
+            game_participants(user_id, status, profiles:user_id(id, full_name, avatar_url))
+        `)
+        .eq('organizer_id', userId);
+
+    if (hostedError) throw hostedError;
+
+    // Games where user is a participant (but not the organizer)
+    const { data: participations, error: partError } = await supabase
+        .from('game_participants')
+        .select('game_id')
+        .eq('user_id', userId);
+
+    if (partError) throw partError;
+
+    const joinedGameIds = participations?.map(p => p.game_id).filter(id => !hosted?.find(h => h.id === id)) || [];
+
+    let joined: any[] = [];
+    if (joinedGameIds.length > 0) {
+        const { data: joinedData, error: joinedError } = await supabase
+            .from('games')
+            .select(`
+                *,
+                profiles:organizer_id(full_name),
+                game_participants(user_id, status, profiles:user_id(id, full_name, avatar_url))
+            `)
+            .in('id', joinedGameIds);
+
+        if (joinedError) throw joinedError;
+        joined = joinedData || [];
+    }
+
+    const transformGame = (g: any): Game => ({
+        ...g,
+        imageUrl: g.image_url,
+        spotsTotal: g.max_participants,
+        spotsTaken: g.game_participants?.length || g.spots_taken,
+        skillLevel: g.skill_level,
+        organizer: g.profiles?.full_name || 'Unknown Organizer',
+        participants: g.game_participants?.map((p: any) => ({
+            id: p.user_id,
+            name: p.profiles?.full_name || 'User',
+            avatar: p.profiles?.avatar_url || 'https://i.pravatar.cc/150',
+            role: p.user_id === g.organizer_id ? 'Host' : 'Player',
+            rating: '5.0'
+        })) || []
+    });
+
+    return {
+        hostedGames: (hosted || []).map(transformGame),
+        joinedGames: joined.map(transformGame)
+    };
+};
+
+export const useMyGames = (userId: string | undefined) => {
+    return useQuery({
+        queryKey: QUERY_KEYS.myGames(userId || ''),
+        queryFn: () => fetchMyGames(userId!),
+        enabled: !!userId,
     });
 };

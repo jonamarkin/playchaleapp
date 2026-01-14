@@ -6,6 +6,7 @@ import { ICONS } from '@/constants';
 import GameCard from '@/components/GameCard';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Game } from '@/types';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface DiscoverProps {
   games: Game[];
@@ -25,8 +26,31 @@ const CalendarView = ({ games, onSelectDate, selectedDate }: { games: Game[], on
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
   const blanks = Array.from({ length: firstDayOfMonth }, (_, i) => i);
 
+  // Helper to check if a game date matches a specific day in the current month
+  const gameMatchesDay = (gameDate: string, day: number): boolean => {
+    // Handle "Today" special case
+    if (gameDate === 'Today') {
+      const today = new Date();
+      return day === today.getDate() &&
+        currentMonth.getMonth() === today.getMonth() &&
+        currentMonth.getFullYear() === today.getFullYear();
+    }
+    // Handle format like "Tue, Jan 14"
+    const hasMonth = gameDate.includes(monthShort);
+    // Match the day number at end of string (after space) to avoid matching "14" in "2014"
+    const dayMatch = gameDate.match(/\s(\d{1,2})$/);
+    const hasDay = dayMatch ? parseInt(dayMatch[1]) === day : false;
+    return hasMonth && hasDay;
+  };
+
   // Calculate games in current month
-  const gamesThisMonth = games.filter(g => g.date.includes(monthShort)).length;
+  const gamesThisMonth = games.filter(g => {
+    if (g.date === 'Today') {
+      const today = new Date();
+      return currentMonth.getMonth() === today.getMonth() && currentMonth.getFullYear() === today.getFullYear();
+    }
+    return g.date.includes(monthShort);
+  }).length;
 
   // Find next month with games (check up to 12 months ahead)
   const findNextMonthWithGames = () => {
@@ -63,7 +87,7 @@ const CalendarView = ({ games, onSelectDate, selectedDate }: { games: Game[], on
       <div className="grid grid-cols-7 gap-2 md:gap-3">
         {blanks.map(b => <div key={`b-${b}`} className="aspect-square"></div>)}
         {days.map(d => {
-          const gameCount = games.filter(g => g.date.includes(d.toString()) && g.date.includes(monthShort)).length;
+          const gameCount = games.filter(g => gameMatchesDay(g.date, d)).length;
           const isSelected = selectedDate === d.toString();
           const isToday = d === new Date().getDate() && currentMonth.getMonth() === new Date().getMonth() && currentMonth.getFullYear() === new Date().getFullYear();
 
@@ -204,7 +228,10 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
                   </div>
                   <div className="flex bg-gray-100 p-1.5 rounded-full">
                     <button
-                      onClick={() => setDisplayMode('grid')}
+                      onClick={() => {
+                        setDisplayMode('grid');
+                        setSelectedDay(null);
+                      }}
                       className={`px-6 py-2.5 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${displayMode === 'grid' ? 'bg-black text-white shadow-md' : 'text-black/40 hover:text-black/60'}`}
                     >
                       Grid
@@ -218,16 +245,36 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-3 border-t border-black/5 pt-5 md:pt-6">
+                <div className="flex flex-wrap items-center gap-4 border-t border-black/5 pt-5 md:pt-6">
+                  <div className="flex items-center gap-2">
+                    <span className="text-[9px] font-black uppercase tracking-widest text-black/30">Sport:</span>
+                    <Select value={filter} onValueChange={setFilter}>
+                      <SelectTrigger className="w-[140px] bg-white border-2 border-black/10 rounded-full px-4 py-2 h-auto text-[10px] font-black uppercase tracking-widest focus:ring-0 focus:border-black">
+                        <SelectValue placeholder="All Sports" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border-2 border-black/10 rounded-2xl shadow-xl z-[300]">
+                        {sports.map(s => (
+                          <SelectItem
+                            key={s}
+                            value={s}
+                            className="text-[10px] font-black uppercase tracking-widest cursor-pointer hover:bg-gray-100 focus:bg-[#C6FF00] focus:text-black"
+                          >
+                            {s}
+                          </SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  </div>
+                  <div className="w-px h-6 bg-black/10 hidden sm:block"></div>
                   <div className="flex flex-wrap gap-2 items-center">
-                    <span className="text-[9px] font-black uppercase tracking-widest text-black/30 mr-1">Sport:</span>
-                    {sports.map(s => (
+                    <span className="text-[9px] font-black uppercase tracking-widest text-black/30 mr-1">Price:</span>
+                    {(['All', 'Free', 'Paid'] as const).map(p => (
                       <button
-                        key={s}
-                        onClick={() => setFilter(s)}
-                        className={`px-5 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${filter === s ? 'bg-black text-white' : 'bg-gray-100 text-black/70 hover:bg-gray-200'}`}
+                        key={p}
+                        onClick={() => setPriceFilter(p)}
+                        className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${priceFilter === p ? 'bg-[#C6FF00] text-black' : 'bg-gray-100 text-black/70 hover:bg-gray-200'}`}
                       >
-                        {s}
+                        {p}
                       </button>
                     ))}
                   </div>

@@ -9,11 +9,12 @@ import { PlayerProfile, Game } from '@/types';
 interface AppDashboardProps {
   player: PlayerProfile;
   upcomingGames: Game[];
+  myGames?: { hostedGames: Game[], joinedGames: Game[] };
   onViewMatch: (game: Game) => void;
   onNavigate: (view: any) => void;
 }
 
-const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, onViewMatch, onNavigate }) => {
+const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGames, onViewMatch, onNavigate }) => {
   return (
     <section className="pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20 px-4 sm:px-6 md:px-12 min-h-screen bg-[#FDFDFB]">
       <div className="max-w-7xl mx-auto space-y-8 sm:space-y-10 md:space-y-16">
@@ -162,6 +163,38 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, onVi
                 <button onClick={() => onNavigate('community')} className="w-full bg-white/5 border border-white/10 py-4 sm:py-5 rounded-full font-black uppercase tracking-widest text-[10px] sm:text-[11px] hover:bg-white/10 transition-all">Scout Competitors</button>
               </div>
             </div>
+
+            {/* My Games Quick Access */}
+            {myGames && (
+              <div className="bg-white border-2 border-black/5 rounded-[40px] sm:rounded-[48px] p-6 sm:p-8 space-y-5 shadow-sm hover:border-[#C6FF00] transition-all">
+                <div className="flex items-center justify-between">
+                  <h3 className="text-lg sm:text-xl font-black italic uppercase tracking-tighter">My Games</h3>
+                  <button onClick={() => onNavigate('mygames')} className="text-[9px] font-black uppercase tracking-widest text-black/40 hover:text-black transition-colors">View All</button>
+                </div>
+                <div className="grid grid-cols-2 gap-3 sm:gap-4">
+                  <div className="bg-gray-50 rounded-[20px] p-4 text-center">
+                    <span className="block text-2xl sm:text-3xl font-black italic">{myGames.hostedGames.length}</span>
+                    <span className="text-[8px] sm:text-[9px] font-black uppercase text-black/30 tracking-widest">Hosted</span>
+                  </div>
+                  <div className="bg-gray-50 rounded-[20px] p-4 text-center">
+                    <span className="block text-2xl sm:text-3xl font-black italic">{myGames.joinedGames.length}</span>
+                    <span className="text-[8px] sm:text-[9px] font-black uppercase text-black/30 tracking-widest">Joined</span>
+                  </div>
+                </div>
+                {myGames.hostedGames.filter(g => g.visibility === 'private').length > 0 && (
+                  <div className="flex items-center gap-2 text-[9px] font-bold text-black/40">
+                    <span className="bg-black text-[#C6FF00] px-2 py-0.5 rounded-full text-[7px] font-black uppercase">Private</span>
+                    <span>{myGames.hostedGames.filter(g => g.visibility === 'private').length} private game(s)</span>
+                  </div>
+                )}
+                <button
+                  onClick={() => onNavigate('mygames')}
+                  className="w-full bg-black text-[#C6FF00] py-3.5 rounded-full font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all"
+                >
+                  Manage My Games
+                </button>
+              </div>
+            )}
 
             {/* Rising Legends Leaderboard Preview */}
             <div className="space-y-6 sm:space-y-8 bg-gray-50 p-6 sm:p-8 md:p-10 rounded-[40px] sm:rounded-[48px] md:rounded-[56px] border border-black/5">

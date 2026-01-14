@@ -126,7 +126,7 @@ const GameModal: React.FC<ModalProps> = ({
     title: '',
     location: '',
     time: '18:00',
-    date: 'Today',
+    date: format(new Date(), 'EEE, MMM d'),
     spotsTotal: 10,
     skillLevel: 'All Levels',
     price: '$5',
@@ -188,6 +188,7 @@ const GameModal: React.FC<ModalProps> = ({
 
     const gameData = {
       ...createForm,
+      date: date ? format(date, 'EEE, MMM d') : createForm.date,
       imageUrl: createForm.imageUrl || randomImage
     };
 
