@@ -149,7 +149,7 @@ export default function MyGamesPage() {
                                     key={game.id}
                                     game={game}
                                     isHost={true}
-                                    onClick={() => router.push(`/game/${game.id}`)}
+                                    onClick={() => router.push(`/game/${game.slug || game.id}`)}
                                 />
                             ))}
 
@@ -158,7 +158,7 @@ export default function MyGamesPage() {
                                     key={game.id}
                                     game={game}
                                     isHost={false}
-                                    onClick={() => router.push(`/game/${game.id}`)}
+                                    onClick={() => router.push(`/game/${game.slug || game.id}`)}
                                 />
                             ))}
                         </AnimatePresence>

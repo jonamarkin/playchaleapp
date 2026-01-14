@@ -41,7 +41,7 @@ export default function HomePage() {
         player={profile}
         upcomingGames={games.slice(0, 3)}
         myGames={myGamesData}
-        onViewMatch={(game) => router.push(`/game/${game.id}`)}
+        onViewMatch={(game) => router.push(`/game/${game.slug || game.id}`)}
         onNavigate={handleNavigate}
       />
     </motion.div>

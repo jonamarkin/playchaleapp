@@ -11,6 +11,8 @@ export const QUERY_KEYS = {
     players: ['players'],
     profile: (userId: string) => ['profile', userId],
     stats: (userId: string) => ['stats', userId],
+    gameResults: (gameId: string) => ['gameResults', gameId],
+    pendingApprovals: (userId: string) => ['pendingApprovals', userId],
 };
 
 // --- Fetchers ---
@@ -273,5 +275,251 @@ export const useMyGames = (userId: string | undefined) => {
         queryKey: QUERY_KEYS.myGames(userId || ''),
         queryFn: () => fetchMyGames(userId!),
         enabled: !!userId,
+    });
+};
+
+// --- Game Results & Stats ---
+
+interface GameResultInput {
+    gameId: string;
+    resultData: Record<string, any>;
+    approvalThreshold: number;
+}
+
+interface PlayerStatsInput {
+    gameId: string;
+    userId: string;
+    stats: Record<string, any>;
+    showedUp: boolean;
+}
+
+// Fetch game results for a specific game
+const fetchGameResults = async (gameId: string) => {
+    const supabase = createClient();
+
+    const [resultsRes, statsRes, mvpRes] = await Promise.all([
+        supabase.from('game_results').select('*').eq('game_id', gameId).single(),
+        supabase.from('player_game_stats').select(`
+            *,
+            profiles:user_id(id, full_name, avatar_url)
+        `).eq('game_id', gameId),
+        supabase.from('mvp_votes').select('*').eq('game_id', gameId)
+    ]);
+
+    return {
+        results: resultsRes.data,
+        playerStats: statsRes.data || [],
+        mvpVotes: mvpRes.data || [],
+        error: resultsRes.error || statsRes.error || mvpRes.error
+    };
+};
+
+export const useGameResults = (gameId: string | undefined) => {
+    return useQuery({
+        queryKey: QUERY_KEYS.gameResults(gameId || ''),
+        queryFn: () => fetchGameResults(gameId!),
+        enabled: !!gameId,
+    });
+};
+
+// Fetch games pending approval for a user
+const fetchPendingApprovals = async (userId: string) => {
+    const supabase = createClient();
+
+    const { data, error } = await supabase
+        .from('player_game_stats')
+        .select(`
+            *,
+            games:game_id(id, title, sport, date, time, image_url),
+            game_results:game_id(result_data, status)
+        `)
+        .eq('user_id', userId)
+        .is('approved_by_player', null); // Pending approval
+
+    if (error) throw error;
+    return data || [];
+};
+
+export const usePendingApprovals = (userId: string | undefined) => {
+    return useQuery({
+        queryKey: QUERY_KEYS.pendingApprovals(userId || ''),
+        queryFn: () => fetchPendingApprovals(userId!),
+        enabled: !!userId,
+    });
+};
+
+// Submit game results (host only)
+const submitGameResults = async (input: GameResultInput, userId: string) => {
+    const supabase = createClient();
+
+    const { data, error } = await supabase
+        .from('game_results')
+        .upsert({
+            game_id: input.gameId,
+            entered_by: userId,
+            result_data: input.resultData,
+            approval_threshold: input.approvalThreshold,
+            status: 'pending'
+        }, { onConflict: 'game_id' })
+        .select()
+        .single();
+
+    if (error) throw error;
+    return data;
+};
+
+export const useSubmitGameResults = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ input, userId }: { input: GameResultInput, userId: string }) =>
+            submitGameResults(input, userId),
+        onSuccess: (_, { input }) => {
+            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.gameResults(input.gameId) });
+            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.games });
+        },
+    });
+};
+
+// Submit individual player stats (host only)
+const submitPlayerStats = async (stats: PlayerStatsInput[]) => {
+    const supabase = createClient();
+
+    const payload = stats.map(s => ({
+        game_id: s.gameId,
+        user_id: s.userId,
+        stats: s.stats,
+        showed_up: s.showedUp,
+    }));
+
+    const { data, error } = await supabase
+        .from('player_game_stats')
+        .upsert(payload, { onConflict: 'game_id,user_id' })
+        .select();
+
+    if (error) throw error;
+    return data;
+};
+
+export const useSubmitPlayerStats = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (stats: PlayerStatsInput[]) => submitPlayerStats(stats),
+        onSuccess: (_, stats) => {
+            if (stats[0]) {
+                queryClient.invalidateQueries({ queryKey: QUERY_KEYS.gameResults(stats[0].gameId) });
+            }
+        },
+    });
+};
+
+// Approve/reject stats (player)
+const approveStats = async (gameId: string, userId: string, approved: boolean) => {
+    const supabase = createClient();
+
+    const { data, error } = await supabase
+        .from('player_game_stats')
+        .update({
+            approved_by_player: approved,
+            approved_at: new Date().toISOString()
+        })
+        .eq('game_id', gameId)
+        .eq('user_id', userId)
+        .select()
+        .single();
+
+    if (error) throw error;
+
+    // Check if approval threshold is met and update game_results status
+    const { data: allStats } = await supabase
+        .from('player_game_stats')
+        .select('approved_by_player')
+        .eq('game_id', gameId);
+
+    const { data: gameResult } = await supabase
+        .from('game_results')
+        .select('approval_threshold')
+        .eq('game_id', gameId)
+        .single();
+
+    if (allStats && gameResult) {
+        const totalPlayers = allStats.length;
+        const approvedCount = allStats.filter(s => s.approved_by_player === true).length;
+        const rejectedCount = allStats.filter(s => s.approved_by_player === false).length;
+        const approvalRate = approvedCount / totalPlayers;
+
+        // Update counts on game_results
+        await supabase
+            .from('game_results')
+            .update({
+                approvals_count: approvedCount,
+                rejections_count: rejectedCount,
+                status: approvalRate >= gameResult.approval_threshold ? 'approved' : 'pending'
+            })
+            .eq('game_id', gameId);
+    }
+
+    return data;
+};
+
+export const useApproveStats = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ gameId, userId, approved }: { gameId: string, userId: string, approved: boolean }) =>
+            approveStats(gameId, userId, approved),
+        onSuccess: (_, { gameId, userId }) => {
+            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.gameResults(gameId) });
+            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.pendingApprovals(userId) });
+        },
+    });
+};
+
+// Vote for MVP
+const voteForMVP = async (gameId: string, voterId: string, votedForId: string) => {
+    const supabase = createClient();
+
+    const { data, error } = await supabase
+        .from('mvp_votes')
+        .upsert({
+            game_id: gameId,
+            voter_id: voterId,
+            voted_for_id: votedForId
+        }, { onConflict: 'game_id,voter_id' })
+        .select()
+        .single();
+
+    if (error) throw error;
+    return data;
+};
+
+export const useVoteForMVP = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: ({ gameId, voterId, votedForId }: { gameId: string, voterId: string, votedForId: string }) =>
+            voteForMVP(gameId, voterId, votedForId),
+        onSuccess: (_, { gameId }) => {
+            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.gameResults(gameId) });
+        },
+    });
+};
+
+// Mark game as complete
+const completeGame = async (gameId: string) => {
+    const supabase = createClient();
+
+    const { error } = await supabase
+        .from('games')
+        .update({ completed_at: new Date().toISOString() })
+        .eq('id', gameId);
+
+    if (error) throw error;
+};
+
+export const useCompleteGame = () => {
+    const queryClient = useQueryClient();
+    return useMutation({
+        mutationFn: (gameId: string) => completeGame(gameId),
+        onSuccess: () => {
+            queryClient.invalidateQueries({ queryKey: QUERY_KEYS.games });
+        },
     });
 };

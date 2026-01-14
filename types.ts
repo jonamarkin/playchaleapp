@@ -1,6 +1,7 @@
 
 export interface Game {
   id: string;
+  slug?: string;
   sport: string;
   title: string;
   location: string;
@@ -15,6 +16,7 @@ export interface Game {
   price: string;
   status: 'upcoming' | 'ongoing' | 'completed';
   visibility: 'public' | 'private';
+  completed_at?: string;
   participants?: Participant[];
   requests?: JoinRequest[];
 }

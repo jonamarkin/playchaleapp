@@ -26,7 +26,7 @@ export default function LandingPage() {
       <div className="bg-[#FDFDFB] -mt-20 relative z-20 rounded-t-[60px] md:rounded-t-[100px] border-t border-black/5 shadow-[0_-40px_100px_rgba(0,0,0,0.1)]">
         <DiscoverGames
           games={games.slice(0, 3)}
-          onOpenGame={(game) => router.push(`/game/${game.id}`)}
+          onOpenGame={(game) => router.push(`/game/${game.slug || game.id}`)}
           isFullPage={false}
         />
       </div>

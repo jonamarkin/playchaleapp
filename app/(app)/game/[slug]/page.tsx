@@ -2,10 +2,12 @@ import { Metadata } from 'next';
 import { createClient } from '@/lib/supabase/server';
 import GameClientPage from '@/components/GameClientPage';
 
-// Helper to fetch game data server-side
-async function getGame(id: string) {
+// Helper to fetch game data server-side - supports both slug and ID lookups
+async function getGame(slugOrId: string) {
     const supabase = await createClient();
-    const { data, error } = await supabase
+
+    // Try to find by slug first
+    let { data, error } = await supabase
         .from('games')
         .select(`
             *,
@@ -16,8 +18,28 @@ async function getGame(id: string) {
                 profiles:user_id(id, full_name, avatar_url)
             )
         `)
-        .eq('id', id)
+        .eq('slug', slugOrId)
         .single();
+
+    // If not found by slug, try by ID (backward compatibility)
+    if (error || !data) {
+        const result = await supabase
+            .from('games')
+            .select(`
+                *,
+                profiles:organizer_id(full_name),
+                game_participants(
+                    user_id,
+                    status,
+                    profiles:user_id(id, full_name, avatar_url)
+                )
+            `)
+            .eq('id', slugOrId)
+            .single();
+
+        data = result.data;
+        error = result.error;
+    }
 
     if (error || !data) return null;
 
@@ -40,12 +62,12 @@ async function getGame(id: string) {
 }
 
 type Props = {
-    params: Promise<{ id: string }>
+    params: Promise<{ slug: string }>
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
-    const id = (await params).id;
-    const game = await getGame(id);
+    const slug = (await params).slug;
+    const game = await getGame(slug);
 
     if (!game) {
         return {
@@ -62,7 +84,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
             description: `Play ${game.sport} at ${game.location}. ${game.spotsTotal - game.spotsTaken} spots left!`,
             images: [
                 {
-                    url: game.imageUrl || 'https://playchale.app/og-default.jpg', // Ensure this fallback works or is valid
+                    url: game.imageUrl || 'https://playchale.app/og-default.jpg',
                     width: 1200,
                     height: 630,
                     alt: game.title,
@@ -74,8 +96,9 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 }
 
 export default async function GamePage({ params }: Props) {
-    const id = (await params).id;
-    const game = await getGame(id);
+    const slug = (await params).slug;
+    const game = await getGame(slug);
 
-    return <GameClientPage id={id} initialGame={game} />;
+    return <GameClientPage id={game?.id || slug} initialGame={game} />;
 }
+

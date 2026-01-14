@@ -19,7 +19,7 @@ export default function DiscoverPage() {
     >
       <DiscoverGames
         games={games}
-        onOpenGame={(game) => router.push(`/game/${game.id}`)}
+        onOpenGame={(game) => router.push(`/game/${game.slug || game.id}`)}
         isFullPage
         userLocation={userLocation}
       />

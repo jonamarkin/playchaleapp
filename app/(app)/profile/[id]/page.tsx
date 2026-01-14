@@ -60,7 +60,7 @@ export default function ProfilePage() {
                 onEditStats={() => isOwner && openModal('stats', playerData)}
                 onEditProfile={() => isOwner && openModal('edit-profile', playerData)}
                 onShareProfile={handleShare}
-                onViewMatch={(match) => router.push(`/game/${match.id}`)}
+                onViewMatch={(match) => router.push(`/game/${match.slug || match.id}`)}
             />
         </motion.div>
     );

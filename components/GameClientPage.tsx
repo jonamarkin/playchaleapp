@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
 import GameDetailView from '@/components/GameDetailView';
+import PostGameModal from '@/components/PostGameModal';
 import { Game, MatchRecord } from '@/types';
 import { ICONS } from '@/constants';
 import { useJoinGame, useProfile } from '@/hooks/useData';
@@ -21,6 +22,10 @@ export default function GameClientPage({ id, initialGame }: GameClientPageProps)
 
     const [viewType, setViewType] = useState<'join' | 'manage' | 'report' | null>(null);
     const [data, setData] = useState<Game | MatchRecord | null>(initialGame || null);
+    const [showPostGameModal, setShowPostGameModal] = useState(false);
+
+    const isHost = user && data && 'organizer_id' in data && data.organizer_id === user.id;
+    const isGameComplete = data && 'completed_at' in data && data.completed_at;
 
     useEffect(() => {
         if (!id) return;
@@ -91,6 +96,22 @@ export default function GameClientPage({ id, initialGame }: GameClientPageProps)
                 <ICONS.ChevronRight className="rotate-180" />
             </button>
 
+            {/* Complete Game Button (Host only, after game time) */}
+            {isHost && !isGameComplete && (
+                <button
+                    onClick={() => setShowPostGameModal(true)}
+                    className="fixed bottom-6 right-6 z-50 bg-[#C6FF00] text-black px-6 py-4 rounded-full font-black uppercase text-[10px] tracking-widest shadow-2xl hover:scale-105 transition-all flex items-center gap-2"
+                >
+                    <span>📊</span> Complete Game
+                </button>
+            )}
+
+            {isGameComplete && (
+                <div className="fixed bottom-6 right-6 z-50 bg-green-500 text-white px-6 py-4 rounded-full font-black uppercase text-[10px] tracking-widest shadow-2xl flex items-center gap-2">
+                    <span>✓</span> Game Completed
+                </div>
+            )}
+
             <GameDetailView
                 type={viewType}
                 data={data}
@@ -105,6 +126,21 @@ export default function GameClientPage({ id, initialGame }: GameClientPageProps)
                 }}
                 onShare={handleShare}
             />
+
+            {/* Post-Game Modal */}
+            {showPostGameModal && user && 'id' in data && (
+                <PostGameModal
+                    game={data as Game}
+                    userId={user.id}
+                    onClose={() => setShowPostGameModal(false)}
+                    onComplete={() => {
+                        setShowPostGameModal(false);
+                        triggerToast("GAME RESULTS SUBMITTED FOR APPROVAL!");
+                        router.refresh();
+                    }}
+                />
+            )}
         </div>
     );
 }
+

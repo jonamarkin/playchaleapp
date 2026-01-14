@@ -39,7 +39,7 @@ export default function StatsPage() {
         onEditStats={() => openModal('stats', profile)}
         onEditProfile={() => openModal('edit-profile', profile)}
         onShareProfile={() => openModal('share-profile', profile)}
-        onViewMatch={(match) => router.push(`/game/${match.id}`)}
+        onViewMatch={(match) => router.push(`/game/${match.slug || match.id}`)}
       />
     </motion.div>
   );

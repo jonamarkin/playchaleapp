@@ -505,3 +505,90 @@ export const CURRENCIES = [
   { code: 'EUR', symbol: '€', name: 'Euro' },
   { code: 'GBP', symbol: '£', name: 'British Pound' },
 ];
+
+// Sport-specific stats configuration for post-game result entry
+export const SPORT_STATS: Record<string, {
+  gameResult: { key: string; label: string }[];
+  playerStats: { key: string; label: string; type: 'number' | 'boolean'; icon: string }[];
+  approvalThreshold: number;
+  isTeamSport: boolean;
+}> = {
+  Football: {
+    gameResult: [
+      { key: 'team_a_score', label: 'Team A Score' },
+      { key: 'team_b_score', label: 'Team B Score' },
+    ],
+    playerStats: [
+      { key: 'goals', label: 'Goals', type: 'number', icon: '⚽' },
+      { key: 'assists', label: 'Assists', type: 'number', icon: '🎯' },
+      { key: 'clean_sheet', label: 'Clean Sheet', type: 'boolean', icon: '🧤' },
+    ],
+    approvalThreshold: 0.5, // 50% of participants
+    isTeamSport: true,
+  },
+  Basketball: {
+    gameResult: [
+      { key: 'team_a_score', label: 'Team A Score' },
+      { key: 'team_b_score', label: 'Team B Score' },
+    ],
+    playerStats: [
+      { key: 'points', label: 'Points', type: 'number', icon: '🏀' },
+      { key: 'rebounds', label: 'Rebounds', type: 'number', icon: '📊' },
+      { key: 'assists', label: 'Assists', type: 'number', icon: '🎯' },
+    ],
+    approvalThreshold: 0.5,
+    isTeamSport: true,
+  },
+  Tennis: {
+    gameResult: [
+      { key: 'player_a_sets', label: 'Player A Sets' },
+      { key: 'player_b_sets', label: 'Player B Sets' },
+    ],
+    playerStats: [
+      { key: 'sets_won', label: 'Sets Won', type: 'number', icon: '🎾' },
+      { key: 'games_won', label: 'Games Won', type: 'number', icon: '📊' },
+      { key: 'winner', label: 'Winner', type: 'boolean', icon: '🏆' },
+    ],
+    approvalThreshold: 1.0, // Both players must approve
+    isTeamSport: false,
+  },
+  Padel: {
+    gameResult: [
+      { key: 'team_a_sets', label: 'Team A Sets' },
+      { key: 'team_b_sets', label: 'Team B Sets' },
+    ],
+    playerStats: [
+      { key: 'sets_won', label: 'Sets Won', type: 'number', icon: '🎾' },
+      { key: 'games_won', label: 'Games Won', type: 'number', icon: '📊' },
+      { key: 'winner', label: 'Winner', type: 'boolean', icon: '🏆' },
+    ],
+    approvalThreshold: 1.0, // All 4 players
+    isTeamSport: true,
+  },
+  Volleyball: {
+    gameResult: [
+      { key: 'team_a_sets', label: 'Team A Sets' },
+      { key: 'team_b_sets', label: 'Team B Sets' },
+    ],
+    playerStats: [
+      { key: 'points', label: 'Points', type: 'number', icon: '🏐' },
+      { key: 'aces', label: 'Aces', type: 'number', icon: '💥' },
+      { key: 'blocks', label: 'Blocks', type: 'number', icon: '🛡️' },
+    ],
+    approvalThreshold: 0.5,
+    isTeamSport: true,
+  },
+  Badminton: {
+    gameResult: [
+      { key: 'player_a_sets', label: 'Player A Sets' },
+      { key: 'player_b_sets', label: 'Player B Sets' },
+    ],
+    playerStats: [
+      { key: 'sets_won', label: 'Sets Won', type: 'number', icon: '🏸' },
+      { key: 'points_won', label: 'Points Won', type: 'number', icon: '📊' },
+      { key: 'winner', label: 'Winner', type: 'boolean', icon: '🏆' },
+    ],
+    approvalThreshold: 1.0,
+    isTeamSport: false,
+  },
+};
