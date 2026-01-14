@@ -10,19 +10,26 @@ import { usePlayChale } from '@/providers/PlayChaleProvider';
 export default function ProfilePage() {
     const params = useParams();
     const router = useRouter();
-    const { players, triggerToast, openModal } = usePlayChale();
-    const profileId = params.id as string;
+    const { players, user, openModal, triggerToast } = usePlayChale();
+    const profileSlug = params.slug as string;
+
+    // 2. Find the player data (by slug or ID)
+    const playerData = React.useMemo(() => {
+        if (!players) return null;
+
+        // Try to match by slug first, then ID
+        const found = players.find(p => p.slug === profileSlug || p.id === profileSlug);
+
+        // If "me" alias is used, return current user if logged in
+        if (profileSlug === 'me' && user) {
+            return players.find(p => p.id === user.id);
+        }
+
+        return found;
+    }, [players, profileSlug, user]);
 
     // 1. Check if it's the current user's profile
-    const currentUser = players[0];
-    const isOwner = currentUser?.id === profileId || profileId === 'me';
-
-    // 2. Find the player data
-    // If owner, use context data (so it reflects live edits).
-    // If not owner, look up in TOP_PLAYERS mock db.
-    const playerData = isOwner
-        ? currentUser
-        : TOP_PLAYERS.find(p => p.id === profileId);
+    const isOwner = user?.id === playerData?.id;
 
     React.useEffect(() => {
         if (!playerData && !isOwner) {

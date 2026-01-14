@@ -81,6 +81,7 @@ const fetchPlayers = async (): Promise<PlayerProfile[]> => {
 
         return {
             id: p.id,
+            slug: p.slug,
             name: p.full_name || 'Anonymous',
             mainSport: p.sports?.[0] || 'Football',
             sportStats: sportStatsMap,
@@ -97,16 +98,27 @@ const fetchMyProfile = async (userId: string): Promise<PlayerProfile | null> => 
     if (!userId) return null;
     const supabase = createClient();
 
-    const { data: profile, error } = await supabase.from('profiles').select('*').eq('id', userId).single();
-    if (error) return null;
+    // Check if input is a UUID
+    const isUuid = /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i.test(userId);
 
-    const { data: stats } = await supabase.from('user_sport_stats').select('*').eq('user_id', userId);
+    const query = supabase.from('profiles').select('*');
+    if (isUuid) {
+        query.eq('id', userId);
+    } else {
+        query.eq('slug', userId);
+    }
+
+    const { data: profile, error } = await query.single();
+    if (error || !profile) return null;
+
+    const { data: stats } = await supabase.from('user_sport_stats').select('*').eq('user_id', profile.id);
 
     const sportStatsMap: any = {};
     stats?.forEach(s => sportStatsMap[s.sport] = s.stats);
 
     return {
         id: profile.id,
+        slug: profile.slug,
         name: profile.full_name,
         mainSport: profile.sports?.[0] || 'Football',
         sportStats: sportStatsMap,
@@ -116,6 +128,45 @@ const fetchMyProfile = async (userId: string): Promise<PlayerProfile | null> => 
         bio: profile.bio,
         location: profile.location
     } as PlayerProfile;
+};
+
+const fetchPlayersPaginated = async ({ pageParam = 0 }: { pageParam?: number }): Promise<PlayerProfile[]> => {
+    const supabase = createClient();
+    const PAGE_SIZE = 12;
+
+    // Calculate range
+    const start = pageParam * PAGE_SIZE;
+    const end = (pageParam + 1) * PAGE_SIZE - 1;
+
+    const { data: profiles, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .range(start, end);
+
+    if (error) throw error;
+    if (!profiles || profiles.length === 0) return [];
+
+    const userIds = profiles.map(p => p.id);
+    const { data: stats } = await supabase.from('user_sport_stats').select('*').in('user_id', userIds);
+
+    return profiles.map(p => {
+        const pStats = stats?.filter(s => s.user_id === p.id) || [];
+        const sportStatsMap: any = {};
+        pStats.forEach(s => sportStatsMap[s.sport] = s.stats);
+
+        return {
+            id: p.id,
+            slug: p.slug,
+            name: p.full_name || 'Anonymous',
+            mainSport: p.sports?.[0] || 'Football',
+            sportStats: sportStatsMap,
+            stats: sportStatsMap[p.sports?.[0]] || {},
+            attributes: p.attributes || {},
+            avatar: p.avatar_url,
+            bio: p.bio,
+            location: p.location
+        } as PlayerProfile;
+    });
 };
 
 // --- Mutations ---
@@ -176,6 +227,19 @@ export const usePlayers = () => {
     return useQuery({
         queryKey: QUERY_KEYS.players,
         queryFn: fetchPlayers,
+    });
+};
+
+import { useInfiniteQuery } from '@tanstack/react-query';
+
+export const useInfinitePlayers = () => {
+    return useInfiniteQuery({
+        queryKey: ['players', 'infinite'],
+        queryFn: fetchPlayersPaginated,
+        initialPageParam: 0,
+        getNextPageParam: (lastPage, allPages) => {
+            return lastPage.length === 12 ? allPages.length : undefined;
+        },
     });
 };
 

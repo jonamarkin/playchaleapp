@@ -31,6 +31,7 @@ export interface JoinRequest {
 
 export interface Participant {
   id: string;
+  slug?: string;
   name: string;
   avatar: string;
   role?: string;
@@ -63,6 +64,7 @@ export interface Challenge {
 
 export interface PlayerProfile {
   id: string;
+  slug?: string;
   name: string;
   avatar: string;
   mainSport: string;

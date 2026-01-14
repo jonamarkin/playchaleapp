@@ -3,12 +3,13 @@
 import React from 'react';
 import { motion } from 'framer-motion';
 import TopPlayers from '@/components/TopPlayers';
-import { usePlayChale } from '@/providers/PlayChaleProvider';
-
+import { useInfinitePlayers } from '@/hooks/useData';
+import { Button } from '@/components/ui/button';
 import { useRouter } from 'next/navigation';
 
 export default function CommunityPage() {
-  const { players } = usePlayChale();
+  const { data, fetchNextPage, hasNextPage, isFetchingNextPage } = useInfinitePlayers();
+  const players = data ? data.pages.flat() : [];
   const router = useRouter();
 
   return (
@@ -19,9 +20,21 @@ export default function CommunityPage() {
     >
       <TopPlayers
         players={players}
-        onOpenPlayer={(player) => router.push(`/profile/${player.id}`)}
+        onOpenPlayer={(player) => router.push(`/profile/${player.slug || player.id}`)}
         isFullPage
       />
+
+      {hasNextPage && (
+        <div className="flex justify-center pb-20">
+          <Button
+            onClick={() => fetchNextPage()}
+            disabled={isFetchingNextPage}
+            className="bg-[#C6FF00] text-black font-black uppercase tracking-widest rounded-full px-8 py-6 hover:scale-105 transition-all text-xs"
+          >
+            {isFetchingNextPage ? 'Loading Legends...' : 'Load More Athletes'}
+          </Button>
+        </div>
+      )}
     </motion.div>
   );
 }

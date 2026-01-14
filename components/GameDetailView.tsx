@@ -173,7 +173,7 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                             <h3 className="text-xl font-black italic uppercase text-white tracking-tight">The Squad</h3>
                             <div className="grid grid-cols-1 gap-4">
                                 {match.participants?.map((p) => (
-                                    <Link href={`/profile/${p.id}`} key={p.id} className="group flex items-center justify-between bg-white/5 border border-white/5 hover:bg-white/10 p-4 rounded-3xl transition-all cursor-pointer">
+                                    <Link href={`/profile/${p.slug || p.id}`} key={p.id} className="group flex items-center justify-between bg-white/5 border border-white/5 hover:bg-white/10 p-4 rounded-3xl transition-all cursor-pointer">
                                         <div className="flex items-center gap-4">
                                             <img src={p.avatar} className="w-12 h-12 rounded-full border-2 border-white/10 group-hover:border-[#C6FF00] transition-colors" />
                                             <div className="min-w-0">

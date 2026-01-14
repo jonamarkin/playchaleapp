@@ -206,7 +206,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
                     <div
                       key={star.id}
                       className="flex items-center justify-between group cursor-pointer gap-3 hover:bg-black/5 rounded-xl p-2 -mx-2 transition-colors"
-                      onClick={() => onNavigate(`/profile/${star.id}`)}
+                      onClick={() => onNavigate(`/profile/${star.slug || star.id}`)}
                     >
                       <div className="flex items-center gap-3 sm:gap-4 md:gap-5 min-w-0">
                         <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-xl sm:rounded-2xl bg-black text-[#C6FF00] flex items-center justify-center font-black text-[10px] sm:text-xs italic shrink-0">#{i + 1}</div>
