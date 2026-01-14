@@ -7,6 +7,8 @@ import { Game, PlayerProfile, Challenge, Participant, JoinRequest, MatchRecord }
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
+import ImageUpload from '@/components/ImageUpload';
+import { usePlayChale } from '@/providers/PlayChaleProvider';
 
 interface ModalProps {
   type: 'join' | 'create' | 'profile' | 'stats' | 'match-detail' | 'edit-profile' | 'share-profile' | 'contact-organizer' | 'challenge' | 'detailed-stats' | 'manage-game' | null;
@@ -97,6 +99,7 @@ const ProSelect = ({ value, onChange, options, label, iconMap }: { value: string
 const GameModal: React.FC<ModalProps> = ({
   type: initialType, item: initialItem, onClose, onJoin, onCreate, onUpdateStats, onUpdateProfile, onOpenContact, onSendMessage, onSendChallenge, onUpdateGame, onManageRequest, onRemoveParticipant, onShareMatch, onShareProfile
 }) => {
+  const { uploadAvatar } = usePlayChale();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [type, setType] = useState(initialType);
@@ -412,12 +415,16 @@ const GameModal: React.FC<ModalProps> = ({
                     </div>
                   </div>
                   <div className="space-y-2">
-                    <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-4">Avatar URL</label>
-                    <Input
-                      value={profileForm.avatar}
-                      onChange={e => setProfileForm({ ...profileForm, avatar: e.target.value })}
-                      className="w-full h-auto bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-full px-6 py-4 text-white font-bold outline-none transition-all focus-visible:ring-0 placeholder:text-white/20"
-                    />
+                    <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-4">Profile Picture</label>
+                    <div className="flex justify-center py-4">
+                      <ImageUpload
+                        currentImage={profileForm.avatar}
+                        onImageSelected={async (file) => {
+                          const url = await uploadAvatar(file);
+                          if (url) setProfileForm(prev => ({ ...prev, avatar: url }));
+                        }}
+                      />
+                    </div>
                   </div>
                   <Button type="submit" disabled={loading} className="w-full h-auto bg-[#C6FF00] text-black py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] transition-all flex items-center justify-center gap-4 shadow-2xl hover:bg-[#b0ff00]">
                     {loading ? 'Saving...' : 'Update Profile'}

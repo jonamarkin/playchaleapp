@@ -55,6 +55,7 @@ interface PlayChaleContextType {
   completeOnboarding: (userData: { name: string; sports: string[]; location: string }) => void;
   handleNavigate: (path: string) => void;
   signOut: () => Promise<void>;
+  uploadAvatar: (file: File) => Promise<string | null>;
 
   // Pending action for after onboarding
   pendingAction: PendingAction | null;
@@ -213,6 +214,44 @@ export function PlayChaleProvider({ children }: { children: ReactNode }) {
     router.push('/discover');
   }, [supabase, router]);
 
+  const uploadAvatar = useCallback(async (file: File): Promise<string | null> => {
+    if (!user) return null;
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${user.id}/${Date.now()}.${fileExt}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('avatars')
+        .upload(fileName, file, {
+          upsert: true
+        });
+
+      if (uploadError) {
+        throw uploadError;
+      }
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('avatars')
+        .getPublicUrl(fileName);
+
+      // Update profile
+      const { error: updateError } = await supabase
+        .from('profiles')
+        .update({ avatar_url: publicUrl })
+        .eq('id', user.id);
+
+      if (updateError) throw updateError;
+
+      triggerToast('Avatar updated!');
+      return publicUrl;
+    } catch (error) {
+      console.error('Error uploading avatar:', error);
+      triggerToast('Failed to upload avatar');
+      return null;
+    }
+  }, [user, supabase, triggerToast]);
+
   const value: PlayChaleContextType = {
     user,
     hasProfile: hasProfileState,
@@ -235,6 +274,7 @@ export function PlayChaleProvider({ children }: { children: ReactNode }) {
     completeOnboarding,
     handleNavigate,
     signOut,
+    uploadAvatar,
     pendingAction,
     setPendingAction,
     isLoading

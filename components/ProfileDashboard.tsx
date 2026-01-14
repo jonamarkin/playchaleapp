@@ -5,6 +5,8 @@ import Image from 'next/image';
 import { ICONS } from '@/constants';
 import { motion } from 'framer-motion';
 import { PlayerProfile, MatchRecord } from '@/types';
+import ImageUpload from './ImageUpload';
+import { usePlayChale } from '@/providers/PlayChaleProvider';
 import {
   Select,
   SelectContent,
@@ -25,6 +27,7 @@ interface DashboardProps {
 const ProfileDashboard: React.FC<DashboardProps> = ({
   player, isOwner = false, onEditStats, onEditProfile, onShareProfile, onViewMatch
 }) => {
+  const { uploadAvatar } = usePlayChale();
   const [activeSport, setActiveSport] = React.useState(player.mainSport);
 
   // Derive stats based on active sport, fallback to main stats if missing
@@ -36,6 +39,7 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
     { label: 'Reliability', value: activeStats.reliability, color: 'text-white' },
     { label: 'MVPs', value: activeStats.mvps, color: 'text-white' }
   ];
+
 
   const getSportSpecificHighlights = () => {
     const s = activeStats;
@@ -101,7 +105,16 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
             <div className="bg-white/5 backdrop-blur-3xl rounded-[56px] p-8 md:p-10 border border-white/10 space-y-10 relative overflow-hidden shadow-2xl">
               <div className="flex flex-col items-center text-center space-y-6">
                 <div className="relative">
-                  <Image src={player.avatar} alt={player.name} width={160} height={160} className="w-40 h-40 rounded-full object-cover border-[6px] border-white/5 shadow-2xl" />
+                  {isOwner ? (
+                    <ImageUpload
+                      currentImage={player.avatar}
+                      onImageSelected={async (file) => {
+                        await uploadAvatar(file);
+                      }}
+                    />
+                  ) : (
+                    <Image src={player.avatar} alt={player.name} width={160} height={160} className="w-40 h-40 rounded-full object-cover border-[6px] border-white/5 shadow-2xl" />
+                  )}
                   <div className="absolute -bottom-1 -right-1 bg-[#C6FF00] text-black w-12 h-12 rounded-full flex items-center justify-center font-black text-lg shadow-2xl uppercase italic">PRO</div>
                 </div>
                 <div>
