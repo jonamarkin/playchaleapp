@@ -8,7 +8,7 @@ import { usePlayChale } from '@/providers/PlayChaleProvider';
 import { useRouter } from 'next/navigation';
 
 export default function DiscoverPage() {
-  const { games, userLocation } = usePlayChale();
+  const { games } = usePlayChale();
   const router = useRouter();
 
   return (
@@ -21,7 +21,6 @@ export default function DiscoverPage() {
         games={games}
         onOpenGame={(game) => router.push(`/game/${game.slug || game.id}`)}
         isFullPage
-        userLocation={userLocation}
       />
     </motion.div>
   );

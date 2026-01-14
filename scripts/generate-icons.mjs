@@ -15,6 +15,11 @@ async function generateIcons() {
     for (const size of sizes) {
         const outputPath = path.join(outputDir, `icon-${size}x${size}.png`);
 
+        if (inputPath === outputPath) {
+            console.log(`✅ Skipped icon-${size}x${size}.png (Source file)`);
+            continue;
+        }
+
         await sharp(inputPath)
             .resize(size, size)
             .png()

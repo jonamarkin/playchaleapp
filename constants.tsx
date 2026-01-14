@@ -1,5 +1,6 @@
 
 import React from 'react';
+import Image from 'next/image';
 import { Game, PlayerProfile, Program, Testimonial } from './types';
 
 export const COLORS = {
@@ -449,10 +450,14 @@ export const ICONS = {
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="19" x2="12" y2="5" /><polyline points="5 12 12 5 19 12" /></svg>
   ),
   Logo: () => (
-    <div className="w-10 h-10 bg-[#C6FF00] rounded-full flex items-center justify-center shrink-0 shadow-lg shadow-lime-500/30">
-      <svg viewBox="0 0 24 24" fill="black" className="w-6 h-6">
-        <path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" />
-      </svg>
+    <div className="w-10 h-10 relative shrink-0 rounded-xl overflow-hidden shadow-sm border border-white/10">
+      <Image
+        src="/icons/icon-192x192.png"
+        alt="PlayChale Logo"
+        fill
+        className="object-cover"
+        sizes="40px"
+      />
     </div>
   ),
   TennisBall: (props: any) => (

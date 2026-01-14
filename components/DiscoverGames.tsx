@@ -12,7 +12,6 @@ interface DiscoverProps {
   games: Game[];
   onOpenGame: (game: Game) => void;
   isFullPage?: boolean;
-  userLocation?: { lat: number, lng: number } | null;
 }
 
 const CalendarView = ({ games, onSelectDate, selectedDate }: { games: Game[], onSelectDate: (d: string) => void, selectedDate: string | null }) => {
@@ -147,7 +146,7 @@ import { usePlayChale } from '@/providers/PlayChaleProvider';
 
 // ... existing code ...
 
-const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage = false, userLocation }) => {
+const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage = false }) => {
   const router = useRouter();
   const { user } = usePlayChale();
   const [filter, setFilter] = useState('All');

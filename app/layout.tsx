@@ -1,4 +1,4 @@
-import type { Metadata } from 'next';
+import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
 import { PlayChaleProvider } from '@/providers/PlayChaleProvider';
@@ -13,13 +13,6 @@ export const metadata: Metadata = {
   description: 'The professional-grade social engine for the amateur elite. Organize, compete, and record your legacy.',
   keywords: ['sports', 'amateur sports', 'football', 'basketball', 'tennis', 'padel', 'community'],
   manifest: '/manifest.json',
-  themeColor: '#C6FF00',
-  viewport: {
-    width: 'device-width',
-    initialScale: 1,
-    maximumScale: 1,
-    userScalable: false,
-  },
   appleWebApp: {
     capable: true,
     statusBarStyle: 'black-translucent',
@@ -38,6 +31,14 @@ export const metadata: Metadata = {
       { url: '/icons/icon-192x192.png', sizes: '192x192', type: 'image/png' },
     ],
   },
+};
+
+export const viewport: Viewport = {
+  themeColor: '#C6FF00',
+  width: 'device-width',
+  initialScale: 1,
+  maximumScale: 1,
+  userScalable: false,
 };
 
 
