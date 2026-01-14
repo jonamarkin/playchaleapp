@@ -236,7 +236,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
             </div>
           </div>
         ) : (
-          <div className="flex items-end justify-between mb-16 px-4">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 md:mb-16 px-4 gap-6">
             <div className="space-y-4">
               <div className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-black/30">
                 <span className="w-1.5 h-1.5 rounded-full bg-[#C6FF00]"></span>
@@ -244,7 +244,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
               </div>
               <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter">Games Near You</h2>
             </div>
-            <button onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })} className="bg-black text-[#C6FF00] px-8 py-4 rounded-full text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all">Explore Full Feed</button>
+            <button onClick={() => router.push('/discover')} className="bg-black text-[#C6FF00] px-8 py-4 rounded-full text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all w-full md:w-auto">Explore Full Feed</button>
           </div>
         )}
 

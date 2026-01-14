@@ -33,8 +33,9 @@ export default function LandingPage() {
       <Features />
       <div className="bg-black py-40">
         <TopPlayers
-          players={players}
+          players={players.slice(0, 2)}
           onOpenPlayer={(player) => openModal('profile', player)}
+          onViewAll={() => handleNavigate('/community')}
         />
       </div>
       <Programs onOpenDetails={() => handleNavigate('/discover')} />

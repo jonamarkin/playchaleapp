@@ -16,24 +16,23 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
   const router = useRouter();
 
   return (
-    <section className="relative min-h-[90vh] md:min-h-screen bg-black text-white overflow-hidden rounded-b-[60px] md:rounded-b-[100px] z-10">
+    <section className="relative min-h-[90vh] md:min-h-screen bg-black text-white overflow-hidden rounded-b-[60px] md:rounded-b-[100px] z-10 flex flex-col justify-center">
       {/* Navbar */}
       <nav className="absolute top-0 left-0 right-0 p-6 md:p-10 flex justify-between items-center z-50">
         <div className="flex items-center gap-3">
           <ICONS.Logo />
-          <span className="font-black text-xl md:text-2xl tracking-tighter italic uppercase">PRO DRAFT.</span>
         </div>
         {!user ? (
           <button
             onClick={() => router.push('/login')}
-            className="hidden md:block text-[10px] font-black uppercase tracking-[0.2em] hover:text-[#C6FF00] transition-colors"
+            className="block text-[10px] font-black uppercase tracking-[0.2em] hover:text-[#C6FF00] transition-colors"
           >
             Member Sign In
           </button>
         ) : (
           <button
             onClick={() => router.push('/home')}
-            className="hidden md:block text-[10px] font-black uppercase tracking-[0.2em] text-[#C6FF00] hover:text-white transition-colors"
+            className="block text-[10px] font-black uppercase tracking-[0.2em] text-[#C6FF00] hover:text-white transition-colors"
           >
             Go to Dashboard
           </button>
@@ -61,7 +60,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
       </div>
 
       {/* Live Activity Ticker (Top Floating) */}
-      <div className="absolute top-10 left-0 right-0 z-20 pointer-events-none hidden md:block overflow-hidden">
+      <div className="absolute top-24 left-0 right-0 z-20 pointer-events-none hidden md:block overflow-hidden">
         <div className="flex animate-marquee whitespace-nowrap gap-12 text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
           {[1, 2, 3].map(i => (
             <React.Fragment key={i}>
@@ -73,7 +72,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
         </div>
       </div>
 
-      <div className="relative z-10 w-full px-6 md:px-12 pb-24 md:pb-36 pt-8 md:pt-16">
+      <div className="relative z-10 w-full px-6 md:px-12 pb-24 md:pb-36 pt-24 md:pt-16">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-8 text-white space-y-12">
             <motion.div
@@ -86,7 +85,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
                 <span className="w-2 h-2 rounded-full bg-black animate-ping"></span>
                 ACTIVE IN YOUR CITY
               </div>
-              <h1 className="text-5xl sm:text-6xl md:text-8xl lg:text-[10rem] font-black leading-[0.85] tracking-tighter italic">
+              <h1 className="text-6xl sm:text-6xl md:text-8xl lg:text-[10rem] font-black leading-[0.85] tracking-tighter italic">
                 <span className="whitespace-nowrap">Step Out,</span> <br /> <span className="text-[#C6FF00] whitespace-nowrap">PlayChale.</span>
               </h1>
             </motion.div>
@@ -97,7 +96,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
               transition={{ delay: 0.6 }}
               className="text-xl md:text-3xl text-white/80 max-w-2xl leading-tight font-bold tracking-tight"
             >
-              Don't just watch. Compete. Build your profile, find local legends, and take the amateur stage.
+              Don't just watch. Compete. Find games, build your legacy, and own the city.
             </motion.p>
 
             <motion.div
@@ -108,7 +107,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
             >
               <button
                 onClick={onOpenDiscover}
-                className="w-full sm:w-auto bg-[#C6FF00] text-black px-12 py-6 rounded-full font-black uppercase tracking-widest text-[11px] flex items-center justify-center gap-4 hover:scale-[1.05] hover:shadow-[0_0_40px_rgba(198,255,0,0.4)] transition-all group"
+                className="w-full sm:w-auto bg-[#C6FF00] text-black px-8 py-4 md:px-12 md:py-6 rounded-full font-black uppercase tracking-widest text-[11px] flex items-center justify-center gap-4 hover:scale-[1.05] hover:shadow-[0_0_40px_rgba(198,255,0,0.4)] transition-all group"
               >
                 Discover Games
                 <div className="bg-black text-white rounded-full p-1 group-hover:rotate-45 transition-transform">

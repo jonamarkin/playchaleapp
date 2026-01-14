@@ -12,9 +12,10 @@ interface TopPlayersProps {
   players: PlayerProfile[];
   onOpenPlayer: (p: PlayerProfile) => void;
   isFullPage?: boolean;
+  onViewAll?: () => void;
 }
 
-const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPage = false }) => {
+const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPage = false, onViewAll }) => {
   const [search, setSearch] = useState('');
   const [activeSport, setActiveSport] = useState('All');
   const [activeLocation, setActiveLocation] = useState('All Locations');
@@ -261,7 +262,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
         {!isFullPage && (
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-16 sm:mt-24 md:mt-32 text-center">
             <button
-              onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+              onClick={onViewAll}
               className="bg-white text-black px-8 sm:px-12 md:px-20 py-6 md:py-8 rounded-full font-black uppercase tracking-[0.2em] text-[10px] md:text-[11px] hover:bg-[#C6FF00] hover:text-black transition-all hover:scale-105 shadow-2xl flex items-center gap-3 sm:gap-5 mx-auto"
             >
               View Full City Rankings
