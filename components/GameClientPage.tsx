@@ -49,7 +49,7 @@ export default function GameClientPage({ id, initialGame }: GameClientPageProps)
 
     }, [id, games, user, initialGame]);
 
-    if (!data || !viewType || !profile) {
+    if (!data || !viewType) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center text-white">
                 <div className="animate-pulse flex flex-col items-center gap-4">
@@ -115,7 +115,7 @@ export default function GameClientPage({ id, initialGame }: GameClientPageProps)
             <GameDetailView
                 type={viewType}
                 data={data}
-                currentUser={profile}
+                currentUser={profile ?? undefined}
                 onJoin={() => {
                     if (user && data.id) {
                         joinGame({ gameId: data.id, userId: user.id });
