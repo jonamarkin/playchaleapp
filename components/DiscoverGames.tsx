@@ -180,7 +180,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
           {user ? (
             <button
               onClick={() => router.push('/home')}
-              className="bg-black text-[#C6FF00] px-6 py-3 rounded-full font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all shadow-lg"
+              className="touch-scale-sm touch-target bg-black text-[#C6FF00] px-6 py-3 rounded-full font-black uppercase tracking-widest text-[10px] transition-all shadow-lg"
             >
               Go to Dashboard
             </button>
@@ -290,7 +290,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
               </div>
               <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter">Games Near You</h2>
             </div>
-            <button onClick={() => router.push('/discover')} className="bg-black text-[#C6FF00] px-8 py-4 rounded-full text-[10px] font-black uppercase tracking-widest hover:scale-105 transition-all w-full md:w-auto">Explore Full Feed</button>
+            <button onClick={() => router.push('/discover')} className="touch-scale-sm touch-target bg-black text-[#C6FF00] px-8 py-4 rounded-full text-[10px] font-black uppercase tracking-widest transition-all w-full md:w-auto">Explore Full Feed</button>
           </div>
         )}
 
@@ -314,7 +314,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
                       exit={{ opacity: 0, x: -20 }}
-                      className="bg-gray-50 rounded-[28px] p-5 flex gap-5 items-center border border-black/5 hover:border-black transition-all cursor-pointer group"
+                      className="touch-target bg-gray-50 rounded-[28px] p-5 flex gap-5 items-center border border-black/5 hover:border-black transition-all cursor-pointer group"
                       onClick={() => onOpenGame(game)}
                     >
                       <Image src={game.imageUrl} alt={game.title} width={80} height={80} className="w-20 h-20 rounded-[20px] object-cover" />

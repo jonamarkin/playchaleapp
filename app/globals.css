@@ -10,15 +10,19 @@
   --color-cream: #fdfdfb;
 
   /* Shadcn Mappings (New York / Zinc-like but branded) */
-  --background: 0 0% 99%;      /* Matches Cream #FDFDFB approx */
-  --foreground: 0 0% 7%;       /* Matches Dark #111111 approx */
+  --background: 0 0% 99%;
+  /* Matches Cream #FDFDFB approx */
+  --foreground: 0 0% 7%;
+  /* Matches Dark #111111 approx */
   --card: 0 0% 100%;
   --card-foreground: 0 0% 7%;
   --popover: 0 0% 100%;
   --popover-foreground: 0 0% 7%;
-  --primary: 74 100% 50%;      /* Matches Lime #C6FF00 exactly */
+  --primary: 74 100% 50%;
+  /* Matches Lime #C6FF00 exactly */
   --primary-foreground: 0 0% 7%;
-  --secondary: 60 10% 96%;     /* Matches Beige */
+  --secondary: 60 10% 96%;
+  /* Matches Beige */
   --secondary-foreground: 0 0% 9%;
   --muted: 60 10% 96%;
   --muted-foreground: 0 0% 45%;
@@ -28,18 +32,23 @@
   --destructive-foreground: 0 0% 98%;
   --border: 0 0% 90%;
   --input: 0 0% 90%;
-  --ring: 74 100% 50%;         /* Lime Ring */
-  --radius: 1.5rem;            /* Rounded corners */
+  --ring: 74 100% 50%;
+  /* Lime Ring */
+  --radius: 1.5rem;
+  /* Rounded corners */
 }
 
 .dark {
-  --background: 0 0% 7%;       /* Matches Dark */
-  --foreground: 0 0% 99%;      /* Matches Cream */
+  --background: 0 0% 7%;
+  /* Matches Dark */
+  --foreground: 0 0% 99%;
+  /* Matches Cream */
   --card: 0 0% 7%;
   --card-foreground: 0 0% 99%;
   --popover: 0 0% 7%;
   --popover-foreground: 0 0% 99%;
-  --primary: 74 100% 50%;      /* Lime */
+  --primary: 74 100% 50%;
+  /* Lime */
   --primary-foreground: 0 0% 7%;
   --secondary: 0 0% 15%;
   --secondary-foreground: 0 0% 98%;
@@ -87,9 +96,11 @@ body {
   0% {
     transform: translateY(0px);
   }
+
   50% {
     transform: translateY(-10px);
   }
+
   100% {
     transform: translateY(0px);
   }
@@ -97,4 +108,45 @@ body {
 
 .animate-float {
   animation: float 6s ease-in-out infinite;
+}
+
+/* ===== TOUCH OPTIMIZATION ===== */
+/* Disable hover effects on touch devices for snappier interactions */
+
+/* Only apply hover transforms on devices that support hover */
+@media (hover: hover) and (pointer: fine) {
+  .touch-card:hover {
+    transform: translateY(-12px);
+  }
+
+  .touch-scale:hover {
+    transform: scale(1.02);
+  }
+
+  .touch-scale-sm:hover {
+    transform: scale(1.05);
+  }
+}
+
+/* Touch devices get instant active feedback instead */
+@media (hover: none) or (pointer: coarse) {
+
+  .touch-card:active,
+  .touch-scale:active,
+  .touch-scale-sm:active {
+    transform: scale(0.98);
+    transition: transform 0.1s ease-out;
+  }
+
+  /* Remove tap delay on iOS */
+  .touch-target {
+    touch-action: manipulation;
+    -webkit-tap-highlight-color: transparent;
+  }
+}
+
+/* Universal touch target class for all interactive elements */
+.touch-target {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }

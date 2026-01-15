@@ -177,7 +177,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                   viewport={{ once: true }}
                   transition={{ duration: 0.4 }}
                   onClick={() => onOpenPlayer(player)}
-                  className={`group relative overflow-hidden rounded-[32px] sm:rounded-[40px] border transition-all duration-500 cursor-pointer flex flex-col shadow-sm ${cardClasses} ${textClasses} ${borderClasses} hover:shadow-2xl hover:scale-[1.02]`}
+                  className={`touch-scale touch-target group relative overflow-hidden rounded-[32px] sm:rounded-[40px] border transition-all duration-500 cursor-pointer flex flex-col shadow-sm ${cardClasses} ${textClasses} ${borderClasses} hover:shadow-2xl`}
                 >
                   {/* Morphing Watermark Background */}
                   <div className="absolute -top-10 -right-10 w-48 h-48 sm:w-64 sm:h-64 opacity-[0.03] group-hover:opacity-10 group-hover:rotate-12 transition-all duration-1000 pointer-events-none">
@@ -263,7 +263,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
           <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-16 sm:mt-24 md:mt-32 text-center">
             <button
               onClick={onViewAll}
-              className="bg-white text-black px-8 sm:px-12 md:px-20 py-6 md:py-8 rounded-full font-black uppercase tracking-[0.2em] text-[10px] md:text-[11px] hover:bg-[#C6FF00] hover:text-black transition-all hover:scale-105 shadow-2xl flex items-center gap-3 sm:gap-5 mx-auto"
+              className="touch-scale-sm touch-target bg-white text-black px-8 sm:px-12 md:px-20 py-6 md:py-8 rounded-full font-black uppercase tracking-[0.2em] text-[10px] md:text-[11px] hover:bg-[#C6FF00] hover:text-black transition-all shadow-2xl flex items-center gap-3 sm:gap-5 mx-auto"
             >
               View Full City Rankings
               <div className="bg-black text-[#C6FF00] p-2 rounded-full"><ICONS.ChevronRight /></div>

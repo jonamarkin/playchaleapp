@@ -18,9 +18,8 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick }) => {
   return (
     <motion.div
       layout
-      whileHover={{ y: -12 }}
       onClick={onClick}
-      className="group bg-white hover:bg-black rounded-[48px] p-6 flex flex-col cursor-pointer transition-all duration-500 hover:shadow-[0_60px_120px_rgba(0,0,0,0.25)] border border-black/5 hover:border-white/10 relative overflow-hidden h-full min-h-[620px]"
+      className="touch-card touch-target group bg-white hover:bg-black rounded-[48px] p-6 flex flex-col cursor-pointer transition-all duration-500 hover:shadow-[0_60px_120px_rgba(0,0,0,0.25)] border border-black/5 hover:border-white/10 relative overflow-hidden h-full min-h-[620px]"
     >
       {/* Visual Identity Section */}
       <div className="relative h-64 md:h-80 rounded-[40px] overflow-hidden mb-8">

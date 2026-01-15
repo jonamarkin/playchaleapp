@@ -186,12 +186,20 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
           </div>
         </div>
         {step < TOTAL_STEPS && (
-          <button
-            onClick={onSkip}
-            className="text-white/40 text-[9px] md:text-[10px] font-black uppercase tracking-[0.4em] hover:text-white transition-colors"
-          >
-            Exit Draft
-          </button>
+          <div className="flex items-center gap-4">
+            <a
+              href="/login"
+              className="text-[#C6FF00] text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] hover:text-white transition-colors border border-[#C6FF00]/30 px-4 py-2 rounded-full hover:bg-[#C6FF00]/10"
+            >
+              Sign In
+            </a>
+            <button
+              onClick={onSkip}
+              className="text-white/40 text-[9px] md:text-[10px] font-black uppercase tracking-[0.4em] hover:text-white transition-colors"
+            >
+              Exit Draft
+            </button>
+          </div>
         )}
       </header>
 
@@ -459,6 +467,18 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                     <p className="text-[8px] font-black text-center text-white/20 uppercase tracking-[0.2em] leading-relaxed">
                       By commissioning, you agree to our Pro-Athlete terms of conduct <br /> and amateur eligibility guidelines.
                     </p>
+
+                    <div className="pt-6 text-center border-t border-white/5">
+                      <p className="text-white/40 text-xs font-bold">
+                        Already have an account?{' '}
+                        <a
+                          href="/login"
+                          className="text-[#C6FF00] hover:underline font-black uppercase tracking-wider"
+                        >
+                          Sign In
+                        </a>
+                      </p>
+                    </div>
                   </div>
                 )}
               </motion.div>
