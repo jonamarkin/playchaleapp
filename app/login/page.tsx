@@ -23,18 +23,45 @@ export default function LoginPage() {
         setError(null);
 
         try {
-            const { error } = await supabase.auth.signInWithPassword({
+            const { data: authData, error } = await supabase.auth.signInWithPassword({
                 email,
                 password,
             });
 
             if (error) throw error;
 
-            router.push('/home');
+            // Clear any pending onboarding state from previous sessions
+            localStorage.removeItem('playchale_onboarding_temp');
+
+            // Check if user has completed onboarding
+            if (authData.user) {
+                console.log('User authenticated:', authData.user.id);
+
+                const { data: profile, error: profileError } = await supabase
+                    .from('profiles')
+                    .select('onboarding_completed, full_name')
+                    .eq('id', authData.user.id)
+                    .single();
+
+                console.log('Profile query result:', { profile, profileError });
+                console.log('onboarding_completed:', profile?.onboarding_completed);
+                console.log('full_name:', profile?.full_name);
+
+                // User is onboarded if: onboarding_completed is true OR they have a full_name (legacy users)
+                const isOnboarded = profile?.onboarding_completed || !!profile?.full_name;
+                console.log('Is onboarded?', isOnboarded);
+
+                if (isOnboarded) {
+                    console.log('Redirecting to /home');
+                    window.location.href = '/home';
+                } else {
+                    console.log('Redirecting to /onboarding');
+                    window.location.href = '/onboarding';
+                }
+            }
         } catch (err: any) {
             console.error('Login error:', err);
             setError(err.message || 'Failed to sign in');
-        } finally {
             setIsLoading(false);
         }
     };

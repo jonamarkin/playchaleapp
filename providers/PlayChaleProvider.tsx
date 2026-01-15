@@ -108,8 +108,9 @@ export function PlayChaleProvider({ children }: { children: ReactNode }) {
         // For Context compatibility, let's do a quick check or keep it simpler
         // Ideally, we move 'hasProfile' logic into the useProfile hook too.
         // For now, let's keep it manual to avoid breaking the complex Onboarding flow logic abruptly.
-        const { data: profile } = await supabase.from('profiles').select('onboarding_completed').eq('id', session.user.id).single();
-        setHasProfileState(profile?.onboarding_completed || false);
+        const { data: profile } = await supabase.from('profiles').select('onboarding_completed, full_name').eq('id', session.user.id).single();
+        // User is onboarded if: onboarding_completed is true OR they have a full_name (legacy users)
+        setHasProfileState(profile?.onboarding_completed || !!profile?.full_name);
       } else {
         setHasProfileState(false);
       }
