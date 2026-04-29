@@ -13,19 +13,18 @@
 - Home: compact mobile hero, denser quick actions, and lighter sidebar content.
 - Discover: sticky mobile search/filter surface, filter chips, and compact list cards. Complete.
 - Game detail: sticky bottom join/manage action bar. Complete.
-- Messages: app-style drill-in flow with composer positioned above bottom nav.
-- Stats/Profile: mobile tabs for overview, sport stats, history, and profile actions.
+- Messages: app-style drill-in flow with game chips and composer positioned above bottom nav. Complete.
+- Stats/Profile: mobile tabs for overview, sport stats, history, and profile actions. Complete.
 
-## Phase 3 Copy Refinement
+## Completed: Phase 3 Copy Refinement
 
-- Keep the energetic PlayChale voice, but reduce aggressive wording in utility flows.
-- Prefer direct labels in forms and account actions.
-- Reserve stronger brand language for onboarding, wins, matches, and share moments.
+- Reduced heavier wording in login, onboarding, profile, challenge, and account utility flows.
+- Kept the energetic PlayChale voice for marketing, match discovery, wins, and sports moments.
+- Preferred direct labels for forms, loading states, account actions, profile actions, and errors.
 
-## Phase 4 Quality Checks
+## Completed: Phase 4 Quality Checks
 
-- Test 360px, 390px, 430px, tablet, and desktop widths.
-- Verify 44px minimum tap targets.
-- Verify safe-area behavior on iOS-style viewports.
-- Verify reduced-motion behavior.
-- Verify loading, empty, error, and offline states for each primary route.
+- Re-enabled browser zoom by removing viewport scale locks.
+- Added a 44px minimum baseline to the shared touch-target utility.
+- Verified typecheck, lint, production build, PWA files, bundle audit, and route smoke checks.
+- Kept bottom-nav safe-area offsets on mobile app routes.

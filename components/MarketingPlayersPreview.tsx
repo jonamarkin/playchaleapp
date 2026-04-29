@@ -30,7 +30,7 @@ export default function MarketingPlayersPreview({ players }: MarketingPlayersPre
           </h2>
 
           <p className="font-bold max-w-2xl mx-auto text-sm sm:text-lg md:text-xl leading-tight tracking-tight px-4 text-white/50">
-            Where the city&apos;s finest record their legacy. Find rivals, climb the ranks, and become an amateur legend.
+            Find active players nearby, compare form, and build your local sports circle.
           </p>
         </div>
 

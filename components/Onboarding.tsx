@@ -131,7 +131,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
           )}
           <div className="flex items-center gap-3">
             <ICONS.Logo />
-            <span className="font-black text-xl md:text-2xl tracking-tighter italic uppercase">PRO DRAFT.</span>
+            <span className="font-black text-xl md:text-2xl tracking-tighter italic uppercase">PLAYER SETUP.</span>
           </div>
         </div>
         {step < TOTAL_STEPS && (
@@ -146,7 +146,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
               onClick={onSkip}
               className="text-white/40 text-[9px] md:text-[10px] font-black uppercase tracking-[0.4em] hover:text-white transition-colors"
             >
-              Exit Draft
+              Exit Setup
             </button>
           </div>
         )}
@@ -165,7 +165,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                 className="w-full space-y-12 text-center"
               >
                 <div className="space-y-4">
-                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">PHASE 01: ARENA</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">STEP 01: SPORTS</span>
                   <h2 className="text-4xl md:text-9xl font-black italic tracking-tighter uppercase leading-[0.85]">Select your <br /> disciplines.</h2>
                   <p className="text-white/40 text-[10px] uppercase tracking-widest">Select all that apply</p>
                 </div>
@@ -212,7 +212,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                 className="w-full space-y-12 text-center"
               >
                 <div className="space-y-4">
-                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">PHASE 02: LEVEL</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">STEP 02: LEVEL</span>
                   <h2 className="text-4xl md:text-9xl font-black italic tracking-tighter uppercase leading-[0.85]">What&apos;s your <br /> level?</h2>
                 </div>
 
@@ -241,7 +241,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                 className="w-full space-y-12 text-center"
               >
                 <div className="space-y-4">
-                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">PHASE 03: REGION</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">STEP 03: LOCATION</span>
                   <h2 className="text-4xl md:text-9xl font-black italic tracking-tighter uppercase leading-[0.85]">Where do <br /> you play?</h2>
                 </div>
 
@@ -261,7 +261,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                       }}
                     />
                   </div>
-                  <p className="mt-6 text-[10px] font-black uppercase tracking-[0.3em] text-white/20">Press enter to lock region</p>
+                  <p className="mt-6 text-[10px] font-black uppercase tracking-[0.3em] text-white/20">Press enter to continue</p>
                 </div>
               </motion.div>
             )}
@@ -275,8 +275,8 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                 className="w-full space-y-12 text-center"
               >
                 <div className="space-y-4">
-                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">PHASE 04: IDENTITY</span>
-                  <h2 className="text-4xl md:text-9xl font-black italic tracking-tighter uppercase leading-[0.85]">The Athlete <br /> Signature.</h2>
+                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">STEP 04: NAME</span>
+                  <h2 className="text-4xl md:text-9xl font-black italic tracking-tighter uppercase leading-[0.85]">Choose your <br /> player name.</h2>
                 </div>
 
                 <div className="max-w-md mx-auto w-full px-4">
@@ -298,7 +298,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                       }}
                     />
                   </div>
-                  <p className="mt-6 text-[10px] font-black uppercase tracking-[0.3em] text-white/20">This is how you&apos;ll be known in the Arena</p>
+                  <p className="mt-6 text-[10px] font-black uppercase tracking-[0.3em] text-white/20">This is how players will know you</p>
                 </div>
               </motion.div>
             )}
@@ -314,8 +314,8 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                 <div className="absolute top-0 right-0 p-20 opacity-5 rotate-12 hidden md:block"><ICONS.Logo /></div>
 
                 <div className="space-y-4 md:space-y-6">
-                  <span className="bg-[#C6FF00] text-black px-4 md:px-6 py-2 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest">DRAFT REPORT: {data.name.toUpperCase()}</span>
-                  <h2 className="text-3xl md:text-7xl font-black italic tracking-tighter uppercase leading-[0.85]">Welcome to <br className="hidden md:block" /> the Elite.</h2>
+                  <span className="bg-[#C6FF00] text-black px-4 md:px-6 py-2 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest">PROFILE PREVIEW: {data.name.toUpperCase()}</span>
+                  <h2 className="text-3xl md:text-7xl font-black italic tracking-tighter uppercase leading-[0.85]">Welcome to <br className="hidden md:block" /> PlayChale.</h2>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 text-left w-full">
@@ -325,7 +325,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                     <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/30 mt-2 truncate">In {data.location}</p>
                   </div>
                   <div className="p-6 md:p-8 bg-black border border-white/10 rounded-[32px] md:rounded-[40px] shadow-2xl">
-                    <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/30 mb-2">Potential Rivals</p>
+                    <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/30 mb-2">Active Players</p>
                     <p className="text-4xl md:text-5xl font-black italic text-[#C6FF00]">{LEVEL_CONFIG[data.level]?.rivals || '0'}</p>
                     <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/30 mt-2">Active {data.sports.join(', ')}</p>
                   </div>
@@ -337,7 +337,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                 </div>
 
                 <div className="flex flex-col md:flex-row items-center justify-center gap-6 pt-6 md:pt-10">
-                  <Button onClick={nextStep} className="w-full md:w-auto h-auto bg-[#C6FF00] text-black px-12 py-5 md:py-6 rounded-full font-black uppercase tracking-widest text-[10px] md:text-[11px] shadow-2xl shadow-lime-500/20 hover:scale-105 hover:bg-[#b0ff00] transition-all">Sign Athlete Contract</Button>
+                  <Button onClick={nextStep} className="w-full md:w-auto h-auto bg-[#C6FF00] text-black px-12 py-5 md:py-6 rounded-full font-black uppercase tracking-widest text-[10px] md:text-[11px] shadow-2xl shadow-lime-500/20 hover:scale-105 hover:bg-[#b0ff00] transition-all">Continue to Account</Button>
                 </div>
               </motion.div>
             )}
@@ -351,15 +351,15 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
               >
                 {/* ... existing header content ... */}
                 <div className="text-center space-y-4">
-                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">PHASE 06: COMMISSIONING</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">STEP 06: ACCOUNT</span>
                   <h2 className="text-4xl md:text-7xl font-black italic tracking-tighter uppercase leading-[0.85]">Finalize <br /> Credentials.</h2>
-                  <p className="text-white/40 text-[10px] md:text-xs font-bold uppercase tracking-widest">Commissioning profile for {data.name}</p>
+                  <p className="text-white/40 text-[10px] md:text-xs font-bold uppercase tracking-widest">Creating profile for {data.name}</p>
                 </div>
 
                 {isLoading ? (
                   <div className="flex flex-col items-center gap-6 py-20">
                     <div className="w-16 h-16 border-4 border-white/10 border-t-[#C6FF00] rounded-full animate-spin"></div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#C6FF00] animate-pulse">Commissioning Athlete...</p>
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#C6FF00] animate-pulse">Creating Profile...</p>
                   </div>
                 ) : (
                   <div className="w-full space-y-8 md:space-y-10">
@@ -377,24 +377,24 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
 
                     <div className="flex items-center gap-4 py-2">
                       <div className="h-px bg-white/10 flex-1"></div>
-                      <span className="text-[8px] font-black text-white/20 uppercase tracking-[0.4em]">OR DIRECT SIGNING</span>
+                      <span className="text-[8px] font-black text-white/20 uppercase tracking-[0.4em]">OR USE EMAIL</span>
                       <div className="h-px bg-white/10 flex-1"></div>
                     </div>
 
                     <form onSubmit={handleFinalSign} className="space-y-4">
                       <div className="space-y-2">
-                        <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-4">Athlete Email</label>
+                        <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-4">Email</label>
                         <Input
                           type="email"
                           required
-                          placeholder="scout@academy.pro"
+                          placeholder="you@example.com"
                           className="w-full h-auto bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-full px-8 py-5 text-base font-bold outline-none transition-all placeholder:text-white/20 focus-visible:ring-0"
                           value={data.email}
                           onChange={(e) => setData({ ...data, email: e.target.value })}
                         />
                       </div>
                       <div className="space-y-2">
-                        <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-4">Secret Access Code</label>
+                        <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-4">Password</label>
                         <Input
                           type="password"
                           required
@@ -409,12 +409,12 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                         type="submit"
                         className="w-full h-auto bg-white text-black py-6 rounded-full font-black uppercase tracking-widest text-[11px] shadow-2xl hover:bg-[#C6FF00] transition-all mt-6"
                       >
-                        Commission Account
+                        Create Account
                       </Button>
                     </form>
 
                     <p className="text-[8px] font-black text-center text-white/20 uppercase tracking-[0.2em] leading-relaxed">
-                      By commissioning, you agree to our Pro-Athlete terms of conduct <br /> and amateur eligibility guidelines.
+                      By creating an account, you agree to our player conduct terms <br /> and community guidelines.
                     </p>
 
                     <div className="pt-6 text-center border-t border-white/5">
@@ -436,7 +436,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
         </div>
       </div>
       <footer className="p-6 md:p-10 flex justify-center opacity-20 relative z-20 bg-gradient-to-t from-black to-transparent">
-        <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-center">© 2025 PLAYCHALE ATHLETE MANAGEMENT SYSTEM</p>
+        <p className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-center">© 2025 PLAYCHALE PLAYER NETWORK</p>
       </footer>
     </div>
   );

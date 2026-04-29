@@ -65,7 +65,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
           </h2>
 
           <p className={`font-bold max-w-2xl mx-auto text-sm sm:text-lg md:text-xl leading-tight tracking-tight px-4 ${isFullPage ? 'text-black/60' : 'text-white/50'}`}>
-            Where the city&apos;s finest record their legacy. Find rivals, climb the ranks, and become an amateur legend.
+            Find active players nearby, compare form, and build your local sports circle.
           </p>
 
           {isFullPage && (
@@ -75,7 +75,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                 <div className="sm:col-span-8 relative group">
                   <Input
                     type="text"
-                    placeholder="Scout for athletes..."
+                    placeholder="Search players..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
                     className="w-full bg-black/5 border-2 border-transparent focus:border-black rounded-full pl-12 sm:pl-16 pr-6 sm:pr-8 h-auto py-4 sm:py-6 text-black font-black text-sm sm:text-base outline-none transition-all placeholder:text-black/20 shadow-sm focus-visible:ring-0"
@@ -225,7 +225,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                         </div>
                       </div>
 
-                      {/* Scouting Brief */}
+                      {/* Player Bio */}
                       <div className="flex items-center justify-between gap-3 sm:gap-6 mt-auto">
                         <div className="min-w-0 flex-1">
                           <p className={`text-[8px] sm:text-[10px] font-black uppercase tracking-[0.3em] mb-1 sm:mb-2 transition-colors ${metaClasses}`}>PLAYER BIO</p>

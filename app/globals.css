@@ -432,6 +432,8 @@ a[href],
 
 /* Universal touch target class for all interactive elements */
 .touch-target {
+  min-height: 44px;
+  min-width: 44px;
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
 }

@@ -10,7 +10,7 @@ const inter = Inter({
 
 export const metadata: Metadata = {
   title: 'PlayChale | Pro-Grade Amateur Sports',
-  description: 'The professional-grade social engine for the amateur elite. Organize, compete, and record your legacy.',
+  description: 'Find local games, organize matches, and track your amateur sports progress with PlayChale.',
   keywords: ['sports', 'amateur sports', 'football', 'basketball', 'tennis', 'padel', 'community'],
   manifest: '/manifest.json',
   appleWebApp: {
@@ -37,8 +37,6 @@ export const viewport: Viewport = {
   themeColor: '#C6FF00',
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
 };
 
 export default function RootLayout({

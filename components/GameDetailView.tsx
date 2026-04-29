@@ -81,7 +81,7 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                 <div className="space-y-4">
                     <div className="flex items-center gap-3">
                         <span className="bg-[#C6FF00] text-black px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em]">
-                            {type === 'report' ? 'Match Report' : (type === 'manage' ? 'Organizer Mode' : 'Upcoming Match')}
+                            {type === 'report' ? 'Match Report' : (type === 'manage' ? 'Host Tools' : 'Upcoming Match')}
                         </span>
                         {game?.status && (
                             <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${game.status === 'upcoming' ? 'border-[#C6FF00] text-[#C6FF00]' : 'border-white/20 text-white/40'}`}>

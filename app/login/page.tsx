@@ -61,10 +61,10 @@ export default function LoginPage() {
                         </div>
                     </div>
                     <h1 className="text-4xl font-black italic tracking-tighter uppercase leading-none">
-                        Enter The <br /> Arena
+                        Welcome <br /> Back
                     </h1>
                     <p className="text-white/40 text-xs font-bold uppercase tracking-widest">
-                        Sign in to manage your legacy
+                        Sign in to manage your games
                     </p>
                 </div>
 
@@ -130,7 +130,7 @@ export default function LoginPage() {
 
                 <div className="text-center">
                     <Link href="/onboarding" className="text-white/40 hover:text-[#C6FF00] text-xs font-bold uppercase tracking-widest transition-colors">
-                        New Athlete? <span className="text-white border-b border-white/20 pb-0.5">Start Draft</span>
+                        New to PlayChale? <span className="text-white border-b border-white/20 pb-0.5">Create Profile</span>
                     </Link>
                 </div>
             </div>

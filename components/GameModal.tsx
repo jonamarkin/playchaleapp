@@ -321,10 +321,10 @@ const GameModal: React.FC<ModalProps> = ({
               <svg viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 md:w-10 md:h-10"><polyline points="20 6 9 17 4 12" /></svg>
             </div>
             <h2 className={`text-3xl md:text-4xl font-black tracking-tighter italic uppercase ${isDarkTheme ? 'text-[#C6FF00]' : 'text-black'}`}>
-              {type === 'challenge' ? 'CHALLENGE ISSUED!' : (type === 'create' ? 'MATCH PUBLISHED!' : (type === 'contact-organizer' ? 'MESSAGE SENT!' : 'SUCCESS!'))}
+              {type === 'challenge' ? 'CHALLENGE SENT!' : (type === 'create' ? 'MATCH PUBLISHED!' : (type === 'contact-organizer' ? 'MESSAGE SENT!' : 'SUCCESS!'))}
             </h2>
             <p className={`${isDarkTheme ? 'text-white/60' : 'text-black/60'} font-black uppercase tracking-[0.2em] text-[9px] md:text-[10px]`}>
-              {type === 'challenge' ? 'Wait for the opponent to accept.' : 'Action complete.'}
+              {type === 'challenge' ? 'Wait for the player to accept.' : 'Action complete.'}
             </p>
           </motion.div>
         ) : (
@@ -335,7 +335,7 @@ const GameModal: React.FC<ModalProps> = ({
                   {type?.toUpperCase().replace('-', ' ')}
                 </span>
                 {type === 'manage-game' && (
-                  <span className="text-[9px] font-black uppercase bg-red-500 text-white px-3 py-1 rounded-full italic animate-pulse">Organizer Mode</span>
+                  <span className="text-[9px] font-black uppercase bg-red-500 text-white px-3 py-1 rounded-full italic animate-pulse">Host Tools</span>
                 )}
               </div>
               <h2 className={`text-4xl md:text-6xl font-black tracking-tighter leading-tight italic uppercase`}>
@@ -559,7 +559,7 @@ const GameModal: React.FC<ModalProps> = ({
                   </div>
 
                   <button type="submit" disabled={loading} className="w-full bg-[#C6FF00] text-black py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] transition-all flex items-center justify-center gap-4 shadow-2xl">
-                    {loading ? 'Saving...' : 'Update Pro Stats'}
+                    {loading ? 'Saving...' : 'Update Stats'}
                   </button>
                 </motion.form>
               )}
@@ -583,7 +583,7 @@ const GameModal: React.FC<ModalProps> = ({
                     </div>
                     <div className="space-y-1">
                       <h3 className="text-3xl font-black italic uppercase tracking-tighter leading-none">{player.name}</h3>
-                      <p className="text-[#C6FF00] font-black uppercase tracking-widest text-[9px]">{player.mainSport} Elite</p>
+                      <p className="text-[#C6FF00] font-black uppercase tracking-widest text-[9px]">{player.mainSport} Player</p>
                     </div>
                     <div className="w-full grid grid-cols-3 gap-4 py-4 border-y border-white/5">
                       <div>
@@ -601,7 +601,7 @@ const GameModal: React.FC<ModalProps> = ({
                     </div>
                     <div className="pt-4 opacity-20">
                       <svg width="100" height="100" viewBox="0 0 24 24" fill="currentColor"><path d="M3 3h4v4H3V3zm14 0h4v4h-4V3zM3 17h4v4H3v-4zm14 0h4v4h-4v-4zM7 3h4v4H7V3zm6 0h4v4h-4V3zM7 17h4v4H7v-4zm6 13h4v4h-4v-4zM3 7h4v4H3V7zm14 0h4v4h-4V7zM3 13h4v4H3v-4zm14 0h4v4h-4v-4zM7 7h4v4H7V7zm6 0h4v4h-4V7zM7 13h4v4H7v-4zm6 13h4v4h-4v-4zM11 11h2v2h-2v-2z" /></svg>
-                      <p className="text-[8px] font-black uppercase tracking-widest mt-2">Scan to Challenge</p>
+                      <p className="text-[8px] font-black uppercase tracking-widest mt-2">Scan to View Profile</p>
                     </div>
                   </div>
                   <button
@@ -609,7 +609,7 @@ const GameModal: React.FC<ModalProps> = ({
                     className="w-full bg-[#C6FF00] text-black py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] transition-all flex items-center justify-center gap-4 shadow-2xl"
                   >
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
-                    Copy Pro Profile Link
+                    Copy Profile Link
                   </button>
                 </motion.div>
               )}
@@ -1087,7 +1087,7 @@ const GameModal: React.FC<ModalProps> = ({
                     <button onClick={() => pushView('detailed-stats')} className="bg-white/5 text-white py-4 md:py-5 rounded-full font-black uppercase tracking-widest text-[10px] md:text-[11px] hover:bg-white/10 transition-all">View Detailed Stats</button>
                     <button onClick={() => pushView('challenge')} className="bg-[#C6FF00] text-black rounded-full py-4 md:py-5 font-black uppercase tracking-widest text-[10px] md:text-[11px] hover:scale-[1.05] transition-all flex items-center justify-center gap-2 md:gap-3 shadow-xl shadow-lime-500/10">
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" /></svg>
-                      Issue Challenge
+                      Challenge Player
                     </button>
                   </div>
                 </motion.div>
@@ -1179,13 +1179,13 @@ const GameModal: React.FC<ModalProps> = ({
                     <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-4">Challenge Message</label>
                     <textarea
                       value={challengeMsg} onChange={(e) => setChallengeMsg(e.target.value)}
-                      placeholder="Drop some trash talk or match rules..."
+                      placeholder="Add match details, timing, or notes..."
                       className="w-full h-32 bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-[32px] p-6 text-white font-bold placeholder:text-white/20 outline-none transition-all resize-none"
                       required
                     />
                   </div>
                   <button disabled={loading} className="w-full bg-[#C6FF00] text-black py-5 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] transition-all flex items-center justify-center gap-4 shadow-xl">
-                    {loading ? 'Issuing...' : 'Send Challenge Request'}
+                    {loading ? 'Sending...' : 'Send Challenge Request'}
                   </button>
                 </motion.form>
               )}

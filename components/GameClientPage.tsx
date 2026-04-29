@@ -43,7 +43,7 @@ export default function GameClientPage({ initialGame }: GameClientPageProps) {
             <div className="min-h-screen bg-black flex items-center justify-center text-white">
                 <div className="animate-pulse flex flex-col items-center gap-4">
                     <div className="w-12 h-12 bg-[#C6FF00] rounded-full animate-bounce"></div>
-                    <p className="font-black uppercase tracking-widest text-xs opacity-50">Arena Not Found</p>
+                    <p className="font-black uppercase tracking-widest text-xs opacity-50">Match Not Found</p>
                 </div>
             </div>
         );

@@ -61,7 +61,7 @@ export default function MyGamesPage() {
                 <header className="space-y-4">
                     <div className="pc-fade-left inline-flex items-center gap-2 sm:gap-3 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] sm:tracking-[0.4em] text-black/30">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#C6FF00]"></span>
-                        Your Arena
+                        Your Games
                     </div>
                     <h1 className="pc-view-enter text-4xl sm:text-5xl md:text-6xl font-black italic tracking-tighter uppercase">
                         My Games

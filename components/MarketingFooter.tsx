@@ -29,12 +29,12 @@ export default function MarketingFooter() {
                 <span className="font-black text-3xl tracking-tighter italic uppercase">PlayChale.</span>
               </div>
               <p className="text-white/40 font-bold text-lg leading-snug max-w-sm tracking-tight">
-                The professional-grade social engine for the amateur elite. Organize, compete, and record your legacy.
+                Find local games, organize matches, and track your amateur sports progress.
               </p>
             </div>
 
             <div className="space-y-4">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#C6FF00]">Elite Access</h4>
+              <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#C6FF00]">Match Alerts</h4>
               <div className="relative max-w-md">
                 <input
                   type="email"
@@ -45,12 +45,12 @@ export default function MarketingFooter() {
                   Join
                 </button>
               </div>
-              <p className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-6">Get scouted. No spam, only stats.</p>
+              <p className="text-[9px] font-black uppercase tracking-widest text-white/20 ml-6">No spam, only useful match updates.</p>
             </div>
           </div>
 
           <div className="lg:col-span-7 grid grid-cols-2 md:grid-cols-3 gap-12">
-            <FooterColumn title="The Arena" links={arenaLinks} />
+            <FooterColumn title="Play" links={arenaLinks} />
             <FooterColumn title="Community" links={communityLinks} />
 
             <div className="space-y-8 col-span-2 md:col-span-1">
