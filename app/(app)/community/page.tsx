@@ -1,7 +1,6 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import TopPlayers from '@/components/TopPlayers';
 import { useInfinitePlayers } from '@/hooks/useData';
 import { Button } from '@/components/ui/button';
@@ -13,11 +12,7 @@ export default function CommunityPage() {
   const router = useRouter();
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-    >
+    <div className="pc-view-enter">
       <TopPlayers
         players={players}
         onOpenPlayer={(player) => router.push(`/profile/${player.slug || player.id}`)}
@@ -35,6 +30,6 @@ export default function CommunityPage() {
           </Button>
         </div>
       )}
-    </motion.div>
+    </div>
   );
 }

@@ -1,9 +1,4 @@
-/**
- * Base API configuration and utilities
- * This will be the foundation for all API calls once a backend is connected
- */
-
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || '';
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || process.env.NEXT_PUBLIC_API_URL || '';
 
 interface ApiConfig {
     baseUrl: string;
@@ -11,7 +6,7 @@ interface ApiConfig {
 }
 
 const defaultConfig: ApiConfig = {
-    baseUrl: API_BASE_URL,
+    baseUrl: API_BASE_URL.replace(/\/$/, ''),
     headers: {
         'Content-Type': 'application/json',
     },
@@ -48,9 +43,16 @@ async function fetchApi<T>(
     options: RequestInit = {}
 ): Promise<ApiResponse<T>> {
     try {
-        const url = `${defaultConfig.baseUrl}${endpoint}`;
+        if (!defaultConfig.baseUrl && endpoint.startsWith('http') === false) {
+            throw new ApiError(500, 'NEXT_PUBLIC_API_BASE_URL is not configured');
+        }
+
+        const url = endpoint.startsWith('http')
+            ? endpoint
+            : `${defaultConfig.baseUrl}${endpoint}`;
 
         const response = await fetch(url, {
+            credentials: 'include',
             ...options,
             headers: {
                 ...defaultConfig.headers,
@@ -89,6 +91,11 @@ async function fetchApi<T>(
         };
     }
 }
+
+export const isMockBackend = () => {
+    const source = process.env.NEXT_PUBLIC_DATA_SOURCE || process.env.NEXT_PUBLIC_ENABLE_MOCK_DATA;
+    return source !== 'http' && source !== 'false';
+};
 
 /**
  * HTTP method helpers

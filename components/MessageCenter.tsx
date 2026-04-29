@@ -2,9 +2,8 @@
 
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
-import { ICONS } from '@/constants';
-import { motion, AnimatePresence } from 'framer-motion';
-import { Message, Game, Challenge } from '@/types';
+import { ICONS } from '@/constants/icons';
+import { Message, Game } from '@/types';
 
 interface MessageCenterProps {
   messages: Message[];
@@ -177,9 +176,8 @@ const MessageCenter: React.FC<MessageCenterProps> = ({
 
         {/* Pane 3: Chat/Challenge View */}
         <div className={`${mobileView !== 'chat' ? 'hidden md:flex' : 'flex'} flex-1 bg-white/5 border border-white/10 rounded-[40px] md:rounded-[56px] flex flex-col overflow-hidden relative`}>
-          <AnimatePresence mode="wait">
-            {activeThread ? (
-              <motion.div key={activeThread.user.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col h-full">
+          {activeThread ? (
+              <div key={activeThread.user.id} className="pc-view-enter flex-1 flex flex-col h-full">
                 <div className="p-6 md:p-10 border-b border-white/5 flex justify-between items-center bg-white/5 backdrop-blur-md relative z-10 shrink-0">
                   <div className="flex items-center gap-3 md:gap-5">
                     <button onClick={() => setMobileView('threads')} className="md:hidden p-2 bg-white/5 rounded-full"><ICONS.ChevronRight className="rotate-180" /></button>
@@ -223,7 +221,7 @@ const MessageCenter: React.FC<MessageCenterProps> = ({
                               </div>
                               <div className="bg-red-500 text-white px-4 py-1 rounded-full text-[10px] font-black uppercase italic animate-pulse">Pending</div>
                             </div>
-                            <p className="text-white/60 font-medium italic italic">"{msg.challengeDetails.message}"</p>
+                            <p className="text-white/60 font-medium italic italic">&quot;{msg.challengeDetails.message}&quot;</p>
 
                             {msg.challengeDetails.status === 'pending' && msg.senderId !== 'host-user' && (
                               <div className="grid grid-cols-2 gap-4 pt-4">
@@ -277,7 +275,7 @@ const MessageCenter: React.FC<MessageCenterProps> = ({
                     </button>
                   </div>
                 </div>
-              </motion.div>
+              </div>
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center opacity-20 text-center p-8 space-y-6 md:space-y-8">
                 <ICONS.Logo />
@@ -287,7 +285,6 @@ const MessageCenter: React.FC<MessageCenterProps> = ({
                 </div>
               </div>
             )}
-          </AnimatePresence>
         </div>
       </div>
     </section>

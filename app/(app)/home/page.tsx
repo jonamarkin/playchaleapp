@@ -1,18 +1,16 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import AppDashboard from '@/components/AppDashboard';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
-
 import { useRouter } from 'next/navigation';
-
 import { useEffect } from 'react';
-import { useProfile, useMyGames, usePlayers } from '@/hooks/useData';
+import { useGames, useProfile, useMyGames, usePlayers } from '@/hooks/useData';
 
 export default function HomePage() {
-  const { games, handleNavigate, user } = usePlayChale();
+  const { handleNavigate, user } = usePlayChale();
   const router = useRouter();
+  const { data: games = [] } = useGames();
   const { data: profile, isLoading } = useProfile(user?.id);
   const { data: myGamesData } = useMyGames(user?.id);
   const { data: players } = usePlayers();
@@ -38,11 +36,7 @@ export default function HomePage() {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-    >
+    <div className="pc-view-enter">
       <AppDashboard
         player={profile}
         upcomingGames={games.slice(0, 3)}
@@ -51,6 +45,6 @@ export default function HomePage() {
         onViewMatch={(game) => router.push(`/game/${game.slug || game.id}`)}
         onNavigate={handleNavigate}
       />
-    </motion.div>
+    </div>
   );
 }

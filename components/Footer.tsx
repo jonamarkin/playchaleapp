@@ -1,14 +1,25 @@
 'use client';
 
 import React from 'react';
-import { ICONS } from '@/constants';
-import { motion } from 'framer-motion';
+import { useRouter } from 'next/navigation';
+import { ICONS } from '@/constants/icons';
 
 interface FooterProps {
-  onNavigate: (view: any) => void;
+  onNavigate?: (view: string) => void;
 }
 
 const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
+  const router = useRouter();
+
+  const navigateTo = (path: string) => {
+    if (onNavigate) {
+      onNavigate(path);
+      return;
+    }
+
+    router.push(path);
+  };
+
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -61,7 +72,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   { label: 'Pitch Partners', path: '/discover' }
                 ].map(item => (
                   <li key={item.label}>
-                    <button onClick={() => onNavigate(item.path)} className="text-sm font-black italic uppercase tracking-tight hover:text-[#C6FF00] transition-colors text-left">{item.label}</button>
+                    <button onClick={() => navigateTo(item.path)} className="text-sm font-black italic uppercase tracking-tight hover:text-[#C6FF00] transition-colors text-left">{item.label}</button>
                   </li>
                 ))}
               </ul>
@@ -77,7 +88,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   { label: 'Guidelines', path: '/home' }
                 ].map(item => (
                   <li key={item.label}>
-                    <button onClick={() => onNavigate(item.path)} className="text-sm font-black italic uppercase tracking-tight hover:text-[#C6FF00] transition-colors text-left">{item.label}</button>
+                    <button onClick={() => navigateTo(item.path)} className="text-sm font-black italic uppercase tracking-tight hover:text-[#C6FF00] transition-colors text-left">{item.label}</button>
                   </li>
                 ))}
               </ul>

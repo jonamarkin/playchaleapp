@@ -110,21 +110,159 @@ body {
   animation: float 6s ease-in-out infinite;
 }
 
+@keyframes pc-fade-up {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes pc-fade-left {
+  from {
+    opacity: 0;
+    transform: translateX(-16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pc-fade-right {
+  from {
+    opacity: 0;
+    transform: translateX(16px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateX(0);
+  }
+}
+
+@keyframes pc-slide-in {
+  from {
+    transform: translateX(100%);
+  }
+
+  to {
+    transform: translateX(0);
+  }
+}
+
+.pc-view-enter {
+  animation: pc-fade-up 320ms ease-out both;
+}
+
+.pc-fade-left {
+  animation: pc-fade-left 320ms ease-out both;
+}
+
+.pc-fade-right {
+  animation: pc-fade-right 320ms ease-out both;
+}
+
+.pc-slide-panel {
+  animation: pc-slide-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.pc-toast-enter {
+  animation: pc-fade-up 220ms ease-out both;
+}
+
+.pc-motion-enter {
+  animation: pc-motion-enter 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  transition:
+    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    opacity 180ms ease-out,
+    width 520ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+@keyframes pc-motion-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 10px, 0) scale(0.985);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+.pc-content-visibility {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 900px;
+}
+
+.pc-content-visibility-sm {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 520px;
+}
+
+.pc-render-contain {
+  contain: layout paint style;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+@media (update: slow), (prefers-reduced-motion: reduce), (pointer: coarse) {
+  .glass {
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+}
+
 /* ===== TOUCH OPTIMIZATION ===== */
 /* Disable hover effects on touch devices for snappier interactions */
+
+.touch-card,
+.touch-scale,
+.touch-scale-sm {
+  transform: translate3d(0, 0, 0) scale(1);
+  transition:
+    transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    box-shadow 260ms ease-out,
+    background-color 200ms ease-out,
+    border-color 200ms ease-out,
+    color 160ms ease-out,
+    opacity 160ms ease-out;
+}
 
 /* Only apply hover transforms on devices that support hover */
 @media (hover: hover) and (pointer: fine) {
   .touch-card:hover {
-    transform: translateY(-12px);
+    transform: translate3d(0, -8px, 0) scale(1.005);
+    will-change: transform;
   }
 
   .touch-scale:hover {
-    transform: scale(1.02);
+    transform: translate3d(0, -2px, 0) scale(1.018);
+    will-change: transform;
   }
 
   .touch-scale-sm:hover {
-    transform: scale(1.05);
+    transform: translate3d(0, -1px, 0) scale(1.035);
+    will-change: transform;
   }
 }
 

@@ -1,23 +1,27 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
 import Onboarding from '@/components/Onboarding';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
+import { AppProviders } from '@/providers/AppProviders';
 
 export default function OnboardingPage() {
+  return (
+    <AppProviders>
+      <OnboardingContent />
+    </AppProviders>
+  );
+}
+
+function OnboardingContent() {
   const { completeOnboarding, handleNavigate } = usePlayChale();
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }} 
-      animate={{ opacity: 1 }} 
-      exit={{ opacity: 0 }}
-    >
+    <div className="pc-view-enter">
       <Onboarding 
         onComplete={completeOnboarding} 
         onSkip={() => handleNavigate('/discover')} 
       />
-    </motion.div>
+    </div>
   );
 }

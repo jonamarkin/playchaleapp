@@ -2,7 +2,6 @@
 
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
 import ProfileDashboard from '@/components/ProfileDashboard';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
 import { useProfile } from '@/hooks/useData';
@@ -28,11 +27,7 @@ export default function StatsPage() {
   }
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-    >
+    <div className="pc-view-enter">
       <ProfileDashboard
         player={profile}
         isOwner={true}
@@ -41,6 +36,6 @@ export default function StatsPage() {
         onShareProfile={() => openModal('share-profile', profile)}
         onViewMatch={(match) => router.push(`/game/${match.slug || match.id}`)}
       />
-    </motion.div>
+    </div>
   );
 }

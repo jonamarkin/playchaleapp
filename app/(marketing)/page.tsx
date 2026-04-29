@@ -1,45 +1,25 @@
-'use client';
-
 import React from 'react';
-import { motion } from 'framer-motion';
 import Hero from '@/components/Hero';
-import DiscoverGames from '@/components/DiscoverGames';
 import { Features } from '@/components/Features';
-import TopPlayers from '@/components/TopPlayers';
+import MarketingGamesPreview from '@/components/MarketingGamesPreview';
+import MarketingPlayersPreview from '@/components/MarketingPlayersPreview';
 import Programs from '@/components/Programs';
 import Testimonials from '@/components/Testimonials';
-import { usePlayChale } from '@/providers/PlayChaleProvider';
-
-import { useRouter } from 'next/navigation';
+import { GAMES, PROGRAMS, TOP_PLAYERS } from '@/constants';
 
 export default function LandingPage() {
-  const { games, players, openModal, handleNavigate } = usePlayChale();
-  const router = useRouter();
-
   return (
-    <motion.div
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-    >
-      <Hero onOpenDiscover={() => handleNavigate('/discover')} />
-      <div className="bg-[#FDFDFB] -mt-20 relative z-20 rounded-t-[60px] md:rounded-t-[100px] border-t border-black/5 shadow-[0_-40px_100px_rgba(0,0,0,0.1)]">
-        <DiscoverGames
-          games={games.slice(0, 3)}
-          onOpenGame={(game) => router.push(`/game/${game.slug || game.id}`)}
-          isFullPage={false}
-        />
+    <div>
+      <Hero />
+      <div className="pc-content-visibility bg-[#FDFDFB] -mt-20 relative z-20 rounded-t-[60px] md:rounded-t-[100px] border-t border-black/5 shadow-[0_-40px_100px_rgba(0,0,0,0.1)]">
+        <MarketingGamesPreview games={GAMES.slice(0, 3)} />
       </div>
       <Features />
-      <div className="bg-black py-40">
-        <TopPlayers
-          players={players.slice(0, 2)}
-          onOpenPlayer={(player) => openModal('profile', player)}
-          onViewAll={() => handleNavigate('/community')}
-        />
+      <div className="pc-content-visibility bg-black py-40">
+        <MarketingPlayersPreview players={TOP_PLAYERS.slice(0, 2)} />
       </div>
-      <Programs onOpenDetails={() => handleNavigate('/discover')} />
+      <Programs programs={PROGRAMS} />
       <Testimonials />
-    </motion.div>
+    </div>
   );
 }

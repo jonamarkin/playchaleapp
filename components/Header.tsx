@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
-import { ICONS } from '@/constants';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ICONS } from '@/constants/icons';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
 
 interface HeaderProps {
@@ -48,21 +47,16 @@ const Header: React.FC<HeaderProps> = ({ onOpenCreate, activeView, onNavigate })
     <>
       <header className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 px-4 md:px-8 py-3 md:py-4 flex justify-between items-center ${headerTheme === 'light' ? 'bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100' : 'bg-transparent'}`}>
         <div className="flex items-center gap-3 md:gap-6">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-3 md:gap-4 cursor-pointer group"
+          <div
+            className="pc-fade-left flex items-center gap-3 md:gap-4 cursor-pointer group"
             onClick={() => onNavigate('home')}
           >
             <ICONS.Logo />
             <span className={`hidden sm:block font-black text-xl tracking-tighter transition-colors duration-300 ${headerTheme === 'light' ? 'text-black' : 'text-white'}`}>PlayChale</span>
-          </motion.div>
+          </div>
 
-          <motion.nav
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.1 }}
-            className={`hidden lg:flex transition-all duration-300 rounded-full px-2 py-1 gap-1 items-center border shadow-sm ${headerTheme === 'light' ? 'bg-black/5 border-black/10' : 'bg-white/10 border-white/20 backdrop-blur-md'}`}
+          <nav
+            className={`pc-fade-left hidden lg:flex transition-all duration-300 rounded-full px-2 py-1 gap-1 items-center border shadow-sm ${headerTheme === 'light' ? 'bg-black/5 border-black/10' : 'bg-white/10 border-white/20 backdrop-blur-md'}`}
           >
             {navItems.map((item) => (
               <button
@@ -73,13 +67,11 @@ const Header: React.FC<HeaderProps> = ({ onOpenCreate, activeView, onNavigate })
                 {item.label}
               </button>
             ))}
-          </motion.nav>
+          </nav>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="flex items-center gap-2 md:gap-3"
+        <div
+          className="pc-fade-right flex items-center gap-2 md:gap-3"
         >
           <button
             onClick={onOpenCreate}
@@ -97,17 +89,12 @@ const Header: React.FC<HeaderProps> = ({ onOpenCreate, activeView, onNavigate })
           >
             {isMenuOpen ? <ICONS.X /> : <ICONS.Menu />}
           </button>
-        </motion.div>
+        </div>
       </header>
 
-      <AnimatePresence>
-        {isMenuOpen && (
-          <motion.div
-            initial={{ x: '100%' }}
-            animate={{ x: 0 }}
-            exit={{ x: '100%' }}
-            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-            className="fixed inset-0 z-[110] bg-black text-white flex flex-col p-8 pt-32"
+      {isMenuOpen && (
+          <div
+            className="pc-slide-panel fixed inset-0 z-[110] bg-black text-white flex flex-col p-8 pt-32"
           >
             <div className="flex justify-between items-center absolute top-8 left-8 right-8">
               <div className="flex items-center gap-4 cursor-pointer" onClick={() => { onNavigate('home'); setIsMenuOpen(false); }}>
@@ -139,9 +126,8 @@ const Header: React.FC<HeaderProps> = ({ onOpenCreate, activeView, onNavigate })
                 </button>
               )}
             </div>
-          </motion.div>
+          </div>
         )}
-      </AnimatePresence>
     </>
   );
 };

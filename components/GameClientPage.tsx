@@ -1,60 +1,49 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
 import GameDetailView from '@/components/GameDetailView';
-import PostGameModal from '@/components/PostGameModal';
-import { Game, MatchRecord } from '@/types';
-import { ICONS } from '@/constants';
+import { Game } from '@/types';
+import { ICONS } from '@/constants/icons';
 import { useJoinGame, useProfile } from '@/hooks/useData';
+
+const PostGameModal = dynamic(() => import('@/components/PostGameModal'), {
+    ssr: false,
+    loading: () => (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-xl z-[200] flex items-center justify-center">
+            <div className="w-12 h-12 border-4 border-[#C6FF00] border-t-transparent rounded-full animate-spin" />
+        </div>
+    ),
+});
 
 interface GameClientPageProps {
     id: string;
     initialGame?: Game | null;
 }
 
-export default function GameClientPage({ id, initialGame }: GameClientPageProps) {
+export default function GameClientPage({ initialGame }: GameClientPageProps) {
     const router = useRouter();
-    const { games, activeModal, user, triggerToast } = usePlayChale();
+    const { user, triggerToast } = usePlayChale();
     const { mutate: joinGame } = useJoinGame();
     const { data: profile } = useProfile(user?.id);
 
-    const [viewType, setViewType] = useState<'join' | 'manage' | 'report' | null>(null);
-    const [data, setData] = useState<Game | MatchRecord | null>(initialGame || null);
     const [showPostGameModal, setShowPostGameModal] = useState(false);
 
+    const data = initialGame ?? null;
+    const viewType: 'join' | 'manage' | 'report' | null = data
+        ? (user && data.organizer_id === user.id ? 'manage' : 'join')
+        : null;
     const isHost = user && data && 'organizer_id' in data && data.organizer_id === user.id;
     const isGameComplete = data && 'completed_at' in data && data.completed_at;
-
-    useEffect(() => {
-        if (!id) return;
-
-        // If we have initialGame, we might still want to check user status for viewType
-        // But for simplicity, if initialGame is provided, we use it.
-        // We still need to determine viewType based on user.
-
-        const gameToUse = games.find(g => g.id === id) || initialGame;
-
-        if (gameToUse) {
-            const isOrganizer = user && gameToUse.organizer_id === user.id;
-            setViewType(isOrganizer ? 'manage' : 'join');
-            setData(gameToUse);
-            return;
-        }
-
-        // Search in history logic...
-        // For now, if not found and no initialGame, maybe we are still loading games array?
-        if (!initialGame && !games.length) return; // Wait for games
-
-    }, [id, games, user, initialGame]);
 
     if (!data || !viewType) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center text-white">
                 <div className="animate-pulse flex flex-col items-center gap-4">
                     <div className="w-12 h-12 bg-[#C6FF00] rounded-full animate-bounce"></div>
-                    <p className="font-black uppercase tracking-widest text-xs opacity-50">Loading Arena...</p>
+                    <p className="font-black uppercase tracking-widest text-xs opacity-50">Arena Not Found</p>
                 </div>
             </div>
         );
@@ -143,4 +132,3 @@ export default function GameClientPage({ id, initialGame }: GameClientPageProps)
         </div>
     );
 }
-

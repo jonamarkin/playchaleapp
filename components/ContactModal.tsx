@@ -1,8 +1,7 @@
 'use client';
 
 import React, { useState } from 'react';
-import { ICONS } from '@/constants';
-import { motion } from 'framer-motion';
+import { ICONS } from '@/constants/icons';
 
 interface ContactModalProps {
   type: 'contact' | 'booking' | 'details' | null;
@@ -32,19 +31,13 @@ const ContactModal: React.FC<ContactModalProps> = ({ type, onClose }) => {
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
-      <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
+      <div
         onClick={onClose}
-        className="absolute inset-0 bg-black/60 backdrop-blur-xl"
+        className="pc-toast-enter absolute inset-0 bg-black/60 backdrop-blur-xl"
       />
       
-      <motion.div 
-        initial={{ scale: 0.9, opacity: 0, y: 20 }}
-        animate={{ scale: 1, opacity: 1, y: 0 }}
-        exit={{ scale: 0.9, opacity: 0, y: 20 }}
-        className="relative bg-white w-full max-w-2xl rounded-[48px] shadow-2xl overflow-hidden p-8 md:p-12"
+      <div
+        className="pc-view-enter relative bg-white w-full max-w-2xl rounded-[48px] shadow-2xl overflow-hidden p-8 md:p-12"
       >
         <button 
           onClick={onClose}
@@ -54,17 +47,13 @@ const ContactModal: React.FC<ContactModalProps> = ({ type, onClose }) => {
         </button>
 
         {submitted ? (
-          <motion.div 
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            className="py-12 text-center"
-          >
+          <div className="pc-view-enter py-12 text-center">
             <div className="w-24 h-24 bg-[#C6FF00] rounded-full flex items-center justify-center mx-auto mb-8 shadow-xl">
                <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
             </div>
             <h2 className="text-4xl font-black tracking-tighter mb-4">Success!</h2>
             <p className="text-gray-500 font-bold uppercase tracking-widest text-xs">Our team will contact you within 24 hours.</p>
-          </motion.div>
+          </div>
         ) : (
           <div className="space-y-8">
             <div className="space-y-2">
@@ -126,7 +115,7 @@ const ContactModal: React.FC<ContactModalProps> = ({ type, onClose }) => {
             )}
           </div>
         )}
-      </motion.div>
+      </div>
     </div>
   );
 };

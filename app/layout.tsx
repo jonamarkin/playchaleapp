@@ -1,7 +1,7 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
+import ServiceWorkerRegister from '@/components/ServiceWorkerRegister';
 import './globals.css';
-import { PlayChaleProvider } from '@/providers/PlayChaleProvider';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -41,11 +41,6 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-
-import { QueryProvider } from '@/providers/QueryProvider';
-
-// ...
-
 export default function RootLayout({
   children,
 }: {
@@ -54,11 +49,8 @@ export default function RootLayout({
   return (
     <html lang="en" className={inter.variable}>
       <body className="font-sans">
-        <QueryProvider>
-          <PlayChaleProvider>
-            {children}
-          </PlayChaleProvider>
-        </QueryProvider>
+        {children}
+        <ServiceWorkerRegister />
       </body>
     </html>
   );

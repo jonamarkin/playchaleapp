@@ -17,15 +17,25 @@ export function useLocalStorage<T>(key: string, initialValue: T) {
     useEffect(() => {
         if (typeof window === 'undefined') return;
 
-        try {
-            const item = window.localStorage.getItem(key);
-            if (item) {
-                setStoredValue(safeJsonParse(item, initialValue));
+        let isActive = true;
+
+        queueMicrotask(() => {
+            if (!isActive) return;
+
+            try {
+                const item = window.localStorage.getItem(key);
+                if (item) {
+                    setStoredValue(safeJsonParse(item, initialValue));
+                }
+            } catch (error) {
+                console.error(`Error reading localStorage key "${key}":`, error);
             }
-        } catch (error) {
-            console.error(`Error reading localStorage key "${key}":`, error);
-        }
-        setIsLoaded(true);
+            setIsLoaded(true);
+        });
+
+        return () => {
+            isActive = false;
+        };
     }, [key, initialValue]);
 
     // Return a wrapped version of useState's setter function

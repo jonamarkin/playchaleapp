@@ -21,6 +21,56 @@ export interface Game {
   requests?: JoinRequest[];
 }
 
+export interface AppUser {
+  id: string;
+  email: string;
+  name: string;
+  avatar?: string;
+}
+
+export interface AuthSession {
+  user: AppUser | null;
+  hasProfile: boolean;
+}
+
+export interface SignInInput {
+  email: string;
+  password?: string;
+}
+
+export interface OnboardingProfileInput {
+  name: string;
+  sports: string[];
+  level?: string;
+  location: string;
+  email?: string;
+}
+
+export interface GameResultInput {
+  gameId: string;
+  resultData: Record<string, unknown>;
+  approvalThreshold: number;
+}
+
+export interface PlayerStatsInput {
+  gameId: string;
+  userId: string;
+  stats: Record<string, unknown>;
+  showedUp: boolean;
+}
+
+export interface StatsApprovalInput {
+  gameId: string;
+  userId: string;
+  approved: boolean;
+}
+
+export interface MvpVoteInput {
+  gameId: string;
+  voterId: string;
+  votedForId: string;
+}
+
 export interface JoinRequest {
   id: string;
   userId: string;

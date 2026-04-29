@@ -2,13 +2,14 @@
 
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
 import MessageCenter from '@/components/MessageCenter';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
+import { useGames } from '@/hooks/useData';
 
 export default function MessagesPage() {
   const router = useRouter();
-  const { messages, archivedIds, setArchivedIds, games, hasProfile } = usePlayChale();
+  const { messages, archivedIds, setArchivedIds, hasProfile } = usePlayChale();
+  const { data: games = [] } = useGames();
 
   // Protect this route
   useEffect(() => {
@@ -26,11 +27,7 @@ export default function MessagesPage() {
   }
 
   return (
-    <motion.div 
-      initial={{ opacity: 0, y: 20 }} 
-      animate={{ opacity: 1, y: 0 }} 
-      exit={{ opacity: 0, y: -20 }}
-    >
+    <div className="pc-view-enter">
       <MessageCenter 
         messages={messages.filter(m => !archivedIds.includes(m.id))}
         hostedGames={games.filter(g => g.organizer?.includes('Alex') || g.organizer === 'Me')}
@@ -38,6 +35,6 @@ export default function MessagesPage() {
         onArchiveMessage={(id) => setArchivedIds([...archivedIds, id])}
         onSendReply={() => {}}
       />
-    </motion.div>
+    </div>
   );
 }

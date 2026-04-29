@@ -2,41 +2,25 @@
 
 import React from 'react';
 import { useParams, useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
 import ProfileDashboard from '@/components/ProfileDashboard';
-import { TOP_PLAYERS } from '@/constants';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
+import { useProfile } from '@/hooks/useData';
 
 export default function ProfilePage() {
     const params = useParams();
     const router = useRouter();
-    const { players, user, openModal, triggerToast } = usePlayChale();
+    const { user, openModal, triggerToast } = usePlayChale();
     const profileSlug = params.slug as string;
+    const profileId = profileSlug === 'me' ? user?.id : profileSlug;
+    const { data: playerData, isLoading } = useProfile(profileId);
 
-    // 2. Find the player data (by slug or ID)
-    const playerData = React.useMemo(() => {
-        if (!players) return null;
-
-        // Try to match by slug first, then ID
-        const found = players.find(p => p.slug === profileSlug || p.id === profileSlug);
-
-        // If "me" alias is used, return current user if logged in
-        if (profileSlug === 'me' && user) {
-            return players.find(p => p.id === user.id);
-        }
-
-        return found;
-    }, [players, profileSlug, user]);
-
-    // 1. Check if it's the current user's profile
     const isOwner = user?.id === playerData?.id;
 
     React.useEffect(() => {
-        if (!playerData && !isOwner) {
-            // Optional: Redirect or show 404
-            // router.push('/404');
+        if (profileSlug === 'me' && !user) {
+            router.replace('/login');
         }
-    }, [playerData, isOwner]);
+    }, [profileSlug, router, user]);
 
     const handleShare = () => {
         const url = window.location.href;
@@ -44,7 +28,7 @@ export default function ProfilePage() {
         triggerToast('PROFILE LINK COPIED TO CLIPBOARD');
     };
 
-    if (!playerData) {
+    if (isLoading || !playerData) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center text-white">
                 <div className="flex flex-col items-center gap-4">
@@ -56,11 +40,7 @@ export default function ProfilePage() {
     }
 
     return (
-        <motion.div
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            className="bg-black min-h-screen"
-        >
+        <div className="pc-view-enter bg-black min-h-screen">
             <ProfileDashboard
                 player={playerData}
                 isOwner={isOwner}
@@ -69,6 +49,6 @@ export default function ProfilePage() {
                 onShareProfile={handleShare}
                 onViewMatch={(match) => router.push(`/game/${match.slug || match.id}`)}
             />
-        </motion.div>
+        </div>
     );
 }

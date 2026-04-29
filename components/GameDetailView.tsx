@@ -1,9 +1,9 @@
 'use client';
 
 import React, { useState } from 'react';
+import Image from 'next/image';
 import Link from 'next/link';
-import { ICONS } from '@/constants';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ICONS } from '@/constants/icons';
 import { Game, PlayerProfile, JoinRequest, Participant, MatchRecord } from '@/types';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -108,10 +108,16 @@ const GameDetailView: React.FC<GameDetailProps> = ({
 
             {/* MATCH REPORT VIEW */}
             {type === 'report' && match && (
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-12">
+                <div className="pc-view-enter space-y-12">
                     {/* Hero Stats */}
                     <div className="relative h-[400px] rounded-[48px] overflow-hidden group">
-                        <img src={match.imageUrl} className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-105" />
+                        <Image
+                            src={match.imageUrl}
+                            alt={match.title}
+                            fill
+                            sizes="(min-width: 1024px) 960px, 100vw"
+                            className="object-cover transition-transform duration-700 group-hover:scale-105"
+                        />
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
                         <div className="absolute bottom-0 left-0 w-full p-8 md:p-12 flex flex-col md:flex-row justify-between items-end gap-8">
                             <div className="space-y-4">
@@ -135,7 +141,13 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                                 <div className="bg-gradient-to-br from-[#C6FF00] to-[#a3d600] p-1 rounded-[40px] shadow-2xl shadow-lime-500/10">
                                     <div className="bg-black/90 p-8 rounded-[36px] flex items-center gap-8 relative overflow-hidden">
                                         <div className="absolute top-0 right-0 w-32 h-32 bg-[#C6FF00]/10 blur-[50px] rounded-full pointer-events-none" />
-                                        <img src={match.mvp?.avatar} className="w-20 h-20 rounded-full border-4 border-[#C6FF00] object-cover" />
+                                        <Image
+                                            src={match.mvp?.avatar || '/icons/icon-192x192.png'}
+                                            alt={match.mvp?.name ? `${match.mvp.name} avatar` : 'Match MVP'}
+                                            width={80}
+                                            height={80}
+                                            className="w-20 h-20 rounded-full border-4 border-[#C6FF00] object-cover"
+                                        />
                                         <div>
                                             <p className="text-white text-2xl font-black italic uppercase tracking-tighter leading-none mb-2">{match.mvp?.name}</p>
                                             <p className="text-[#C6FF00] text-[10px] font-black uppercase tracking-widest">{match.mvp?.contribution}</p>
@@ -155,10 +167,8 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                                                 <span className="text-white">{val}</span>
                                             </div>
                                             <div className="h-2 bg-white/10 rounded-full overflow-hidden">
-                                                <motion.div
-                                                    initial={{ width: 0 }}
-                                                    animate={{ width: '70%' }}
-                                                    transition={{ duration: 1, delay: 0.5 }}
+                                                <div
+                                                    style={{ width: '70%' }}
                                                     className="h-full bg-[#C6FF00]"
                                                 />
                                             </div>
@@ -175,7 +185,13 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                                 {match.participants?.map((p) => (
                                     <Link href={`/profile/${p.slug || p.id}`} key={p.id} className="group flex items-center justify-between bg-white/5 border border-white/5 hover:bg-white/10 p-4 rounded-3xl transition-all cursor-pointer">
                                         <div className="flex items-center gap-4">
-                                            <img src={p.avatar} className="w-12 h-12 rounded-full border-2 border-white/10 group-hover:border-[#C6FF00] transition-colors" />
+                                            <Image
+                                                src={p.avatar}
+                                                alt={p.name}
+                                                width={48}
+                                                height={48}
+                                                className="w-12 h-12 rounded-full border-2 border-white/10 group-hover:border-[#C6FF00] transition-colors object-cover"
+                                            />
                                             <div className="min-w-0">
                                                 <p className="text-white font-black italic uppercase text-sm truncate">{p.name}</p>
                                                 <p className="text-white/30 text-[9px] font-black uppercase tracking-widest">{p.role}</p>
@@ -189,17 +205,23 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                             </div>
                         </div>
                     </div>
-                </motion.div>
+                </div>
             )}
 
             {/* JOIN / MANAGE VIEW */}
             {(type === 'join' || type === 'manage') && game && (
-                <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
+                <div className="pc-view-enter grid grid-cols-1 lg:grid-cols-3 gap-8 md:gap-12">
 
                     {/* Left Col: Info & Image */}
                     <div className="lg:col-span-2 space-y-8">
                         <div className="relative aspect-video rounded-[48px] overflow-hidden border border-white/10 shadow-2xl">
-                            <img src={game.imageUrl} className="w-full h-full object-cover" />
+                            <Image
+                                src={game.imageUrl}
+                                alt={game.title}
+                                fill
+                                sizes="(min-width: 1024px) 66vw, 100vw"
+                                className="object-cover"
+                            />
                             <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
 
                             {/* Float Badge */}
@@ -273,7 +295,13 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                             <div className="flex-1 space-y-4 overflow-y-auto max-h-[400px] pr-2 custom-scrollbar">
                                 {game.participants?.map(p => (
                                     <div key={p.id} className="flex items-center gap-4 p-3 hover:bg-white/5 rounded-2xl transition-colors">
-                                        <img src={p.avatar} className="w-10 h-10 rounded-full border border-white/10" />
+                                        <Image
+                                            src={p.avatar}
+                                            alt={p.name}
+                                            width={40}
+                                            height={40}
+                                            className="w-10 h-10 rounded-full border border-white/10 object-cover"
+                                        />
                                         <div className="flex-1">
                                             <p className="text-white font-black italic text-sm">{p.name}</p>
                                             <p className="text-white/30 text-[8px] font-black uppercase tracking-widest">{p.role || 'Player'}</p>
@@ -311,7 +339,13 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                                     {game.requests.map(req => (
                                         <div key={req.id} className="bg-black p-4 rounded-2xl flex items-center justify-between">
                                             <div className="flex items-center gap-3">
-                                                <img src={req.avatar} className="w-8 h-8 rounded-full" />
+                                                <Image
+                                                    src={req.avatar}
+                                                    alt={req.name}
+                                                    width={32}
+                                                    height={32}
+                                                    className="w-8 h-8 rounded-full object-cover"
+                                                />
                                                 <span className="text-white font-bold text-sm">{req.name}</span>
                                             </div>
                                             <div className="flex gap-2">
@@ -329,7 +363,7 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                         )}
 
                     </div>
-                </motion.div>
+                </div>
             )}
 
         </div>

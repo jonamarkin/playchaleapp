@@ -3,8 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { Game } from '@/types';
-import { ICONS } from '@/constants';
-import { motion } from 'framer-motion';
+import { ICONS } from '@/constants/icons';
 
 interface GameCardProps {
   game: Game;
@@ -16,8 +15,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick }) => {
   const fillPercentage = (game.spotsTaken / game.spotsTotal) * 100;
 
   return (
-    <motion.div
-      layout
+    <div
       onClick={onClick}
       className="touch-card touch-target group bg-white hover:bg-black rounded-[48px] p-6 flex flex-col cursor-pointer transition-all duration-500 hover:shadow-[0_60px_120px_rgba(0,0,0,0.25)] border border-black/5 hover:border-white/10 relative overflow-hidden h-full min-h-[620px]"
     >
@@ -80,9 +78,8 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick }) => {
               </span>
             </div>
             <div className="h-3 w-full bg-gray-100 group-hover:bg-white/5 rounded-full overflow-hidden transition-colors">
-              <motion.div
-                initial={{ width: 0 }}
-                whileInView={{ width: `${fillPercentage}%` }}
+              <div
+                style={{ width: `${fillPercentage}%` }}
                 className={`h-full transition-all duration-1000 ${fillPercentage > 85 ? 'bg-red-500' : 'bg-black group-hover:bg-[#C6FF00]'}`}
               />
             </div>
@@ -111,7 +108,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick }) => {
           </div>
         </div>
       </div>
-    </motion.div>
+    </div>
   );
 };
 

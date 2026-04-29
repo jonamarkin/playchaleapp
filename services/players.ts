@@ -3,26 +3,17 @@
  * Currently uses mock data but structured for easy API integration
  */
 
-import { api, type ApiResponse } from './api';
+import { type ApiResponse } from './api';
+import { backend } from './backend';
 import { PlayerProfile } from '@/types';
-import { TOP_PLAYERS } from '@/constants';
-
-const ENDPOINTS = {
-    players: '/api/players',
-    player: (id: string) => `/api/players/${id}`,
-    profile: '/api/profile',
-    updateProfile: '/api/profile',
-};
 
 /**
  * Fetch all players
  */
 export async function getPlayers(): Promise<ApiResponse<PlayerProfile[]>> {
-    // TODO: Replace with actual API call
-    // return api.get<PlayerProfile[]>(ENDPOINTS.players);
-
+    const players = await backend.players.list(24);
     return {
-        data: TOP_PLAYERS,
+        data: players,
         error: null,
         status: 200,
     };
@@ -32,10 +23,7 @@ export async function getPlayers(): Promise<ApiResponse<PlayerProfile[]>> {
  * Fetch a single player by ID
  */
 export async function getPlayer(id: string): Promise<ApiResponse<PlayerProfile>> {
-    // TODO: Replace with actual API call
-    // return api.get<PlayerProfile>(ENDPOINTS.player(id));
-
-    const player = TOP_PLAYERS.find((p) => p.id === id);
+    const player = await backend.players.get(id);
     return {
         data: player || null,
         error: player ? null : 'Player not found',
@@ -47,13 +35,13 @@ export async function getPlayer(id: string): Promise<ApiResponse<PlayerProfile>>
  * Get current user's profile
  */
 export async function getCurrentProfile(): Promise<ApiResponse<PlayerProfile>> {
-    // TODO: Replace with actual API call
-    // return api.get<PlayerProfile>(ENDPOINTS.profile);
+    const session = await backend.auth.getSession();
+    const profile = session.user ? await backend.players.get(session.user.id) : null;
 
     return {
-        data: TOP_PLAYERS[0],
-        error: null,
-        status: 200,
+        data: profile,
+        error: profile ? null : 'Profile not found',
+        status: profile ? 200 : 404,
     };
 }
 
@@ -66,10 +54,8 @@ export async function updateProfile(
     // TODO: Replace with actual API call
     // return api.patch<PlayerProfile>(ENDPOINTS.updateProfile, profileData);
 
-    const updatedProfile = {
-        ...TOP_PLAYERS[0],
-        ...profileData,
-    };
+    const current = await getCurrentProfile();
+    const updatedProfile = current.data ? { ...current.data, ...profileData } : null;
 
     return {
         data: updatedProfile,

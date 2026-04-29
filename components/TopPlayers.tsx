@@ -2,8 +2,7 @@
 
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
-import { ICONS } from '@/constants';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ICONS } from '@/constants/icons';
 import { PlayerProfile } from '@/types';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -56,22 +55,17 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
       <div className="max-w-7xl mx-auto relative z-10 px-4 md:px-12">
         {/* Header Section */}
         <div className={`text-center space-y-6 md:space-y-10 mb-12 sm:mb-16 md:mb-24 ${isFullPage ? 'text-black' : 'text-white'}`}>
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            className={`inline-flex items-center gap-3 sm:gap-4 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em] sm:tracking-[0.6em] ${isFullPage ? 'text-black/30' : 'text-[#C6FF00]'}`}
-          >
+          <div className={`pc-view-enter inline-flex items-center gap-3 sm:gap-4 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em] sm:tracking-[0.6em] ${isFullPage ? 'text-black/30' : 'text-[#C6FF00]'}`}>
             <span className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${isFullPage ? 'bg-black' : 'bg-white animate-pulse'}`}></span>
             {isFullPage ? 'THE COMMUNITY HUB' : 'CITY HALL OF FAME'}
-          </motion.div>
+          </div>
 
           <h2 className={`font-black leading-[0.85] tracking-tighter italic uppercase ${isFullPage ? 'text-5xl sm:text-7xl md:text-[9rem] text-black' : 'text-5xl sm:text-7xl md:text-9xl text-white'}`}>
             Built for <br className="hidden md:block" /> Glory.
           </h2>
 
           <p className={`font-bold max-w-2xl mx-auto text-sm sm:text-lg md:text-xl leading-tight tracking-tight px-4 ${isFullPage ? 'text-black/60' : 'text-white/50'}`}>
-            Where the city's finest record their legacy. Find rivals, climb the ranks, and become an amateur legend.
+            Where the city&apos;s finest record their legacy. Find rivals, climb the ranks, and become an amateur legend.
           </p>
 
           {isFullPage && (
@@ -129,7 +123,6 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
 
         {/* Players Grid with the "Black-out" hover effect */}
         <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 ${isFullPage ? 'w-full' : ''}`}>
-          <AnimatePresence mode="popLayout">
             {filteredPlayers.map((player, idx) => {
               const previewStat = getPreviewStat(player);
               const isEven = idx % 2 === 0;
@@ -167,17 +160,10 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
               }
 
               return (
-                <motion.div
+                <div
                   key={player.id}
-                  layout
-                  initial={{ opacity: 0, y: 20 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  exit={{ opacity: 0, scale: 0.95 }}
-                  whileInView={{ opacity: 1 }}
-                  viewport={{ once: true }}
-                  transition={{ duration: 0.4 }}
                   onClick={() => onOpenPlayer(player)}
-                  className={`touch-scale touch-target group relative overflow-hidden rounded-[32px] sm:rounded-[40px] border transition-all duration-500 cursor-pointer flex flex-col shadow-sm ${cardClasses} ${textClasses} ${borderClasses} hover:shadow-2xl`}
+                  className={`pc-content-visibility-sm touch-scale touch-target group relative overflow-hidden rounded-[32px] sm:rounded-[40px] border transition-all duration-500 cursor-pointer flex flex-col shadow-sm ${cardClasses} ${textClasses} ${borderClasses} hover:shadow-2xl`}
                 >
                   {/* Morphing Watermark Background */}
                   <div className="absolute -top-10 -right-10 w-48 h-48 sm:w-64 sm:h-64 opacity-[0.03] group-hover:opacity-10 group-hover:rotate-12 transition-all duration-1000 pointer-events-none">
@@ -244,7 +230,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                         <div className="min-w-0 flex-1">
                           <p className={`text-[8px] sm:text-[10px] font-black uppercase tracking-[0.3em] mb-1 sm:mb-2 transition-colors ${metaClasses}`}>PLAYER BIO</p>
                           <p className={`text-[10px] sm:text-xs md:text-sm font-bold italic leading-tight line-clamp-2 transition-colors opacity-80 ${textClasses}`}>
-                            "{player.bio}"
+                            &quot;{player.bio}&quot;
                           </p>
                         </div>
                         <div className={`p-2 sm:p-3 rounded-2xl transition-all group-hover:translate-x-1 shrink-0 bg-[#C6FF00] text-black`}>
@@ -253,14 +239,13 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </div>
               );
             })}
-          </AnimatePresence>
         </div>
 
         {!isFullPage && (
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-16 sm:mt-24 md:mt-32 text-center">
+          <div className="pc-view-enter mt-16 sm:mt-24 md:mt-32 text-center">
             <button
               onClick={onViewAll}
               className="touch-scale-sm touch-target bg-white text-black px-8 sm:px-12 md:px-20 py-6 md:py-8 rounded-full font-black uppercase tracking-[0.2em] text-[10px] md:text-[11px] hover:bg-[#C6FF00] hover:text-black transition-all shadow-2xl flex items-center gap-3 sm:gap-5 mx-auto"
@@ -268,7 +253,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
               View Full City Rankings
               <div className="bg-black text-[#C6FF00] p-2 rounded-full"><ICONS.ChevronRight /></div>
             </button>
-          </motion.div>
+          </div>
         )}
       </div>
     </section>

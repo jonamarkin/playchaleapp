@@ -2,8 +2,9 @@
 
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ICONS, SPORT_STATS } from '@/constants';
+import { motion, AnimatePresence } from '@/components/LightMotion';
+import { SPORT_STATS } from '@/constants';
+import { ICONS } from '@/constants/icons';
 import { Game } from '@/types';
 import { useSubmitGameResults, useSubmitPlayerStats, useCompleteGame } from '@/hooks/useData';
 import { Switch } from '@/components/ui/switch';

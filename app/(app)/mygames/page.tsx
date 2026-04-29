@@ -2,18 +2,16 @@
 
 import React, { useState } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
 import { useMyGames } from '@/hooks/useData';
-import { ICONS } from '@/constants';
+import { ICONS } from '@/constants/icons';
 import { Game } from '@/types';
 
 const GameCard = ({ game, isHost, onClick }: { game: Game; isHost: boolean; onClick: () => void }) => (
-    <motion.div
-        whileHover={{ scale: 1.02 }}
+    <div
         onClick={onClick}
-        className="bg-white border-2 border-black/5 p-5 sm:p-6 rounded-[28px] sm:rounded-[32px] flex gap-4 sm:gap-5 items-center hover:border-[#C6FF00] transition-all cursor-pointer group shadow-sm"
+        className="touch-scale bg-white border-2 border-black/5 p-5 sm:p-6 rounded-[28px] sm:rounded-[32px] flex gap-4 sm:gap-5 items-center hover:border-[#C6FF00] transition-all cursor-pointer group shadow-sm"
     >
         <Image
             src={game.imageUrl}
@@ -44,7 +42,7 @@ const GameCard = ({ game, isHost, onClick }: { game: Game; isHost: boolean; onCl
         <div className="p-3 bg-black/5 group-hover:bg-[#C6FF00] group-hover:text-black rounded-full transition-all shrink-0">
             <ICONS.ChevronRight />
         </div>
-    </motion.div>
+    </div>
 );
 
 export default function MyGamesPage() {
@@ -61,22 +59,13 @@ export default function MyGamesPage() {
             <div className="max-w-4xl mx-auto space-y-8 sm:space-y-10">
                 {/* Header */}
                 <header className="space-y-4">
-                    <motion.div
-                        initial={{ opacity: 0, x: -20 }}
-                        animate={{ opacity: 1, x: 0 }}
-                        className="inline-flex items-center gap-2 sm:gap-3 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] sm:tracking-[0.4em] text-black/30"
-                    >
+                    <div className="pc-fade-left inline-flex items-center gap-2 sm:gap-3 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] sm:tracking-[0.4em] text-black/30">
                         <span className="w-1.5 h-1.5 rounded-full bg-[#C6FF00]"></span>
                         Your Arena
-                    </motion.div>
-                    <motion.h1
-                        initial={{ opacity: 0, y: 20 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ delay: 0.1 }}
-                        className="text-4xl sm:text-5xl md:text-6xl font-black italic tracking-tighter uppercase"
-                    >
+                    </div>
+                    <h1 className="pc-view-enter text-4xl sm:text-5xl md:text-6xl font-black italic tracking-tighter uppercase">
                         My Games
-                    </motion.h1>
+                    </h1>
                 </header>
 
                 {/* Tabs */}
@@ -106,15 +95,9 @@ export default function MyGamesPage() {
                         <p className="text-red-500 font-bold">Error loading games. Please try again.</p>
                     </div>
                 ) : (
-                    <motion.div layout className="space-y-4">
-                        <AnimatePresence mode="popLayout">
+                    <div className="space-y-4">
                             {activeTab === 'hosted' && hostedGames.length === 0 && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -20 }}
-                                    className="py-16 text-center bg-gray-50 rounded-[32px] border border-black/5"
-                                >
+                                <div className="pc-view-enter py-16 text-center bg-gray-50 rounded-[32px] border border-black/5">
                                     <div className="text-4xl mb-4">🏟️</div>
                                     <p className="text-black/40 font-bold uppercase text-sm tracking-widest mb-4">You haven&apos;t hosted any games yet</p>
                                     <button
@@ -123,16 +106,11 @@ export default function MyGamesPage() {
                                     >
                                         Create Your First Game
                                     </button>
-                                </motion.div>
+                                </div>
                             )}
 
                             {activeTab === 'joined' && joinedGames.length === 0 && (
-                                <motion.div
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    exit={{ opacity: 0, y: -20 }}
-                                    className="py-16 text-center bg-gray-50 rounded-[32px] border border-black/5"
-                                >
+                                <div className="pc-view-enter py-16 text-center bg-gray-50 rounded-[32px] border border-black/5">
                                     <div className="text-4xl mb-4">🤝</div>
                                     <p className="text-black/40 font-bold uppercase text-sm tracking-widest mb-4">You haven&apos;t joined any games yet</p>
                                     <button
@@ -141,7 +119,7 @@ export default function MyGamesPage() {
                                     >
                                         Find Games to Join
                                     </button>
-                                </motion.div>
+                                </div>
                             )}
 
                             {activeTab === 'hosted' && hostedGames.map((game) => (
@@ -161,8 +139,7 @@ export default function MyGamesPage() {
                                     onClick={() => router.push(`/game/${game.slug || game.id}`)}
                                 />
                             ))}
-                        </AnimatePresence>
-                    </motion.div>
+                    </div>
                 )}
 
                 {/* Quick Actions */}

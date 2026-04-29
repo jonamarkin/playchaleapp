@@ -3,15 +3,13 @@
 import React, { useState } from 'react';
 import Link from 'next/link';
 import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import { ICONS } from '@/constants';
+import { ICONS } from '@/constants/icons';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { createClient } from '@/lib/supabase/client';
+import { backend } from '@/services/backend';
 
 export default function LoginPage() {
     const router = useRouter();
-    const supabase = createClient();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -23,42 +21,11 @@ export default function LoginPage() {
         setError(null);
 
         try {
-            const { data: authData, error } = await supabase.auth.signInWithPassword({
+            const session = await backend.auth.signIn({
                 email,
                 password,
             });
-
-            if (error) throw error;
-
-            // Clear any pending onboarding state from previous sessions
-            localStorage.removeItem('playchale_onboarding_temp');
-
-            // Check if user has completed onboarding
-            if (authData.user) {
-                console.log('User authenticated:', authData.user.id);
-
-                const { data: profile, error: profileError } = await supabase
-                    .from('profiles')
-                    .select('onboarding_completed, full_name')
-                    .eq('id', authData.user.id)
-                    .single();
-
-                console.log('Profile query result:', { profile, profileError });
-                console.log('onboarding_completed:', profile?.onboarding_completed);
-                console.log('full_name:', profile?.full_name);
-
-                // User is onboarded if: onboarding_completed is true OR they have a full_name (legacy users)
-                const isOnboarded = profile?.onboarding_completed || !!profile?.full_name;
-                console.log('Is onboarded?', isOnboarded);
-
-                if (isOnboarded) {
-                    console.log('Redirecting to /home');
-                    window.location.href = '/home';
-                } else {
-                    console.log('Redirecting to /onboarding');
-                    window.location.href = '/onboarding';
-                }
-            }
+            router.push(session.hasProfile ? '/home' : '/onboarding');
         } catch (err: any) {
             console.error('Login error:', err);
             setError(err.message || 'Failed to sign in');
@@ -69,13 +36,8 @@ export default function LoginPage() {
     const handleSocialAuth = async (provider: 'google') => {
         setIsLoading(true);
         try {
-            const { error } = await supabase.auth.signInWithOAuth({
-                provider,
-                options: {
-                    redirectTo: `${window.location.origin}/auth/callback`,
-                },
-            });
-            if (error) throw error;
+            const session = await backend.auth.signInWithProvider(provider);
+            router.push(session.hasProfile ? '/home' : '/onboarding');
         } catch (err: any) {
             console.error('Social auth error:', err);
             setError(err.message);
@@ -91,11 +53,7 @@ export default function LoginPage() {
                 <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/10 blur-[150px] rounded-full -ml-40 -mb-40"></div>
             </div>
 
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="z-10 w-full max-w-md p-8 space-y-8"
-            >
+            <div className="pc-view-enter z-10 w-full max-w-md p-8 space-y-8">
                 <div className="text-center space-y-4">
                     <div className="flex justify-center mb-6">
                         <div className="scale-150">
@@ -175,7 +133,7 @@ export default function LoginPage() {
                         New Athlete? <span className="text-white border-b border-white/20 pb-0.5">Start Draft</span>
                     </Link>
                 </div>
-            </motion.div>
+            </div>
         </div>
     );
 }

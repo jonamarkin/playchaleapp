@@ -2,8 +2,7 @@
 
 import React, { useRef, useState } from 'react';
 import Image from 'next/image';
-import { ICONS } from '@/constants';
-import { motion, AnimatePresence } from 'framer-motion';
+import { ICONS } from '@/constants/icons';
 
 interface ImageUploadProps {
     currentImage?: string;

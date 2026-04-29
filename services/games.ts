@@ -3,28 +3,18 @@
  * Currently uses mock data but structured for easy API integration
  */
 
-import { api, type ApiResponse } from './api';
+import { type ApiResponse } from './api';
+import { backend } from './backend';
 import { Game } from '@/types';
-import { GAMES } from '@/constants';
-
-const ENDPOINTS = {
-    games: '/api/games',
-    game: (id: string) => `/api/games/${id}`,
-    join: (id: string) => `/api/games/${id}/join`,
-    create: '/api/games',
-};
 
 /**
  * Fetch all games
  * Currently returns mock data, ready for API integration
  */
 export async function getGames(): Promise<ApiResponse<Game[]>> {
-    // TODO: Replace with actual API call when backend is ready
-    // return api.get<Game[]>(ENDPOINTS.games);
-
-    // Mock implementation
+    const games = await backend.games.list();
     return {
-        data: GAMES,
+        data: games,
         error: null,
         status: 200,
     };
@@ -34,10 +24,7 @@ export async function getGames(): Promise<ApiResponse<Game[]>> {
  * Fetch a single game by ID
  */
 export async function getGame(id: string): Promise<ApiResponse<Game>> {
-    // TODO: Replace with actual API call
-    // return api.get<Game>(ENDPOINTS.game(id));
-
-    const game = GAMES.find((g) => g.id === id);
+    const game = await backend.games.get(id);
     return {
         data: game || null,
         error: game ? null : 'Game not found',
@@ -51,13 +38,9 @@ export async function getGame(id: string): Promise<ApiResponse<Game>> {
 export async function createGame(
     gameData: Omit<Game, 'id'>
 ): Promise<ApiResponse<Game>> {
-    // TODO: Replace with actual API call
-    // return api.post<Game>(ENDPOINTS.create, gameData);
-
-    const newGame: Game = {
-        ...gameData,
-        id: `g${Date.now()}`,
-    };
+    const session = await backend.auth.getSession();
+    const id = await backend.games.create(gameData, session.user?.id || 'p1');
+    const newGame = await backend.games.get(id);
 
     return {
         data: newGame,
@@ -70,8 +53,8 @@ export async function createGame(
  * Request to join a game
  */
 export async function joinGame(gameId: string): Promise<ApiResponse<{ success: boolean }>> {
-    // TODO: Replace with actual API call
-    // return api.post<{ success: boolean }>(ENDPOINTS.join(gameId), {});
+    const session = await backend.auth.getSession();
+    await backend.games.join(gameId, session.user?.id || 'p1');
 
     return {
         data: { success: true },

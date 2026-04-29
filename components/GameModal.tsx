@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useState, useEffect } from 'react';
-import { ICONS, DEFAULT_SPORT_IMAGES, CURRENCIES } from '@/constants';
-import { motion, AnimatePresence } from 'framer-motion';
+import React, { useState } from 'react';
+import Image from 'next/image';
+import { DEFAULT_SPORT_IMAGES, CURRENCIES } from '@/constants';
+import { ICONS } from '@/constants/icons';
+import { motion, AnimatePresence } from '@/components/LightMotion';
 import { Game, PlayerProfile, Challenge, Participant, JoinRequest, MatchRecord } from '@/types';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -32,6 +34,40 @@ interface ModalProps {
   onShareMatch?: (game: Game) => void;
   onShareProfile?: () => void;
 }
+
+const getEditForm = (type: ModalProps['type'], item: any): Partial<Game> => {
+  if (type !== 'manage-game' || !item) return {};
+
+  return {
+    title: item.title,
+    location: item.location,
+    time: item.time,
+    date: item.date,
+    spotsTotal: item.spotsTotal,
+    skillLevel: item.skillLevel
+  };
+};
+
+const getProfileForm = (type: ModalProps['type'], item: any): Partial<PlayerProfile> => {
+  if (type !== 'edit-profile' || !item) return {};
+
+  return {
+    name: item.name,
+    mainSport: item.mainSport,
+    avatar: item.avatar
+  };
+};
+
+const getStatsForms = (type: ModalProps['type'], item: any) => {
+  if (type !== 'stats' || !item) {
+    return { statsForm: {}, careerStatsForm: {} };
+  }
+
+  return {
+    statsForm: { ...item.attributes },
+    careerStatsForm: { ...item.stats }
+  };
+};
 
 const SPORT_ICONS: Record<string, React.ReactNode> = {
   'Football': <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="m6.7 6.7 10.6 10.6" /><path d="m17.3 6.7-10.6 10.6" /></svg>,
@@ -117,10 +153,11 @@ const GameModal: React.FC<ModalProps> = ({
 
   // Form States
   const [isEditing, setIsEditing] = useState(false);
-  const [editForm, setEditForm] = useState<Partial<Game>>({});
-  const [profileForm, setProfileForm] = useState<Partial<PlayerProfile>>({});
-  const [statsForm, setStatsForm] = useState<any>({});
-  const [careerStatsForm, setCareerStatsForm] = useState<any>({});
+  const initialStatsForms = getStatsForms(initialType, initialItem);
+  const [editForm, setEditForm] = useState<Partial<Game>>(() => getEditForm(initialType, initialItem));
+  const [profileForm, setProfileForm] = useState<Partial<PlayerProfile>>(() => getProfileForm(initialType, initialItem));
+  const [statsForm, setStatsForm] = useState<any>(() => initialStatsForms.statsForm);
+  const [careerStatsForm, setCareerStatsForm] = useState<any>(() => initialStatsForms.careerStatsForm);
   const [createForm, setCreateForm] = useState<Partial<Game>>({
     sport: 'Football',
     title: '',
@@ -133,29 +170,16 @@ const GameModal: React.FC<ModalProps> = ({
     visibility: 'public'
   });
 
-  useEffect(() => {
-    if (type === 'manage-game' && item) {
-      setEditForm({
-        title: item.title,
-        location: item.location,
-        time: item.time,
-        date: item.date,
-        spotsTotal: item.spotsTotal,
-        skillLevel: item.skillLevel
-      });
-    }
-    if (type === 'edit-profile' && item) {
-      setProfileForm({
-        name: item.name,
-        mainSport: item.mainSport,
-        avatar: item.avatar
-      });
-    }
-    if (type === 'stats' && item) {
-      setStatsForm({ ...item.attributes });
-      setCareerStatsForm({ ...item.stats });
-    }
-  }, [type, item]);
+  const setModalView = (nextType: ModalProps['type'], nextItem: any) => {
+    const nextStatsForms = getStatsForms(nextType, nextItem);
+
+    setType(nextType);
+    setItem(nextItem);
+    setEditForm(getEditForm(nextType, nextItem));
+    setProfileForm(getProfileForm(nextType, nextItem));
+    setStatsForm(nextStatsForms.statsForm);
+    setCareerStatsForm(nextStatsForms.careerStatsForm);
+  };
 
   // Challenge specific state
   const [challengeSport, setChallengeSport] = useState('Football');
@@ -258,15 +282,13 @@ const GameModal: React.FC<ModalProps> = ({
     if (history.length > 0) {
       const last = history[history.length - 1];
       setHistory(prev => prev.slice(0, -1));
-      setType(last.type);
-      setItem(last.item);
+      setModalView(last.type, last.item);
     }
   };
 
   const pushView = (newType: any, newItem?: any) => {
     setHistory(prev => [...prev, { type, item }]);
-    setType(newType);
-    if (newItem) setItem(newItem);
+    setModalView(newType, newItem ?? item);
   };
 
   const game = (type === 'join' || type === 'contact-organizer' || type === 'manage-game') ? item as Game : null;
@@ -326,7 +348,13 @@ const GameModal: React.FC<ModalProps> = ({
               {type === 'match-detail' && completedMatch && (
                 <motion.div key="post-match" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-10">
                   <div className="relative h-64 md:h-80 rounded-[40px] overflow-hidden">
-                    <img src={completedMatch.imageUrl} className="w-full h-full object-cover" />
+                    <Image
+                      src={completedMatch.imageUrl}
+                      alt={completedMatch.title}
+                      fill
+                      sizes="(min-width: 768px) 720px, 100vw"
+                      className="object-cover"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
                     <div className="absolute bottom-8 left-8 right-8 flex justify-between items-end">
                       <div className="space-y-2">
@@ -345,7 +373,13 @@ const GameModal: React.FC<ModalProps> = ({
                       <div className="space-y-4">
                         <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 px-2">Match MVP</h4>
                         <div className="bg-[#C6FF00] p-6 rounded-[32px] flex items-center gap-6 shadow-2xl">
-                          <img src={completedMatch.mvp?.avatar} className="w-16 h-16 rounded-full border-4 border-black/10" />
+                          <Image
+                            src={completedMatch.mvp?.avatar || '/icons/icon-192x192.png'}
+                            alt={completedMatch.mvp?.name ? `${completedMatch.mvp.name} avatar` : 'Match MVP'}
+                            width={64}
+                            height={64}
+                            className="w-16 h-16 rounded-full border-4 border-black/10 object-cover"
+                          />
                           <div>
                             <p className="text-black font-black italic text-xl uppercase tracking-tighter leading-none mb-1">{completedMatch.mvp?.name}</p>
                             <p className="text-black/50 text-[10px] font-black uppercase tracking-widest">{completedMatch.mvp?.contribution}</p>
@@ -378,7 +412,13 @@ const GameModal: React.FC<ModalProps> = ({
                         {completedMatch.participants?.map((p) => (
                           <div key={p.id} className="flex items-center justify-between bg-white/5 p-4 rounded-2xl border border-white/5 hover:bg-white/10 transition-all cursor-default">
                             <div className="flex items-center gap-4">
-                              <img src={p.avatar} className="w-10 h-10 rounded-full border border-white/10" />
+                              <Image
+                                src={p.avatar}
+                                alt={p.name}
+                                width={40}
+                                height={40}
+                                className="w-10 h-10 rounded-full border border-white/10 object-cover"
+                              />
                               <div>
                                 <p className="text-xs font-black italic uppercase">{p.name}</p>
                                 <p className="text-[8px] font-black text-[#C6FF00] uppercase tracking-widest">{p.role}</p>
@@ -532,7 +572,13 @@ const GameModal: React.FC<ModalProps> = ({
                       <ICONS.Logo />
                     </div>
                     <div className="relative mt-4">
-                      <img src={player.avatar} className="w-40 h-40 rounded-full border-4 border-[#C6FF00] shadow-2xl object-cover" />
+                      <Image
+                        src={player.avatar}
+                        alt={player.name}
+                        width={160}
+                        height={160}
+                        className="w-40 h-40 rounded-full border-4 border-[#C6FF00] shadow-2xl object-cover"
+                      />
                       <div className="absolute -bottom-2 -right-2 bg-[#C6FF00] text-black w-14 h-14 rounded-full flex items-center justify-center font-black text-xl italic uppercase shadow-xl">PRO</div>
                     </div>
                     <div className="space-y-1">
@@ -818,7 +864,13 @@ const GameModal: React.FC<ModalProps> = ({
                         {game.requests?.map((req: JoinRequest) => (
                           <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} key={req.id} className="bg-white/5 p-5 rounded-[28px] border border-white/10 flex items-center justify-between group">
                             <div className="flex items-center gap-4">
-                              <img src={req.avatar} className="w-10 h-10 rounded-full border border-white/20" />
+                              <Image
+                                src={req.avatar}
+                                alt={req.name}
+                                width={40}
+                                height={40}
+                                className="w-10 h-10 rounded-full border border-white/20 object-cover"
+                              />
                               <div>
                                 <p className="text-sm font-black italic uppercase">{req.name}</p>
                                 <p className="text-[8px] font-black text-white/20 uppercase tracking-widest">{req.timestamp}</p>
@@ -843,7 +895,13 @@ const GameModal: React.FC<ModalProps> = ({
                         {game.participants?.map((p: Participant) => (
                           <div key={p.id} className="flex items-center justify-between bg-white/5 p-4 rounded-2xl border border-white/5 group">
                             <div className="flex items-center gap-3">
-                              <img src={p.avatar} className="w-9 h-9 rounded-full border border-white/10" alt={p.name} />
+                              <Image
+                                src={p.avatar}
+                                alt={p.name}
+                                width={36}
+                                height={36}
+                                className="w-9 h-9 rounded-full border border-white/10 object-cover"
+                              />
                               <div>
                                 <span className="text-xs font-black italic uppercase block">{p.name}</span>
                                 {p.role === 'Host' && <span className="text-[7px] font-black text-[#C6FF00] uppercase tracking-widest">Organizer</span>}
@@ -869,7 +927,13 @@ const GameModal: React.FC<ModalProps> = ({
               {type === 'join' && game && (
                 <motion.div key="game-view" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
                   <div className="relative h-48 md:h-64 rounded-[32px] overflow-hidden">
-                    <img src={game.imageUrl} className="w-full h-full object-cover" alt={game.title} />
+                    <Image
+                      src={game.imageUrl}
+                      alt={game.title}
+                      fill
+                      sizes="(min-width: 768px) 720px, 100vw"
+                      className="object-cover"
+                    />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                     <div className="absolute bottom-6 left-6 flex items-center gap-4">
                       <div className="w-12 h-12 rounded-full bg-[#C6FF00] flex items-center justify-center text-black font-black text-xs italic">
@@ -937,7 +1001,13 @@ const GameModal: React.FC<ModalProps> = ({
                         {game.participants?.map((p: Participant) => (
                           <div key={p.id} className="flex items-center justify-between bg-white/5 p-3 rounded-xl border border-white/5">
                             <div className="flex items-center gap-3">
-                              <img src={p.avatar} className="w-8 h-8 rounded-full border border-white/10" alt={p.name} />
+                              <Image
+                                src={p.avatar}
+                                alt={p.name}
+                                width={32}
+                                height={32}
+                                className="w-8 h-8 rounded-full border border-white/10 object-cover"
+                              />
                               <span className="text-xs font-black italic uppercase">{p.name}</span>
                             </div>
                             <span className="text-[8px] font-black uppercase bg-white/10 px-2 py-1 rounded">{p.role || 'Member'}</span>
@@ -988,7 +1058,13 @@ const GameModal: React.FC<ModalProps> = ({
               {type === 'profile' && player && (
                 <motion.div key="profile" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8 md:space-y-10">
                   <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-start">
-                    <img src={player.avatar} className="w-28 h-28 md:w-32 md:h-32 rounded-full border-4 border-[#C6FF00]" />
+                    <Image
+                      src={player.avatar}
+                      alt={player.name}
+                      width={128}
+                      height={128}
+                      className="w-28 h-28 md:w-32 md:h-32 rounded-full border-4 border-[#C6FF00] object-cover"
+                    />
                     <div className="flex-1 space-y-4 text-center md:text-left">
                       <div>
                         <h4 className="text-white/30 text-[9px] md:text-[10px] font-black uppercase tracking-widest">Main Discipline</h4>

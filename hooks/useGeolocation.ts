@@ -30,22 +30,33 @@ export function useGeolocation(options: UseGeolocationOptions = {}) {
     });
 
     useEffect(() => {
+        let isActive = true;
+
         if (typeof navigator === 'undefined' || !navigator.geolocation) {
-            setState((prev) => ({
-                ...prev,
-                isLoading: false,
-                error: {
-                    code: 0,
-                    message: 'Geolocation is not supported',
-                    PERMISSION_DENIED: 1,
-                    POSITION_UNAVAILABLE: 2,
-                    TIMEOUT: 3,
-                } as GeolocationPositionError,
-            }));
-            return;
+            queueMicrotask(() => {
+                if (!isActive) return;
+
+                setState((prev) => ({
+                    ...prev,
+                    isLoading: false,
+                    error: {
+                        code: 0,
+                        message: 'Geolocation is not supported',
+                        PERMISSION_DENIED: 1,
+                        POSITION_UNAVAILABLE: 2,
+                        TIMEOUT: 3,
+                    } as GeolocationPositionError,
+                }));
+            });
+
+            return () => {
+                isActive = false;
+            };
         }
 
         const handleSuccess = (position: GeolocationPosition) => {
+            if (!isActive) return;
+
             setState({
                 latitude: position.coords.latitude,
                 longitude: position.coords.longitude,
@@ -56,6 +67,8 @@ export function useGeolocation(options: UseGeolocationOptions = {}) {
         };
 
         const handleError = (error: GeolocationPositionError) => {
+            if (!isActive) return;
+
             setState((prev) => ({
                 ...prev,
                 error,
@@ -74,6 +87,10 @@ export function useGeolocation(options: UseGeolocationOptions = {}) {
             handleError,
             geoOptions
         );
+
+        return () => {
+            isActive = false;
+        };
     }, [options.enableHighAccuracy, options.timeout, options.maximumAge]);
 
     return {

@@ -1,11 +1,10 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
-import { ICONS } from '@/constants';
+import { motion, AnimatePresence } from '@/components/LightMotion';
+import { ICONS } from '@/constants/icons';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { createClient } from '@/lib/supabase/client';
 
 interface OnboardingData {
   name: string;
@@ -21,7 +20,6 @@ interface OnboardingProps {
 }
 
 const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
-  const supabase = createClient();
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<{
@@ -69,86 +67,37 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
     setIsLoading(true);
 
     try {
-      const { data: authData, error } = await supabase.auth.signUp({
-        email: data.email,
-        password: data.password,
-        options: {
-          data: {
-            full_name: data.name,
-          }
-        }
+      await onComplete({
+        name: data.name,
+        sports: data.sports,
+        level: data.level,
+        location: data.location,
+        email: data.email
       });
 
-      if (error) throw error;
-
-      // Ensure user is signed in before proceeding
-      if (authData.user) {
-        onComplete({
-          name: data.name,
-          sports: data.sports,
-          level: data.level,
-          location: data.location,
-          email: data.email
-        });
-      } else {
-        // Handle "Check your email" case if email confirmation is on
-        // In a real app, you'd show a UI step for "Verify Email"
-        alert('Please check your email to confirm your account!');
-        setIsLoading(false);
-      }
-
     } catch (error: any) {
-      console.error('Signup error:', error);
+      console.error('Onboarding error:', error);
       alert(error.message || 'Failed to sign up');
       setIsLoading(false);
     }
   };
 
-  // ... existing code ...
-
   const handleSocialAuth = async (provider: 'google' | 'github') => {
     setIsLoading(true);
-    // Save draft state before redirecting
-    localStorage.setItem('playchale_onboarding_temp', JSON.stringify(data));
+
     try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: provider,
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        }
+      await onComplete({
+        name: data.name || `${provider === 'google' ? 'Google' : 'GitHub'} Athlete`,
+        sports: data.sports.length ? data.sports : ['Football'],
+        level: data.level || 'Intermediate',
+        location: data.location || 'Accra',
+        email: data.email || `${provider}.athlete@playchale.app`
       });
-      if (error) throw error;
     } catch (error: any) {
-      console.error('Social auth error:', error);
+      console.error('Social onboarding error:', error);
       setIsLoading(false);
     }
   };
-
-  // Resume onboarding after OAuth redirect
-  React.useEffect(() => {
-    const checkResume = async () => {
-      const saved = localStorage.getItem('playchale_onboarding_temp');
-      if (saved) {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          setIsLoading(true);
-          try {
-            const parsed = JSON.parse(saved);
-            // Restore state slightly for UI context if needed, or just submit
-            setData(parsed);
-            // Trigger completion logic
-            onComplete(parsed);
-            localStorage.removeItem('playchale_onboarding_temp');
-          } catch (e) {
-            console.error('Failed to parse saved onboarding data', e);
-            localStorage.removeItem('playchale_onboarding_temp');
-            setIsLoading(false);
-          }
-        }
-      }
-    };
-    checkResume();
-  }, []);
 
   // Total steps is now 6 (Sport, Level, Location, Name, Report, Auth)
   const TOTAL_STEPS = 6;
@@ -264,7 +213,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
               >
                 <div className="space-y-4">
                   <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">PHASE 02: LEVEL</span>
-                  <h2 className="text-4xl md:text-9xl font-black italic tracking-tighter uppercase leading-[0.85]">What's your <br /> level?</h2>
+                  <h2 className="text-4xl md:text-9xl font-black italic tracking-tighter uppercase leading-[0.85]">What&apos;s your <br /> level?</h2>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 w-full max-w-5xl mx-auto">
@@ -349,7 +298,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                       }}
                     />
                   </div>
-                  <p className="mt-6 text-[10px] font-black uppercase tracking-[0.3em] text-white/20">This is how you'll be known in the Arena</p>
+                  <p className="mt-6 text-[10px] font-black uppercase tracking-[0.3em] text-white/20">This is how you&apos;ll be known in the Arena</p>
                 </div>
               </motion.div>
             )}

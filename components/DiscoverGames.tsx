@@ -2,9 +2,8 @@
 
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
-import { ICONS } from '@/constants';
+import { ICONS } from '@/constants/icons';
 import GameCard from '@/components/GameCard';
-import { motion, AnimatePresence } from 'framer-motion';
 import { Game } from '@/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
@@ -198,15 +197,10 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
         {isFullPage ? (
           <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-10 md:mb-16 gap-8">
             <div className="space-y-6 md:space-y-8 max-w-full lg:max-w-4xl w-full">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.5em] text-black/50"
-              >
+              <div className="pc-fade-left inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.5em] text-black/50">
                 <span className="w-2 h-2 rounded-full bg-[#C6FF00] shadow-[0_0_10px_#C6FF00]"></span>
                 GAME ARENA
-              </motion.div>
+              </div>
               <h2 className="font-black text-black leading-[0.85] md:leading-[0.8] tracking-tighter italic text-5xl sm:text-7xl md:text-[9rem]">
                 Find Your <br className="hidden md:block" /> Perfect Match.
               </h2>
@@ -307,14 +301,10 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
                 <span className="bg-black text-[#C6FF00] px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">{filteredGames.length} Found</span>
               </div>
               <div className="space-y-4 max-h-[700px] overflow-y-auto pr-2 hide-scrollbar">
-                <AnimatePresence mode="popLayout">
-                  {filteredGames.map((game) => (
-                    <motion.div
+                {filteredGames.map((game) => (
+                    <div
                       key={game.id}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      className="touch-target bg-gray-50 rounded-[28px] p-5 flex gap-5 items-center border border-black/5 hover:border-black transition-all cursor-pointer group"
+                      className="pc-view-enter touch-target bg-gray-50 rounded-[28px] p-5 flex gap-5 items-center border border-black/5 hover:border-black transition-all cursor-pointer group"
                       onClick={() => onOpenGame(game)}
                     >
                       <Image src={game.imageUrl} alt={game.title} width={80} height={80} className="w-20 h-20 rounded-[20px] object-cover" />
@@ -329,9 +319,8 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
                           <div className="flex items-center gap-1"><ICONS.MapPin /> {game.location.split(' ').slice(0, 2).join(' ')}</div>
                         </div>
                       </div>
-                    </motion.div>
+                    </div>
                   ))}
-                </AnimatePresence>
                 {filteredGames.length === 0 && (
                   <div className="py-16 text-center opacity-20 font-black italic uppercase text-xl">No matches found</div>
                 )}
@@ -339,13 +328,11 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
             </div>
           </div>
         ) : (
-          <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
-            <AnimatePresence mode="popLayout">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
               {filteredGames.map((game) => (
                 <GameCard key={game.id} game={game} onClick={() => onOpenGame(game)} />
               ))}
-            </AnimatePresence>
-          </motion.div>
+          </div>
         )}
 
         {filteredGames.length === 0 && (

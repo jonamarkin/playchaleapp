@@ -2,8 +2,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { ICONS } from '@/constants';
-import { motion } from 'framer-motion';
+import { ICONS } from '@/constants/icons';
 import { PlayerProfile, MatchRecord } from '@/types';
 import ImageUpload from './ImageUpload';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
@@ -101,7 +100,7 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="flex flex-col lg:flex-row gap-8 md:gap-16 items-start">
 
-          <motion.div initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="w-full lg:w-[380px] shrink-0">
+          <div className="pc-view-enter w-full lg:w-[380px] shrink-0">
             <div className="bg-white/5 backdrop-blur-3xl rounded-[56px] p-8 md:p-10 border border-white/10 space-y-10 relative overflow-hidden shadow-2xl">
               <div className="flex flex-col items-center text-center space-y-6">
                 <div className="relative">
@@ -150,10 +149,10 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
                 )}
               </div>
             </div>
-          </motion.div>
+          </div>
 
           <div className="flex-1 w-full">
-            <motion.div initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-16">
+            <div className="pc-fade-right space-y-16">
               <div className="space-y-10">
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
                   <h3 className="text-4xl sm:text-6xl md:text-8xl font-black leading-none italic tracking-tighter uppercase">Performance.</h3>
@@ -242,7 +241,7 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
                   )}
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
         </div>
       </div>

@@ -1,52 +1,31 @@
-'use client';
-
 import React from 'react';
 import Image from 'next/image';
-import { ICONS } from '@/constants';
-import { motion } from 'framer-motion';
-import { useRouter } from 'next/navigation';
-import { usePlayChale } from '@/providers/PlayChaleProvider';
+import Link from 'next/link';
+import { ICONS } from '@/constants/icons';
 
 interface HeroProps {
-  onOpenDiscover: () => void;
+  discoverHref?: string;
 }
 
-const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
-  const { user } = usePlayChale();
-  const router = useRouter();
-
+const Hero: React.FC<HeroProps> = ({ discoverHref = '/discover' }) => {
   return (
-    <section className="relative min-h-[90vh] md:min-h-screen bg-black text-white overflow-hidden rounded-b-[60px] md:rounded-b-[100px] z-10 flex flex-col justify-center">
+    <section id="top" className="relative min-h-[90vh] md:min-h-screen bg-black text-white overflow-hidden rounded-b-[60px] md:rounded-b-[100px] z-10 flex flex-col justify-center">
       {/* Navbar */}
       <nav className="absolute top-0 left-0 right-0 p-6 md:p-10 flex justify-between items-center z-50">
         <div className="flex items-center gap-3">
           <ICONS.Logo />
         </div>
-        {!user ? (
-          <button
-            onClick={() => router.push('/login')}
-            className="block text-[10px] font-black uppercase tracking-[0.2em] hover:text-[#C6FF00] transition-colors"
-          >
-            Member Sign In
-          </button>
-        ) : (
-          <button
-            onClick={() => router.push('/home')}
-            className="block text-[10px] font-black uppercase tracking-[0.2em] text-[#C6FF00] hover:text-white transition-colors"
-          >
-            Go to Dashboard
-          </button>
-        )}
+        <Link
+          href="/login"
+          className="block text-[10px] font-black uppercase tracking-[0.2em] hover:text-[#C6FF00] transition-colors"
+        >
+          Member Sign In
+        </Link>
       </nav>
 
       {/* Background Layer */}
       <div className="absolute inset-0 z-0">
-        <motion.div
-          initial={{ scale: 1.1, opacity: 0 }}
-          animate={{ scale: 1, opacity: 0.5 }}
-          transition={{ duration: 2.5, ease: 'easeOut' }}
-          className="w-full h-full"
-        >
+        <div className="w-full h-full opacity-50 hero-media">
           <Image
             src="https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?auto=format&fit=crop&q=80&w=2560"
             alt="Sports Action"
@@ -55,7 +34,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
             sizes="100vw"
             className="object-cover"
           />
-        </motion.div>
+        </div>
         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
       </div>
 
@@ -75,12 +54,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
       <div className="relative z-10 w-full px-6 md:px-12 pb-24 md:pb-36 pt-24 md:pt-16">
         <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
           <div className="lg:col-span-8 text-white space-y-12">
-            <motion.div
-              initial={{ opacity: 0, y: 40 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.4 }}
-              className="space-y-6"
-            >
+            <div className="space-y-6 hero-reveal hero-delay-1">
               <div className="inline-flex items-center gap-3 bg-[#C6FF00] text-black px-4 py-2 rounded-full font-black text-[10px] uppercase tracking-[0.3em] shadow-[0_0_30px_rgba(198,255,0,0.3)]">
                 <span className="w-2 h-2 rounded-full bg-black animate-ping"></span>
                 ACTIVE IN YOUR CITY
@@ -88,32 +62,22 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
               <h1 className="text-6xl sm:text-6xl md:text-8xl lg:text-[10rem] font-black leading-[0.85] tracking-tighter italic">
                 <span className="whitespace-nowrap">Step Out,</span> <br /> <span className="text-[#C6FF00] whitespace-nowrap">PlayChale.</span>
               </h1>
-            </motion.div>
+            </div>
 
-            <motion.p
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.6 }}
-              className="text-xl md:text-3xl text-white/80 max-w-2xl leading-tight font-bold tracking-tight"
-            >
-              Don't just watch. Compete. Find games, build your legacy, and own the city.
-            </motion.p>
+            <p className="text-xl md:text-3xl text-white/80 max-w-2xl leading-tight font-bold tracking-tight hero-reveal hero-delay-2">
+              Don&apos;t just watch. Compete. Find games, build your legacy, and own the city.
+            </p>
 
-            <motion.div
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.8 }}
-              className="flex flex-col sm:flex-row items-center gap-8"
-            >
-              <button
-                onClick={onOpenDiscover}
+            <div className="flex flex-col sm:flex-row items-center gap-8 hero-reveal hero-delay-3">
+              <Link
+                href={discoverHref}
                 className="w-full sm:w-auto bg-[#C6FF00] text-black px-8 py-4 md:px-12 md:py-6 rounded-full font-black uppercase tracking-widest text-[11px] flex items-center justify-center gap-4 hover:scale-[1.05] hover:shadow-[0_0_40px_rgba(198,255,0,0.4)] transition-all group"
               >
                 Discover Games
                 <div className="bg-black text-white rounded-full p-1 group-hover:rotate-45 transition-transform">
                   <ICONS.ChevronRight />
                 </div>
-              </button>
+              </Link>
 
               <div className="flex items-center gap-5">
                 <div className="flex -space-x-3">
@@ -133,15 +97,10 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
                   <p className="text-[9px] font-black uppercase tracking-widest text-[#C6FF00]">Live in your vicinity</p>
                 </div>
               </div>
-            </motion.div>
+            </div>
           </div>
 
-          <motion.div
-            initial={{ opacity: 0, x: 20 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 1.2 }}
-            className="lg:col-span-4 hidden lg:flex flex-col gap-6"
-          >
+          <div className="lg:col-span-4 hidden lg:flex flex-col gap-6 hero-side">
             <div className="glass rounded-[48px] p-8 border border-white/10 space-y-6 shadow-2xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-6 opacity-10 rotate-12 group-hover:rotate-45 transition-transform duration-[2s]"><ICONS.Logo /></div>
 
@@ -171,19 +130,57 @@ const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
                 ))}
               </div>
 
-              <button onClick={onOpenDiscover} className="w-full py-3 rounded-full border border-white/10 text-[10px] font-black uppercase tracking-widest text-white/50 hover:text-white hover:bg-white/5 transition-all">Browse All Games</button>
+              <Link href={discoverHref} className="block text-center w-full py-3 rounded-full border border-white/10 text-[10px] font-black uppercase tracking-widest text-white/50 hover:text-white hover:bg-white/5 transition-all">Browse All Games</Link>
             </div>
-          </motion.div>
+          </div>
         </div>
       </div>
 
       <style>{`
+        @keyframes heroImageIn {
+          from { transform: scale(1.08); opacity: 0; }
+          to { transform: scale(1); opacity: 0.5; }
+        }
+        @keyframes heroFadeUp {
+          from { transform: translateY(24px); opacity: 0; }
+          to { transform: translateY(0); opacity: 1; }
+        }
+        @keyframes heroSlideIn {
+          from { transform: translateX(20px); opacity: 0; }
+          to { transform: translateX(0); opacity: 1; }
+        }
         @keyframes marquee {
           0% { transform: translateX(100%); }
           100% { transform: translateX(-100%); }
         }
+        .hero-media {
+          animation: heroImageIn 2s ease-out both;
+        }
+        .hero-reveal {
+          opacity: 0;
+          animation: heroFadeUp 700ms ease-out both;
+        }
+        .hero-side {
+          opacity: 0;
+          animation: heroSlideIn 700ms ease-out 900ms both;
+        }
+        .hero-delay-1 { animation-delay: 250ms; }
+        .hero-delay-2 { animation-delay: 400ms; }
+        .hero-delay-3 { animation-delay: 550ms; }
         .animate-marquee {
           animation: marquee 30s linear infinite;
+        }
+        @media (prefers-reduced-motion: reduce) {
+          .hero-media,
+          .hero-reveal,
+          .hero-side,
+          .animate-marquee {
+            animation: none;
+            opacity: 1;
+          }
+          .hero-media {
+            opacity: 0.5;
+          }
         }
       `}</style>
     </section>

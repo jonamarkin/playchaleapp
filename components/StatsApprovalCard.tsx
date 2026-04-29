@@ -2,7 +2,6 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 import { SPORT_STATS } from '@/constants';
 import { useApproveStats, useVoteForMVP } from '@/hooks/useData';
 
@@ -68,11 +67,7 @@ const StatsApprovalCard: React.FC<StatsApprovalCardProps> = ({ approval, userId,
     if (!approval.games) return null;
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white border-2 border-black/5 rounded-[28px] overflow-hidden shadow-sm hover:shadow-lg transition-all"
-        >
+        <div className="pc-view-enter bg-white border-2 border-black/5 rounded-[28px] overflow-hidden shadow-sm hover:shadow-lg transition-all">
             {/* Header */}
             <div className="relative h-24 sm:h-32">
                 <Image
@@ -142,7 +137,7 @@ const StatsApprovalCard: React.FC<StatsApprovalCardProps> = ({ approval, userId,
                     </button>
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 };
 
