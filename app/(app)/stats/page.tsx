@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import AppLoader from '@/components/AppLoader';
 import ProfileDashboard from '@/components/ProfileDashboard';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
 import { useProfile } from '@/hooks/useData';
@@ -19,11 +20,7 @@ export default function StatsPage() {
   }, [hasProfile, user, router]);
 
   if (!profile || isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-gray-400">Loading your profile...</div>
-      </div>
-    );
+    return <AppLoader label="Loading your profile" tone="dark" />;
   }
 
   return (

@@ -47,11 +47,13 @@ function AppShell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="min-h-screen relative bg-[#FDFDFB]">
-      <Header
-        activeView={getActiveView()}
-        onNavigate={(view) => handleNavigate(`/${view}`)}
-        onOpenCreate={() => openModal('create')}
-      />
+      <div className="hidden md:block">
+        <Header
+          activeView={getActiveView()}
+          onNavigate={(view) => handleNavigate(`/${view}`)}
+          onOpenCreate={() => openModal('create')}
+        />
+      </div>
       <main className="pb-[calc(7.75rem+env(safe-area-inset-bottom))] md:pb-0">
         {children}
       </main>

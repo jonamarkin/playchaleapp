@@ -8,9 +8,10 @@ interface ImageUploadProps {
     currentImage?: string;
     onImageSelected: (file: File) => void;
     className?: string;
+    eager?: boolean;
 }
 
-const ImageUpload: React.FC<ImageUploadProps> = ({ currentImage, onImageSelected, className = '' }) => {
+const ImageUpload: React.FC<ImageUploadProps> = ({ currentImage, onImageSelected, className = '', eager = false }) => {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [previewUrl, setPreviewUrl] = useState<string | null>(null);
 
@@ -33,6 +34,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ currentImage, onImageSelected
                     alt="Profile Avatar"
                     fill
                     sizes="(max-width: 768px) 128px, 160px"
+                    loading={eager ? 'eager' : 'lazy'}
                     className="object-cover"
                 />
 

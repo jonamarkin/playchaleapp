@@ -44,7 +44,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
   };
 
   return (
-    <section className={`relative overflow-hidden ${isFullPage ? 'bg-[#FDFDFB] pt-24 sm:pt-32 md:pt-40 pb-20 sm:pb-32 md:pb-40' : 'py-20 sm:py-24 md:py-32 bg-black text-white rounded-[40px] sm:rounded-[60px] md:rounded-[120px] mx-2 md:mx-10 mb-20 shadow-2xl'}`}>
+    <section className={`relative overflow-hidden ${isFullPage ? 'bg-[#FDFDFB] pt-6 sm:pt-8 md:pt-40 pb-20 sm:pb-32 md:pb-40' : 'py-20 sm:py-24 md:py-32 bg-black text-white rounded-[40px] sm:rounded-[60px] md:rounded-[120px] mx-2 md:mx-10 mb-20 shadow-2xl'}`}>
       {!isFullPage && (
         <>
           <div className="absolute top-0 right-0 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-[#C6FF00]/10 blur-[80px] sm:blur-[120px] rounded-full -mr-20 sm:-mr-40 -mt-20 sm:-mt-40 pointer-events-none opacity-50"></div>
@@ -179,6 +179,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                           alt={player.name}
                           width={192}
                           height={192}
+                          loading={isFullPage && idx < 3 ? 'eager' : 'lazy'}
                           className="w-24 h-24 sm:w-36 sm:h-36 md:w-48 md:h-48 rounded-full object-cover border-[6px] sm:border-[8px] border-black/5 group-hover:border-[#C6FF00] transition-all duration-500 shadow-2xl"
                         />
                         <div className="absolute -bottom-2 -right-2 bg-[#C6FF00] text-black w-9 h-9 sm:w-14 sm:h-14 rounded-full flex items-center justify-center font-black text-base sm:text-2xl shadow-2xl border-4 border-black group-hover:scale-110 transition-transform">

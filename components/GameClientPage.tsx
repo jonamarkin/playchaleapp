@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
+import AppLoader from '@/components/AppLoader';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
 import GameDetailView from '@/components/GameDetailView';
 import { Game } from '@/types';
@@ -11,11 +12,7 @@ import { useJoinGame, useProfile } from '@/hooks/useData';
 
 const PostGameModal = dynamic(() => import('@/components/PostGameModal'), {
     ssr: false,
-    loading: () => (
-        <div className="fixed inset-0 bg-black/70 backdrop-blur-xl z-[200] flex items-center justify-center">
-            <div className="w-12 h-12 border-4 border-[#C6FF00] border-t-transparent rounded-full animate-spin" />
-        </div>
-    ),
+    loading: () => <AppLoader label="Opening report" overlay />,
 });
 
 interface GameClientPageProps {
@@ -41,8 +38,8 @@ export default function GameClientPage({ initialGame }: GameClientPageProps) {
     if (!data || !viewType) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center text-white">
-                <div className="animate-pulse flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 bg-[#C6FF00] rounded-full animate-bounce"></div>
+                <div className="pc-view-enter flex flex-col items-center gap-4 text-center">
+                    <ICONS.Logo />
                     <p className="font-black uppercase tracking-widest text-xs opacity-50">Match Not Found</p>
                 </div>
             </div>

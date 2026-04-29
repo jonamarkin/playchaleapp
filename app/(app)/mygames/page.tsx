@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import { useRouter } from 'next/navigation';
+import AppLoader from '@/components/AppLoader';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
 import { useMyGames } from '@/hooks/useData';
 import { ICONS } from '@/constants/icons';
@@ -55,7 +56,7 @@ export default function MyGamesPage() {
     const joinedGames = data?.joinedGames || [];
 
     return (
-        <section className="pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20 px-4 sm:px-6 md:px-12 min-h-screen bg-[#FDFDFB]">
+        <section className="pt-6 sm:pt-8 md:pt-32 pb-12 sm:pb-16 md:pb-20 px-4 sm:px-6 md:px-12 min-h-screen bg-[#FDFDFB]">
             <div className="max-w-4xl mx-auto space-y-8 sm:space-y-10">
                 {/* Header */}
                 <header className="space-y-4">
@@ -86,10 +87,7 @@ export default function MyGamesPage() {
 
                 {/* Content */}
                 {isLoading ? (
-                    <div className="py-20 text-center">
-                        <div className="w-8 h-8 border-4 border-black/10 border-t-[#C6FF00] rounded-full animate-spin mx-auto mb-4"></div>
-                        <p className="text-black/40 font-bold uppercase text-sm tracking-widest">Loading your games...</p>
-                    </div>
+                    <AppLoader label="Loading your games" tone="light" fullScreen={false} className="py-20" />
                 ) : error ? (
                     <div className="py-20 text-center">
                         <p className="text-red-500 font-bold">Error loading games. Please try again.</p>

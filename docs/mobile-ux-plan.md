@@ -4,7 +4,8 @@
 
 - Added a mobile bottom navigation dock for primary app routes.
 - Moved the mobile create-game action into the center of the dock.
-- Kept the top header as a compact brand/account surface on mobile.
+- Removed the duplicate top header/menu overlay from authenticated mobile app routes.
+- Refined the bottom navigation selected state with a raised active icon treatment.
 - Hid the large marketing-style footer on authenticated mobile app routes.
 - Added safe-area bottom spacing so content and toasts do not collide with the dock.
 
@@ -26,5 +27,6 @@
 
 - Re-enabled browser zoom by removing viewport scale locks.
 - Added a 44px minimum baseline to the shared touch-target utility.
+- Added a shared PlayChale loader and route-level app loading states.
 - Verified typecheck, lint, production build, PWA files, bundle audit, and route smoke checks.
 - Kept bottom-nav safe-area offsets on mobile app routes.

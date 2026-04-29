@@ -2,6 +2,7 @@
 
 import React, { useEffect } from 'react';
 import { useRouter } from 'next/navigation';
+import AppLoader from '@/components/AppLoader';
 import MessageCenter from '@/components/MessageCenter';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
 import { useGames } from '@/hooks/useData';
@@ -19,11 +20,7 @@ export default function MessagesPage() {
   }, [hasProfile, router]);
 
   if (!hasProfile) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-gray-400">Loading...</div>
-      </div>
-    );
+    return <AppLoader label="Loading messages" tone="dark" />;
   }
 
   return (

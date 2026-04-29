@@ -152,7 +152,7 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
   );
 
   return (
-    <section className="min-h-screen bg-black pt-24 md:pt-32 pb-[calc(8.75rem+env(safe-area-inset-bottom))] md:pb-32 px-3 md:px-12 text-white overflow-x-hidden relative">
+    <section className="min-h-screen bg-black pt-5 md:pt-32 pb-[calc(8.75rem+env(safe-area-inset-bottom))] md:pb-32 px-3 md:px-12 text-white overflow-x-hidden relative">
       <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-1/2 bg-gradient-to-t from-[#C6FF00]/5 to-transparent pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
@@ -165,12 +165,13 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
                   {isOwner ? (
                     <ImageUpload
                       currentImage={player.avatar}
+                      eager
                       onImageSelected={async (file) => {
                         await uploadAvatar(file);
                       }}
                     />
                   ) : (
-                    <Image src={player.avatar} alt={player.name} width={160} height={160} className="w-28 h-28 md:w-40 md:h-40 rounded-full object-cover border-[6px] border-white/5 shadow-2xl" />
+                    <Image src={player.avatar} alt={player.name} width={160} height={160} loading="eager" className="w-28 h-28 md:w-40 md:h-40 rounded-full object-cover border-[6px] border-white/5 shadow-2xl" />
                   )}
                   <div className="absolute -bottom-1 -right-1 bg-[#C6FF00] text-black w-10 h-10 md:w-12 md:h-12 rounded-full flex items-center justify-center font-black text-sm md:text-lg shadow-2xl uppercase italic">PRO</div>
                 </div>
@@ -200,7 +201,7 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
 
-          <div className="md:hidden sticky top-20 z-30 w-full space-y-3">
+          <div className="md:hidden sticky top-3 z-30 w-full space-y-3">
             <div className="rounded-[28px] border border-white/10 bg-black/75 p-1.5 shadow-2xl backdrop-blur-2xl">
               <div className="grid grid-cols-4 gap-1">
                 {MOBILE_PROFILE_TABS.map(tab => {

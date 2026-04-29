@@ -2,6 +2,7 @@
 
 import React from 'react';
 import AppDashboard from '@/components/AppDashboard';
+import AppLoader from '@/components/AppLoader';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
 import { useRouter } from 'next/navigation';
 import { useEffect } from 'react';
@@ -27,12 +28,7 @@ export default function HomePage() {
   }, [isLoading, profile, router]);
 
   if (isLoading || !profile) {
-    return (
-      <div className="min-h-screen flex flex-col items-center justify-center space-y-4">
-        <div className="w-10 h-10 border-4 border-white/10 border-t-[#C6FF00] rounded-full animate-spin"></div>
-        <div className="text-white/50 font-mono text-xs uppercase tracking-widest animate-pulse">Loading Identity...</div>
-      </div>
-    );
+    return <AppLoader label="Loading your home" tone="light" />;
   }
 
   return (

@@ -1,16 +1,13 @@
 'use client';
 
 import dynamic from 'next/dynamic';
+import AppLoader from '@/components/AppLoader';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
 import { useCreateGame, useJoinGame } from '@/hooks/useData';
 
 const GameModal = dynamic(() => import('@/components/GameModal'), {
   ssr: false,
-  loading: () => (
-    <div className="fixed inset-0 bg-black/60 backdrop-blur-xl z-[200] flex items-center justify-center">
-      <div className="w-16 h-16 border-4 border-[#C6FF00] border-t-transparent rounded-full animate-spin" />
-    </div>
-  ),
+  loading: () => <AppLoader label="Opening modal" overlay />,
 });
 
 export default function AppModalHost() {

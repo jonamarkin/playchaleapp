@@ -230,7 +230,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
   }, [games, filter, search, priceFilter, skillFilter, selectedDay]);
 
   return (
-    <section className={`px-4 md:px-12 ${isFullPage ? 'pt-24 md:pt-36 pb-32 min-h-screen bg-white relative' : 'py-20 md:py-32 bg-transparent'}`}>
+    <section className={`px-4 md:px-12 ${isFullPage ? 'pt-6 md:pt-36 pb-32 min-h-screen bg-white relative' : 'py-20 md:py-32 bg-transparent'}`}>
       {isFullPage && (
         <div className="absolute top-8 right-8 z-50 hidden md:block">
           {user ? (
@@ -262,7 +262,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
                 Find Your <br className="hidden md:block" /> Perfect Match.
               </h2>
 
-              <div className="sticky top-[72px] z-40 md:hidden rounded-[32px] border border-black/5 bg-black p-3 text-white shadow-xl">
+              <div className="sticky top-3 z-40 md:hidden rounded-[32px] border border-black/5 bg-black p-3 text-white shadow-xl">
                 <div className="relative">
                   <div className="absolute left-5 top-1/2 -translate-y-1/2 text-white/35">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>

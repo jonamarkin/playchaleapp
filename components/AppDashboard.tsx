@@ -16,7 +16,7 @@ interface AppDashboardProps {
 
 const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGames, risingStars, onViewMatch, onNavigate }) => {
   return (
-    <section className="pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20 px-4 sm:px-6 md:px-12 min-h-screen bg-[#FDFDFB]">
+    <section className="pt-6 sm:pt-8 md:pt-32 pb-12 sm:pb-16 md:pb-20 px-4 sm:px-6 md:px-12 min-h-screen bg-[#FDFDFB]">
       <div className="max-w-7xl mx-auto space-y-8 sm:space-y-10 md:space-y-16">
         {/* Welcome Header */}
         <header className="flex flex-col gap-6 sm:gap-8">
@@ -54,6 +54,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
                 alt={upcomingGames[0].title}
                 fill
                 sizes="(max-width: 768px) 100vw, 66vw"
+                loading="eager"
                 className="object-cover transition-transform duration-[2s] group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent" />
@@ -123,7 +124,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
             <div className="bg-black text-white rounded-[40px] sm:rounded-[48px] md:rounded-[60px] p-6 sm:p-8 md:p-10 space-y-6 sm:space-y-8 md:space-y-10 shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 right-0 p-6 sm:p-8 md:p-10 opacity-10 pointer-events-none"><ICONS.Logo /></div>
               <div className="flex items-center gap-5 sm:gap-6 md:gap-8 relative z-10">
-                <Image src={player.avatar} alt={player.name} width={96} height={96} className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full border-3 sm:border-4 border-[#C6FF00] shadow-2xl" />
+                <Image src={player.avatar} alt={player.name} width={96} height={96} loading="eager" className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full border-3 sm:border-4 border-[#C6FF00] shadow-2xl" />
                 <div className="min-w-0">
                   <h4 className="text-lg sm:text-xl md:text-2xl font-black italic uppercase tracking-tighter leading-none truncate">{player.name}</h4>
                   <p className="text-[9px] sm:text-[10px] md:text-[11px] font-black uppercase tracking-widest text-[#C6FF00] mt-1 sm:mt-2">{player.mainSport} Player</p>
@@ -196,6 +197,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
                             alt={star.name}
                             width={44}
                             height={44}
+                            loading={i < 3 ? 'eager' : 'lazy'}
                             className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-xl object-cover shrink-0"
                           />
                         ) : (

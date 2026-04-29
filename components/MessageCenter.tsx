@@ -116,7 +116,7 @@ const MessageCenter: React.FC<MessageCenterProps> = ({
   };
 
   return (
-    <section className="min-h-screen bg-black pt-24 pb-[calc(8.5rem+env(safe-area-inset-bottom))] md:pt-28 md:pb-20 px-3 md:px-12 text-white flex flex-col">
+    <section className="min-h-screen bg-black pt-5 pb-[calc(8.5rem+env(safe-area-inset-bottom))] md:pt-28 md:pb-20 px-3 md:px-12 text-white flex flex-col">
       <div className="max-w-[1600px] mx-auto w-full flex-1 flex flex-col md:flex-row gap-4 md:gap-10">
 
         {/* Pane 1: Game & Action Sidebar */}
@@ -231,7 +231,7 @@ const MessageCenter: React.FC<MessageCenterProps> = ({
         </div>
 
         {/* Pane 3: Chat/Challenge View */}
-        <div className={`${mobileView !== 'chat' ? 'hidden md:flex' : 'flex'} fixed inset-x-3 top-[5.5rem] bottom-[calc(6.95rem+env(safe-area-inset-bottom))] z-[120] md:static md:inset-auto md:z-auto flex-1 bg-white/5 border border-white/10 rounded-[32px] md:rounded-[56px] flex-col overflow-hidden relative min-h-0`}>
+        <div className={`${mobileView !== 'chat' ? 'hidden md:flex' : 'flex'} fixed inset-x-3 top-3 bottom-[calc(6.95rem+env(safe-area-inset-bottom))] z-[120] md:static md:inset-auto md:z-auto flex-1 bg-white/5 border border-white/10 rounded-[32px] md:rounded-[56px] flex-col overflow-hidden relative min-h-0`}>
           {activeThread ? (
               <div key={activeThread.key} className="pc-view-enter flex-1 flex flex-col h-full min-h-0">
                 <div className="p-4 md:p-10 border-b border-white/5 flex justify-between items-center bg-white/5 backdrop-blur-md relative z-10 shrink-0">
