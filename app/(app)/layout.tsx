@@ -34,6 +34,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
     showToast,
   } = usePlayChale();
   const unreadCount = messages.filter((message) => !message.isRead).length;
+  const isDarkSurface = pathname.startsWith('/messages') || pathname.startsWith('/profile') || pathname.startsWith('/stats') || pathname.startsWith('/game');
 
   // Determine active view for Header styling
   const getActiveView = () => {
@@ -46,7 +47,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen relative bg-[#FDFDFB]">
+    <div className={`min-h-screen relative ${isDarkSurface ? 'bg-black' : 'bg-[#FDFDFB]'}`}>
       <div className="hidden md:block">
         <Header
           activeView={getActiveView()}
@@ -54,7 +55,7 @@ function AppShell({ children }: { children: React.ReactNode }) {
           onOpenCreate={() => openModal('create')}
         />
       </div>
-      <main className="pb-[calc(7.75rem+env(safe-area-inset-bottom))] md:pb-0">
+      <main className={`pb-[calc(7.75rem+env(safe-area-inset-bottom))] md:pb-0 ${isDarkSurface ? 'bg-black' : 'bg-[#FDFDFB]'}`}>
         {children}
       </main>
       <div className="hidden md:block">

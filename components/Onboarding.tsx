@@ -1,7 +1,6 @@
 'use client';
 
-import React, { useState } from 'react';
-import { motion, AnimatePresence } from '@/components/LightMotion';
+import React, { useEffect, useState } from 'react';
 import { ICONS } from '@/constants/icons';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
@@ -15,7 +14,7 @@ interface OnboardingData {
 }
 
 interface OnboardingProps {
-  onComplete: (data: OnboardingData) => void;
+  onComplete: (data: OnboardingData) => Promise<void> | void;
   onSkip: () => void;
 }
 
@@ -58,6 +57,10 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
     'Intermediate': { matches: '24', rivals: '156', grade: 'Silver', drive: 'Semi-Pro' },
     'Competitive': { matches: '89', rivals: '482', grade: 'Gold', drive: 'Pro' }
   };
+
+  useEffect(() => {
+    document.getElementById('playchale-static-onboarding')?.remove();
+  }, []);
 
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(Math.max(1, step - 1));
@@ -103,7 +106,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
   const TOTAL_STEPS = 6;
 
   return (
-    <div className="fixed inset-0 z-[150] bg-black text-white flex flex-col overflow-hidden">
+    <div data-onboarding-root="true" className="fixed inset-0 z-[150] bg-black text-white flex flex-col overflow-hidden">
       {/* Background Ambience */}
       <div className="absolute inset-0 pointer-events-none opacity-20">
         <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#C6FF00]/10 blur-[150px] rounded-full -mr-40 -mt-40"></div>
@@ -112,66 +115,63 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
 
       {/* Progress Bar */}
       <div className="absolute top-0 left-0 right-0 h-1.5 bg-white/5 flex z-50">
-        <motion.div
+        <div
           className="h-full bg-[#C6FF00] shadow-[0_0_20px_#C6FF00]"
-          initial={{ width: '0%' }}
-          animate={{ width: `${(step / TOTAL_STEPS) * 100}%` }}
+          style={{ width: `${(step / TOTAL_STEPS) * 100}%` }}
         />
       </div>
 
-      <header className="p-6 md:p-10 flex justify-between items-center relative z-20 bg-gradient-to-b from-black to-transparent">
-        <div className="flex items-center gap-4">
+      <header className="relative z-20 flex items-center justify-between gap-3 bg-gradient-to-b from-black to-transparent px-4 py-5 md:p-10">
+        <div className="flex min-w-0 items-center gap-3 md:gap-4">
           {step > 1 && step < TOTAL_STEPS && (
             <button
               onClick={prevStep}
-              className="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center hover:bg-white/10 transition-all mr-2"
+              className="mr-1 flex h-9 w-9 shrink-0 items-center justify-center rounded-full border border-white/10 transition-all hover:bg-white/10 md:mr-2 md:h-10 md:w-10"
             >
               <div className="rotate-180 scale-125"><ICONS.ChevronRight /></div>
             </button>
           )}
-          <div className="flex items-center gap-3">
+          <div className="flex min-w-0 items-center gap-2.5 md:gap-3">
             <ICONS.Logo />
-            <span className="font-black text-xl md:text-2xl tracking-tighter italic uppercase">PLAYER SETUP.</span>
+            <span className="truncate text-base font-black italic uppercase leading-none min-[380px]:text-lg md:text-2xl">PLAYER SETUP.</span>
           </div>
         </div>
         {step < TOTAL_STEPS && (
-          <div className="flex items-center gap-4">
+          <div className="flex shrink-0 items-center gap-2 md:gap-4">
             <a
               href="/login"
-              className="text-[#C6FF00] text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] hover:text-white transition-colors border border-[#C6FF00]/30 px-4 py-2 rounded-full hover:bg-[#C6FF00]/10"
+              className="rounded-full border border-[#C6FF00]/30 px-3 py-2 text-[8px] font-black uppercase tracking-[0.22em] text-[#C6FF00] transition-colors hover:bg-[#C6FF00]/10 hover:text-white md:px-4 md:text-[10px] md:tracking-[0.3em]"
             >
               Sign In
             </a>
             <button
               onClick={onSkip}
-              className="text-white/40 text-[9px] md:text-[10px] font-black uppercase tracking-[0.4em] hover:text-white transition-colors"
+              className="text-[8px] font-black uppercase tracking-[0.22em] text-white/40 transition-colors hover:text-white sm:text-[9px] md:text-[10px] md:tracking-[0.4em]"
             >
-              Exit Setup
+              <span className="sm:hidden">Exit</span>
+              <span className="hidden sm:inline">Exit Setup</span>
             </button>
           </div>
         )}
       </header>
 
       {/* Central Content Area - Now Scrollable */}
-      <div className="flex-1 overflow-y-auto px-6 py-12 relative z-10 hide-scrollbar">
-        <div className="max-w-6xl mx-auto flex flex-col items-center justify-center min-h-full">
-          <AnimatePresence mode="wait">
+      <div className="hide-scrollbar relative z-10 flex-1 overflow-y-auto overflow-x-hidden px-4 py-8 sm:px-6 md:py-12">
+        <div className="mx-auto flex min-h-full w-full max-w-6xl min-w-0 flex-col items-center justify-center">
+          <>
             {step === 1 && (
-              <motion.div
+              <div
                 key="step1"
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -40 }}
                 className="w-full space-y-12 text-center"
               >
                 <div className="space-y-4">
                   <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">STEP 01: SPORTS</span>
-                  <h2 className="text-4xl md:text-9xl font-black italic tracking-tighter uppercase leading-[0.85]">Select your <br /> disciplines.</h2>
+                  <h2 className="text-[2.55rem] font-black italic uppercase leading-[0.88] min-[380px]:text-5xl md:text-9xl">Select your <br /> disciplines.</h2>
                   <p className="text-white/40 text-[10px] uppercase tracking-widest">Select all that apply</p>
                 </div>
 
                 <div className="flex flex-col items-center gap-8">
-                  <div className="pc-stagger grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 w-full max-w-4xl">
+                  <div className="pc-stagger grid w-full max-w-full min-w-0 grid-cols-2 gap-3 md:max-w-4xl md:grid-cols-3 md:gap-6">
                     {SPORTS.map(s => {
                       const isSelected = data.sports.includes(s.name);
                       return (
@@ -183,10 +183,10 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                               : [...data.sports, s.name];
                             setData({ ...data, sports: newSports });
                           }}
-                          className={`pc-choice-card touch-target group border-2 p-6 md:p-10 rounded-[32px] md:rounded-[48px] transition-all flex flex-col items-center gap-3 md:gap-6 ${isSelected ? 'bg-[#C6FF00] border-[#C6FF00] text-black scale-105' : 'bg-white/5 border-white/5 hover:bg-white/10 text-white'}`}
+                          className={`pc-choice-card touch-target group flex min-w-0 flex-col items-center gap-3 rounded-[28px] border-2 p-4 transition-all min-[380px]:p-5 md:gap-6 md:rounded-[48px] md:p-10 ${isSelected ? 'scale-[1.02] bg-[#C6FF00] text-black border-[#C6FF00] md:scale-105' : 'border-white/5 bg-white/5 text-white hover:bg-white/10'}`}
                         >
                           <span className={`text-3xl md:text-5xl transition-transform ${isSelected ? 'scale-125' : 'group-hover:scale-125'}`}>{s.icon}</span>
-                          <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em]">{s.name}</span>
+                          <span className="max-w-full break-words text-center text-[9px] font-black uppercase tracking-[0.12em] sm:tracking-[0.2em] md:text-[10px] md:tracking-[0.3em]">{s.name}</span>
                         </button>
                       );
                     })}
@@ -195,25 +195,22 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                   <Button
                     onClick={nextStep}
                     disabled={data.sports.length === 0}
-                    className="px-12 py-6 rounded-full bg-white text-black font-black uppercase tracking-widest text-xs hover:bg-[#C6FF00] disabled:opacity-30 disabled:hover:bg-white transition-all w-full md:w-auto"
+                    className="w-full rounded-full bg-white px-8 py-6 text-xs font-black uppercase tracking-[0.18em] text-black transition-all hover:bg-[#C6FF00] disabled:opacity-30 disabled:hover:bg-white sm:tracking-widest md:w-auto md:px-12"
                   >
                     Confirm Selection ({data.sports.length})
                   </Button>
                 </div>
-              </motion.div>
+              </div>
             )}
 
             {step === 2 && (
-              <motion.div
+              <div
                 key="step2"
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -40 }}
                 className="w-full space-y-12 text-center"
               >
                 <div className="space-y-4">
                   <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">STEP 02: LEVEL</span>
-                  <h2 className="text-4xl md:text-9xl font-black italic tracking-tighter uppercase leading-[0.85]">What&apos;s your <br /> level?</h2>
+                  <h2 className="text-[2.55rem] font-black italic uppercase leading-[0.88] min-[380px]:text-5xl md:text-9xl">What&apos;s your <br /> level?</h2>
                 </div>
 
                 <div className="pc-stagger grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 w-full max-w-5xl mx-auto">
@@ -224,25 +221,22 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                       className="pc-choice-card touch-target group bg-white/5 border-2 border-white/5 p-8 md:p-12 rounded-[40px] md:rounded-[56px] hover:bg-white hover:text-black transition-all text-left relative overflow-hidden"
                     >
                       <div className="absolute top-0 right-0 p-6 md:p-8 opacity-10 group-hover:opacity-30 transition-all font-black italic text-2xl md:text-4xl">{l.intensity}</div>
-                      <h3 className="text-2xl md:text-3xl font-black italic uppercase tracking-tighter mb-2">{l.name}</h3>
+                      <h3 className="mb-2 text-2xl font-black italic uppercase md:text-3xl">{l.name}</h3>
                       <p className="text-[10px] md:text-xs font-bold opacity-40 group-hover:opacity-60">{l.label}</p>
                     </button>
                   ))}
                 </div>
-              </motion.div>
+              </div>
             )}
 
             {step === 3 && (
-              <motion.div
+              <div
                 key="step3"
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -40 }}
                 className="w-full space-y-12 text-center"
               >
                 <div className="space-y-4">
                   <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">STEP 03: LOCATION</span>
-                  <h2 className="text-4xl md:text-9xl font-black italic tracking-tighter uppercase leading-[0.85]">Where do <br /> you play?</h2>
+                  <h2 className="text-[2.55rem] font-black italic uppercase leading-[0.88] min-[380px]:text-5xl md:text-9xl">Where do <br /> you play?</h2>
                 </div>
 
                 <div className="max-w-md mx-auto w-full px-4">
@@ -263,20 +257,17 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                   </div>
                   <p className="mt-6 text-[10px] font-black uppercase tracking-[0.3em] text-white/20">Press enter to continue</p>
                 </div>
-              </motion.div>
+              </div>
             )}
 
             {step === 4 && (
-              <motion.div
+              <div
                 key="step4"
-                initial={{ opacity: 0, y: 40 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, y: -40 }}
                 className="w-full space-y-12 text-center"
               >
                 <div className="space-y-4">
                   <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">STEP 04: NAME</span>
-                  <h2 className="text-4xl md:text-9xl font-black italic tracking-tighter uppercase leading-[0.85]">Choose your <br /> player name.</h2>
+                  <h2 className="text-[2.55rem] font-black italic uppercase leading-[0.88] min-[380px]:text-5xl md:text-9xl">Choose your <br /> player name.</h2>
                 </div>
 
                 <div className="max-w-md mx-auto w-full px-4">
@@ -300,22 +291,19 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                   </div>
                   <p className="mt-6 text-[10px] font-black uppercase tracking-[0.3em] text-white/20">This is how players will know you</p>
                 </div>
-              </motion.div>
+              </div>
             )}
 
             {step === 5 && (
-              <motion.div
+              <div
                 key="step5"
-                initial={{ opacity: 0, scale: 0.9 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, x: -100 }}
                 className="w-full bg-white/5 border border-white/10 p-6 md:p-20 rounded-[40px] md:rounded-[80px] text-center space-y-8 md:space-y-12 relative overflow-hidden"
               >
                 <div className="absolute top-0 right-0 p-20 opacity-5 rotate-12 hidden md:block"><ICONS.Logo /></div>
 
                 <div className="space-y-4 md:space-y-6">
                   <span className="bg-[#C6FF00] text-black px-4 md:px-6 py-2 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest">PROFILE PREVIEW: {data.name.toUpperCase()}</span>
-                  <h2 className="text-3xl md:text-7xl font-black italic tracking-tighter uppercase leading-[0.85]">Welcome to <br className="hidden md:block" /> PlayChale.</h2>
+                  <h2 className="text-3xl font-black italic uppercase leading-[0.88] md:text-7xl">Welcome to <br className="hidden md:block" /> PlayChale.</h2>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 text-left w-full">
@@ -339,20 +327,18 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                 <div className="flex flex-col md:flex-row items-center justify-center gap-6 pt-6 md:pt-10">
                   <Button onClick={nextStep} className="w-full md:w-auto h-auto bg-[#C6FF00] text-black px-12 py-5 md:py-6 rounded-full font-black uppercase tracking-widest text-[10px] md:text-[11px] shadow-2xl shadow-lime-500/20 hover:scale-105 hover:bg-[#b0ff00] transition-all">Continue to Account</Button>
                 </div>
-              </motion.div>
+              </div>
             )}
 
             {step === 6 && (
-              <motion.div
+              <div
                 key="step6"
-                initial={{ opacity: 0, x: 100 }}
-                animate={{ opacity: 1, x: 0 }}
                 className="max-w-2xl w-full flex flex-col items-center space-y-8 md:space-y-12"
               >
                 {/* ... existing header content ... */}
                 <div className="text-center space-y-4">
                   <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">STEP 06: ACCOUNT</span>
-                  <h2 className="text-4xl md:text-7xl font-black italic tracking-tighter uppercase leading-[0.85]">Finalize <br /> Credentials.</h2>
+                  <h2 className="text-[2.55rem] font-black italic uppercase leading-[0.88] min-[380px]:text-5xl md:text-7xl">Finalize <br /> Credentials.</h2>
                   <p className="text-white/40 text-[10px] md:text-xs font-bold uppercase tracking-widest">Creating profile for {data.name}</p>
                 </div>
 
@@ -430,9 +416,9 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                     </div>
                   </div>
                 )}
-              </motion.div>
+              </div>
             )}
-          </AnimatePresence>
+          </>
         </div>
       </div>
       <footer className="p-6 md:p-10 flex justify-center opacity-20 relative z-20 bg-gradient-to-t from-black to-transparent">

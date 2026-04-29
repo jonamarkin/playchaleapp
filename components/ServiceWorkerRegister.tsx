@@ -8,6 +8,7 @@ export default function ServiceWorkerRegister() {
     if (!('serviceWorker' in navigator)) return;
 
     let isMounted = true;
+    let hasReloadedForUpdate = false;
 
     const registerServiceWorker = () => {
       navigator.serviceWorker
@@ -28,9 +29,18 @@ export default function ServiceWorkerRegister() {
       window.addEventListener('load', registerServiceWorker);
     }
 
+    const handleControllerChange = () => {
+      if (hasReloadedForUpdate) return;
+      hasReloadedForUpdate = true;
+      window.location.reload();
+    };
+
+    navigator.serviceWorker.addEventListener('controllerchange', handleControllerChange);
+
     return () => {
       isMounted = false;
       window.removeEventListener('load', registerServiceWorker);
+      navigator.serviceWorker.removeEventListener('controllerchange', handleControllerChange);
     };
   }, []);
 
