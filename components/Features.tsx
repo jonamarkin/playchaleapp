@@ -98,7 +98,7 @@ export function Features() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="min-w-[300px] lg:min-w-0 bg-white hover:bg-black border border-black/5 hover:border-white/10 rounded-[48px] p-10 flex flex-col transition-all duration-500 snap-center relative group hover:-translate-y-3"
+              className="pc-card-lift min-w-[300px] lg:min-w-0 bg-white hover:bg-black border border-black/5 hover:border-white/10 rounded-[48px] p-10 flex flex-col transition-all duration-500 snap-center relative group"
               style={{ transitionDelay: `${index * 20}ms` }}
             >
               {/* Highlight bar on hover */}

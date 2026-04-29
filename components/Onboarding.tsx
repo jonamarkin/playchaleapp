@@ -171,7 +171,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                 </div>
 
                 <div className="flex flex-col items-center gap-8">
-                  <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 w-full max-w-4xl">
+                  <div className="pc-stagger grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 w-full max-w-4xl">
                     {SPORTS.map(s => {
                       const isSelected = data.sports.includes(s.name);
                       return (
@@ -183,7 +183,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                               : [...data.sports, s.name];
                             setData({ ...data, sports: newSports });
                           }}
-                          className={`group border-2 p-6 md:p-10 rounded-[32px] md:rounded-[48px] hover:scale-105 transition-all duration-500 flex flex-col items-center gap-3 md:gap-6 ${isSelected ? 'bg-[#C6FF00] border-[#C6FF00] text-black scale-105' : 'bg-white/5 border-white/5 hover:bg-white/10 text-white'}`}
+                          className={`pc-choice-card touch-target group border-2 p-6 md:p-10 rounded-[32px] md:rounded-[48px] transition-all flex flex-col items-center gap-3 md:gap-6 ${isSelected ? 'bg-[#C6FF00] border-[#C6FF00] text-black scale-105' : 'bg-white/5 border-white/5 hover:bg-white/10 text-white'}`}
                         >
                           <span className={`text-3xl md:text-5xl transition-transform ${isSelected ? 'scale-125' : 'group-hover:scale-125'}`}>{s.icon}</span>
                           <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em]">{s.name}</span>
@@ -216,12 +216,12 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                   <h2 className="text-4xl md:text-9xl font-black italic tracking-tighter uppercase leading-[0.85]">What&apos;s your <br /> level?</h2>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 w-full max-w-5xl mx-auto">
+                <div className="pc-stagger grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-6 w-full max-w-5xl mx-auto">
                   {LEVELS.map(l => (
                     <button
                       key={l.name}
                       onClick={() => { setData({ ...data, level: l.name }); nextStep(); }}
-                      className="group bg-white/5 border-2 border-white/5 p-8 md:p-12 rounded-[40px] md:rounded-[56px] hover:bg-white hover:text-black transition-all duration-500 text-left relative overflow-hidden"
+                      className="pc-choice-card touch-target group bg-white/5 border-2 border-white/5 p-8 md:p-12 rounded-[40px] md:rounded-[56px] hover:bg-white hover:text-black transition-all text-left relative overflow-hidden"
                     >
                       <div className="absolute top-0 right-0 p-6 md:p-8 opacity-10 group-hover:opacity-30 transition-all font-black italic text-2xl md:text-4xl">{l.intensity}</div>
                       <h3 className="text-2xl md:text-3xl font-black italic uppercase tracking-tighter mb-2">{l.name}</h3>
@@ -368,7 +368,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                       {/* ... Social Buttons kept as native for custom icons layout ... */}
                       <button
                         onClick={() => handleSocialAuth('google')}
-                        className="bg-white text-black p-5 rounded-full flex items-center justify-center gap-4 hover:bg-gray-200 transition-all group"
+                        className="pc-btn-press touch-target bg-white text-black p-5 rounded-full flex items-center justify-center gap-4 hover:bg-gray-200 transition-all group"
                       >
                         <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor"><path d="M12.48 10.92v3.28h7.84c-.24 1.84-.908 3.152-1.928 4.172-1.224 1.224-3.136 2.584-6.392 2.584-5.112 0-9.216-4.144-9.216-9.256s4.104-9.256 9.216-9.256c2.784 0 4.888 1.104 6.384 2.504l2.312-2.312c-2.128-2.024-4.88-3.192-8.696-3.192-7.392 0-13.432 6.04-13.432 13.432s6.04 13.432 13.432 13.432c4.016 0 7.04-1.32 9.424-3.792 2.448-2.448 3.216-5.888 3.216-8.544 0-.816-.064-1.584-.2-2.312h-12.42z" /></svg>
                         <span className="text-[10px] font-black uppercase tracking-widest">Google</span>

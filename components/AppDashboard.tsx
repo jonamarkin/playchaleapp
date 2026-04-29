@@ -46,7 +46,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
           <div className="lg:col-span-8 space-y-8 sm:space-y-10 md:space-y-12">
             {/* Spotlight Match */}
             <div
-              className="pc-view-enter relative aspect-[4/3] sm:aspect-video md:aspect-[21/9] rounded-[32px] sm:rounded-[48px] md:rounded-[56px] overflow-hidden group cursor-pointer shadow-2xl border-2 sm:border-4 border-black/5"
+              className="pc-view-enter pc-card-lift touch-target relative aspect-[4/3] sm:aspect-video md:aspect-[21/9] rounded-[32px] sm:rounded-[48px] md:rounded-[56px] overflow-hidden group cursor-pointer shadow-2xl border-2 sm:border-4 border-black/5"
               onClick={() => onViewMatch(upcomingGames[0])}
             >
               <Image
@@ -76,7 +76,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
               ].map((stat, i) => (
                 <div
                   key={i}
-                  className={`touch-card ${stat.bg} border-2 ${stat.bg === 'bg-black' ? 'border-white/10' : 'border-black/5'} rounded-[32px] sm:rounded-[40px] md:rounded-[44px] p-6 sm:p-8 md:p-10 hover:border-[#C6FF00] transition-all shadow-sm flex flex-col justify-between min-h-[140px] sm:min-h-[160px]`}
+                  className={`pc-card-lift ${stat.bg} border-2 ${stat.bg === 'bg-black' ? 'border-white/10' : 'border-black/5'} rounded-[32px] sm:rounded-[40px] md:rounded-[44px] p-6 sm:p-8 md:p-10 hover:border-[#C6FF00] transition-all shadow-sm flex flex-col justify-between min-h-[140px] sm:min-h-[160px]`}
                 >
                   <div className={`${stat.iconColor} mb-4 sm:mb-6 md:mb-8`}>{stat.icon}</div>
                   <div>
@@ -98,7 +98,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
                   <div
                     key={game.id}
                     onClick={() => onViewMatch(game)}
-                    className="touch-scale bg-white border-2 border-black/5 p-5 sm:p-6 md:p-8 rounded-[32px] sm:rounded-[40px] md:rounded-[48px] flex gap-4 sm:gap-5 md:gap-6 items-center hover:bg-black hover:text-white transition-all cursor-pointer group shadow-sm"
+                    className="pc-card-lift touch-target bg-white border-2 border-black/5 p-5 sm:p-6 md:p-8 rounded-[32px] sm:rounded-[40px] md:rounded-[48px] flex gap-4 sm:gap-5 md:gap-6 items-center hover:bg-black hover:text-white transition-all cursor-pointer group shadow-sm"
                   >
                     <Image src={game.imageUrl} alt={game.title} width={96} height={96} className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-[20px] sm:rounded-[28px] md:rounded-[32px] object-cover shadow-lg shrink-0" />
                     <div className="flex-1 min-w-0">
@@ -140,14 +140,14 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
                 </div>
               </div>
               <div className="space-y-3 sm:space-y-4 pt-2">
-                <button onClick={() => onNavigate('stats')} className="w-full bg-[#C6FF00] text-black py-4 sm:py-5 rounded-full font-black uppercase tracking-widest text-[10px] sm:text-[11px] hover:scale-105 transition-all shadow-xl shadow-lime-500/10">Manage Pro Profile</button>
-                <button onClick={() => onNavigate('community')} className="w-full bg-white/5 border border-white/10 py-4 sm:py-5 rounded-full font-black uppercase tracking-widest text-[10px] sm:text-[11px] hover:bg-white/10 transition-all">Scout Competitors</button>
+                <button onClick={() => onNavigate('stats')} className="pc-btn-press touch-target w-full bg-[#C6FF00] text-black py-4 sm:py-5 rounded-full font-black uppercase tracking-widest text-[10px] sm:text-[11px] transition-all shadow-xl shadow-lime-500/10">Manage Pro Profile</button>
+                <button onClick={() => onNavigate('community')} className="pc-btn-press touch-target w-full bg-white/5 border border-white/10 py-4 sm:py-5 rounded-full font-black uppercase tracking-widest text-[10px] sm:text-[11px] hover:bg-white/10 transition-all">Scout Competitors</button>
               </div>
             </div>
 
             {/* My Games Quick Access */}
             {myGames && (
-              <div className="bg-white border-2 border-black/5 rounded-[40px] sm:rounded-[48px] p-6 sm:p-8 space-y-5 shadow-sm hover:border-[#C6FF00] transition-all">
+              <div className="pc-card-lift bg-white border-2 border-black/5 rounded-[40px] sm:rounded-[48px] p-6 sm:p-8 space-y-5 shadow-sm hover:border-[#C6FF00] transition-all">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg sm:text-xl font-black italic uppercase tracking-tighter">My Games</h3>
                   <button onClick={() => onNavigate('mygames')} className="text-[9px] font-black uppercase tracking-widest text-black/40 hover:text-black transition-colors">View All</button>
@@ -170,7 +170,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
                 )}
                 <button
                   onClick={() => onNavigate('mygames')}
-                  className="w-full bg-black text-[#C6FF00] py-3.5 rounded-full font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all"
+                  className="pc-btn-press touch-target w-full bg-black text-[#C6FF00] py-3.5 rounded-full font-black uppercase tracking-widest text-[10px] transition-all"
                 >
                   Manage My Games
                 </button>

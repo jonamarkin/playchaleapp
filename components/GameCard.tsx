@@ -17,7 +17,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className="touch-card touch-target group bg-white hover:bg-black rounded-[48px] p-6 flex flex-col cursor-pointer transition-all duration-500 hover:shadow-[0_60px_120px_rgba(0,0,0,0.25)] border border-black/5 hover:border-white/10 relative overflow-hidden h-full min-h-[620px]"
+      className="pc-card-lift touch-target group bg-white hover:bg-black rounded-[48px] p-6 flex flex-col cursor-pointer transition-all duration-500 hover:shadow-[0_60px_120px_rgba(0,0,0,0.25)] border border-black/5 hover:border-white/10 relative overflow-hidden h-full min-h-[620px]"
     >
       {/* Visual Identity Section */}
       <div className="relative h-64 md:h-80 rounded-[40px] overflow-hidden mb-8">
@@ -100,10 +100,10 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick }) => {
 
             <button
               disabled={isFull}
-              className={`h-16 pl-10 pr-8 rounded-l-full rounded-r-none text-[11px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-4 shrink-0 ${isFull ? 'bg-gray-100 text-black/20 cursor-not-allowed' : 'bg-black text-white group-hover:bg-[#C6FF00] group-hover:text-black shadow-[-20px_0_40px_rgba(0,0,0,0.1)] group-hover:shadow-[-20px_0_40px_rgba(198,255,0,0.2)]'}`}
+              className={`pc-btn-press h-16 pl-10 pr-8 rounded-l-full rounded-r-none text-[11px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-4 shrink-0 ${isFull ? 'bg-gray-100 text-black/20 cursor-not-allowed' : 'bg-black text-white group-hover:bg-[#C6FF00] group-hover:text-black shadow-[-20px_0_40px_rgba(0,0,0,0.1)] group-hover:shadow-[-20px_0_40px_rgba(198,255,0,0.2)]'}`}
             >
               {isFull ? 'SQUAD FULL' : 'JOIN MATCH'}
-              {!isFull && <div className="group-hover:translate-x-1 transition-transform duration-300"><ICONS.ChevronRight /></div>}
+              {!isFull && <div className="pc-icon-kick group-hover:translate-x-1 transition-transform duration-300"><ICONS.ChevronRight /></div>}
             </button>
           </div>
         </div>

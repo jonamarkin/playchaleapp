@@ -17,7 +17,7 @@ const Hero: React.FC<HeroProps> = ({ discoverHref = '/discover' }) => {
         </div>
         <Link
           href="/login"
-          className="block text-[10px] font-black uppercase tracking-[0.2em] hover:text-[#C6FF00] transition-colors"
+          className="pc-btn-press touch-target block text-[10px] font-black uppercase tracking-[0.2em] hover:text-[#C6FF00] transition-colors"
         >
           Member Sign In
         </Link>
@@ -71,10 +71,10 @@ const Hero: React.FC<HeroProps> = ({ discoverHref = '/discover' }) => {
             <div className="flex flex-col sm:flex-row items-center gap-8 hero-reveal hero-delay-3">
               <Link
                 href={discoverHref}
-                className="w-full sm:w-auto bg-[#C6FF00] text-black px-8 py-4 md:px-12 md:py-6 rounded-full font-black uppercase tracking-widest text-[11px] flex items-center justify-center gap-4 hover:scale-[1.05] hover:shadow-[0_0_40px_rgba(198,255,0,0.4)] transition-all group"
+                className="pc-btn-press touch-target w-full sm:w-auto bg-[#C6FF00] text-black px-8 py-4 md:px-12 md:py-6 rounded-full font-black uppercase tracking-widest text-[11px] flex items-center justify-center gap-4 hover:shadow-[0_0_40px_rgba(198,255,0,0.4)] transition-all group"
               >
                 Discover Games
-                <div className="bg-black text-white rounded-full p-1 group-hover:rotate-45 transition-transform">
+                <div className="pc-icon-kick bg-black text-white rounded-full p-1 group-hover:rotate-45 transition-transform">
                   <ICONS.ChevronRight />
                 </div>
               </Link>
@@ -101,7 +101,7 @@ const Hero: React.FC<HeroProps> = ({ discoverHref = '/discover' }) => {
           </div>
 
           <div className="lg:col-span-4 hidden lg:flex flex-col gap-6 hero-side">
-            <div className="glass rounded-[48px] p-8 border border-white/10 space-y-6 shadow-2xl relative overflow-hidden group">
+            <div className="pc-card-lift glass rounded-[48px] p-8 border border-white/10 space-y-6 shadow-2xl relative overflow-hidden group">
               <div className="absolute top-0 right-0 p-6 opacity-10 rotate-12 group-hover:rotate-45 transition-transform duration-[2s]"><ICONS.Logo /></div>
 
               <div className="flex justify-between items-center">
@@ -114,7 +114,7 @@ const Hero: React.FC<HeroProps> = ({ discoverHref = '/discover' }) => {
                   { sport: 'Football', label: 'Dusk Kickoff', time: '19:00', spots: '3 Open', price: '$5' },
                   { sport: 'Basketball', label: 'Full Court 5s', time: '20:30', spots: '6 Open', price: 'Free' }
                 ].map((item, i) => (
-                  <div key={i} className="bg-white/5 p-5 rounded-[24px] border border-white/5 hover:bg-white/10 transition-all cursor-pointer group/item">
+                  <div key={i} className="pc-choice-card bg-white/5 p-5 rounded-[24px] border border-white/5 hover:bg-white/10 transition-all cursor-pointer group/item">
                     <div className="flex justify-between items-center mb-2">
                       <span className="text-[9px] font-black text-white/60 uppercase tracking-widest">{item.sport}</span>
                       <span className="text-[9px] font-black text-[#C6FF00] uppercase tracking-widest bg-[#C6FF00]/10 px-2 py-0.5 rounded">{item.spots}</span>
@@ -130,7 +130,7 @@ const Hero: React.FC<HeroProps> = ({ discoverHref = '/discover' }) => {
                 ))}
               </div>
 
-              <Link href={discoverHref} className="block text-center w-full py-3 rounded-full border border-white/10 text-[10px] font-black uppercase tracking-widest text-white/50 hover:text-white hover:bg-white/5 transition-all">Browse All Games</Link>
+              <Link href={discoverHref} className="pc-btn-press touch-target block text-center w-full py-3 rounded-full border border-white/10 text-[10px] font-black uppercase tracking-widest text-white/50 hover:text-white hover:bg-white/5 transition-all">Browse All Games</Link>
             </div>
           </div>
         </div>

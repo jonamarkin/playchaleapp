@@ -15,7 +15,7 @@ const ProgramCard: React.FC<ProgramCardProps> = ({ program, href }) => {
   return (
     <Link
       href={href}
-      className={`w-[300px] md:w-[400px] h-[580px] md:h-[680px] rounded-[56px] flex flex-col p-8 md:p-12 transition-all duration-500 cursor-pointer shadow-lg hover:shadow-[0_40px_80px_rgba(0,0,0,0.05)] hover:-translate-y-2.5 relative overflow-hidden group`}
+      className={`pc-card-lift touch-target w-[300px] md:w-[400px] h-[580px] md:h-[680px] rounded-[56px] flex flex-col p-8 md:p-12 transition-all duration-500 cursor-pointer shadow-lg hover:shadow-[0_40px_80px_rgba(0,0,0,0.05)] relative overflow-hidden group`}
       style={{ backgroundColor: isPrimary ? '#C6FF00' : '#F5F5F0' }}
     >
       <div className="absolute top-[-40px] right-[-40px] opacity-[0.03] group-hover:rotate-45 transition-transform duration-[2s] pointer-events-none">
@@ -52,9 +52,9 @@ const ProgramCard: React.FC<ProgramCardProps> = ({ program, href }) => {
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent"></div>
         <div className="absolute bottom-6 left-6 right-6">
-          <span className="w-full bg-white/20 backdrop-blur-2xl border border-white/20 text-white rounded-full py-5 px-8 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] group-hover:bg-white/40 transition-all">
+          <span className="pc-btn-press w-full bg-white/20 backdrop-blur-2xl border border-white/20 text-white rounded-full py-5 px-8 flex items-center justify-between text-[10px] font-black uppercase tracking-[0.2em] group-hover:bg-white/40 transition-all">
             Full Details
-            <div className="bg-[#C6FF00] text-black w-7 h-7 rounded-full flex items-center justify-center">
+            <div className="pc-icon-kick bg-[#C6FF00] text-black w-7 h-7 rounded-full flex items-center justify-center">
               <ICONS.ChevronRight />
             </div>
           </span>

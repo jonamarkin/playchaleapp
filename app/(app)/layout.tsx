@@ -5,6 +5,7 @@ import dynamic from 'next/dynamic';
 import { usePathname } from 'next/navigation';
 import Header from '@/components/Header';
 import Footer from '@/components/Footer';
+import AppBottomNav from '@/components/AppBottomNav';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
 import { AppProviders } from '@/providers/AppProviders';
 
@@ -27,10 +28,12 @@ export default function AppLayout({
 function AppShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const {
+    messages,
     openModal,
     handleNavigate,
     showToast,
   } = usePlayChale();
+  const unreadCount = messages.filter((message) => !message.isRead).length;
 
   // Determine active view for Header styling
   const getActiveView = () => {
@@ -49,15 +52,23 @@ function AppShell({ children }: { children: React.ReactNode }) {
         onNavigate={(view) => handleNavigate(`/${view}`)}
         onOpenCreate={() => openModal('create')}
       />
-      <main>
+      <main className="pb-[calc(7.75rem+env(safe-area-inset-bottom))] md:pb-0">
         {children}
       </main>
-      <Footer onNavigate={handleNavigate} />
+      <div className="hidden md:block">
+        <Footer onNavigate={handleNavigate} />
+      </div>
+      <AppBottomNav
+        activeView={getActiveView()}
+        unreadCount={unreadCount}
+        onNavigate={(view) => handleNavigate(`/${view}`)}
+        onOpenCreate={() => openModal('create')}
+      />
       <AppModalHost />
 
       {/* Toast Notification */}
       {showToast && (
-        <div className="pc-toast-enter fixed bottom-10 left-1/2 -translate-x-1/2 z-[300] bg-black text-[#C6FF00] px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] shadow-2xl">
+        <div className="pc-toast-enter fixed bottom-[calc(6.8rem+env(safe-area-inset-bottom))] md:bottom-10 left-1/2 -translate-x-1/2 z-[300] bg-black text-[#C6FF00] px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] shadow-2xl">
           {showToast}
         </div>
       )}

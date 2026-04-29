@@ -8,6 +8,12 @@
   --color-dark: #111111;
   --color-beige: #f5f5f0;
   --color-cream: #fdfdfb;
+  --pc-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+  --pc-ease-sport: cubic-bezier(0.16, 1, 0.3, 1);
+  --pc-ease-snap: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --pc-duration-fast: 160ms;
+  --pc-duration-base: 240ms;
+  --pc-duration-slow: 420ms;
 
   /* Shadcn Mappings (New York / Zinc-like but branded) */
   --background: 0 0% 99%;
@@ -71,6 +77,21 @@ body {
   font-family: "Inter", system-ui, sans-serif;
   background-color: var(--color-cream);
   overflow-x: hidden;
+}
+
+button,
+a[href],
+input,
+textarea,
+select {
+  transition-timing-function: var(--pc-ease-out);
+}
+
+button,
+a[href],
+[role="button"] {
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: transparent;
 }
 
 /* Glassmorphism utility */
@@ -156,32 +177,54 @@ body {
   }
 }
 
+@keyframes pc-pop-in {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 12px, 0) scale(0.96);
+  }
+
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0) scale(1);
+  }
+}
+
+@keyframes pc-strike {
+  from {
+    transform: scaleX(0);
+  }
+
+  to {
+    transform: scaleX(1);
+  }
+}
+
 .pc-view-enter {
-  animation: pc-fade-up 320ms ease-out both;
+  animation: pc-fade-up 320ms var(--pc-ease-out) both;
 }
 
 .pc-fade-left {
-  animation: pc-fade-left 320ms ease-out both;
+  animation: pc-fade-left 320ms var(--pc-ease-out) both;
 }
 
 .pc-fade-right {
-  animation: pc-fade-right 320ms ease-out both;
+  animation: pc-fade-right 320ms var(--pc-ease-out) both;
 }
 
 .pc-slide-panel {
-  animation: pc-slide-in 260ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: pc-slide-in 260ms var(--pc-ease-out) both;
 }
 
 .pc-toast-enter {
-  animation: pc-fade-up 220ms ease-out both;
+  animation: pc-fade-up 220ms var(--pc-ease-out) both;
 }
 
 .pc-motion-enter {
-  animation: pc-motion-enter 220ms cubic-bezier(0.22, 1, 0.36, 1) both;
+  animation: pc-motion-enter 220ms var(--pc-ease-out) both;
   transition:
-    transform 220ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 220ms var(--pc-ease-out),
     opacity 180ms ease-out,
-    width 520ms cubic-bezier(0.22, 1, 0.36, 1);
+    width 520ms var(--pc-ease-out);
 }
 
 @keyframes pc-motion-enter {
@@ -194,6 +237,85 @@ body {
     opacity: 1;
     transform: translate3d(0, 0, 0) scale(1);
   }
+}
+
+.pc-pop-in {
+  animation: pc-pop-in 280ms var(--pc-ease-snap) both;
+}
+
+.pc-energy-line {
+  transform-origin: left center;
+  animation: pc-strike 440ms var(--pc-ease-sport) both;
+}
+
+.pc-btn-press {
+  transform: translate3d(0, 0, 0) scale(1);
+  transition:
+    transform var(--pc-duration-fast) var(--pc-ease-sport),
+    box-shadow var(--pc-duration-base) ease-out,
+    background-color var(--pc-duration-fast) ease-out,
+    border-color var(--pc-duration-fast) ease-out,
+    color var(--pc-duration-fast) ease-out,
+    opacity var(--pc-duration-fast) ease-out;
+}
+
+.pc-btn-press:disabled,
+.pc-btn-press[aria-disabled="true"] {
+  transform: none;
+  will-change: auto;
+}
+
+.pc-card-lift {
+  transform: translate3d(0, 0, 0) scale(1);
+  transition:
+    transform var(--pc-duration-slow) var(--pc-ease-sport),
+    box-shadow var(--pc-duration-slow) ease-out,
+    background-color var(--pc-duration-base) ease-out,
+    border-color var(--pc-duration-base) ease-out,
+    color var(--pc-duration-fast) ease-out,
+    opacity var(--pc-duration-fast) ease-out;
+}
+
+.pc-choice-card {
+  transform: translate3d(0, 0, 0) scale(1);
+  transition:
+    transform var(--pc-duration-base) var(--pc-ease-snap),
+    background-color var(--pc-duration-base) ease-out,
+    border-color var(--pc-duration-base) ease-out,
+    color var(--pc-duration-fast) ease-out,
+    box-shadow var(--pc-duration-base) ease-out;
+}
+
+.pc-icon-kick {
+  transition: transform var(--pc-duration-base) var(--pc-ease-snap);
+}
+
+.pc-stagger > * {
+  animation: pc-fade-up 360ms var(--pc-ease-out) both;
+}
+
+.pc-stagger > *:nth-child(2) {
+  animation-delay: 45ms;
+}
+
+.pc-stagger > *:nth-child(3) {
+  animation-delay: 90ms;
+}
+
+.pc-stagger > *:nth-child(4) {
+  animation-delay: 135ms;
+}
+
+.pc-stagger > *:nth-child(5) {
+  animation-delay: 180ms;
+}
+
+.pc-stagger > *:nth-child(6) {
+  animation-delay: 225ms;
+}
+
+.pc-stagger > *:nth-child(n + 7) {
+  animation-delay: 270ms;
 }
 
 .pc-content-visibility {
@@ -236,11 +358,14 @@ body {
 /* Disable hover effects on touch devices for snappier interactions */
 
 .touch-card,
+.pc-card-lift,
 .touch-scale,
-.touch-scale-sm {
+.touch-scale-sm,
+.pc-btn-press,
+.pc-choice-card {
   transform: translate3d(0, 0, 0) scale(1);
   transition:
-    transform 260ms cubic-bezier(0.22, 1, 0.36, 1),
+    transform 260ms var(--pc-ease-sport),
     box-shadow 260ms ease-out,
     background-color 200ms ease-out,
     border-color 200ms ease-out,
@@ -255,8 +380,18 @@ body {
     will-change: transform;
   }
 
+  .pc-card-lift:hover {
+    transform: translate3d(0, -7px, 0) scale(1.006);
+    will-change: transform;
+  }
+
   .touch-scale:hover {
     transform: translate3d(0, -2px, 0) scale(1.018);
+    will-change: transform;
+  }
+
+  .pc-btn-press:not(:disabled):not([aria-disabled="true"]):hover {
+    transform: translate3d(0, -1px, 0) scale(1.018);
     will-change: transform;
   }
 
@@ -264,16 +399,28 @@ body {
     transform: translate3d(0, -1px, 0) scale(1.035);
     will-change: transform;
   }
+
+  .pc-choice-card:hover {
+    transform: translate3d(0, -4px, 0) scale(1.025);
+    will-change: transform;
+  }
+
+  .group:hover .pc-icon-kick {
+    transform: translate3d(1px, -1px, 0) rotate(-4deg) scale(1.08);
+  }
 }
 
 /* Touch devices get instant active feedback instead */
 @media (hover: none) or (pointer: coarse) {
 
   .touch-card:active,
+  .pc-card-lift:active,
   .touch-scale:active,
-  .touch-scale-sm:active {
-    transform: scale(0.98);
-    transition: transform 0.1s ease-out;
+  .touch-scale-sm:active,
+  .pc-btn-press:not(:disabled):not([aria-disabled="true"]):active,
+  .pc-choice-card:active {
+    transform: translate3d(0, 0, 0) scale(0.975);
+    transition: transform 100ms ease-out;
   }
 
   /* Remove tap delay on iOS */
@@ -287,4 +434,9 @@ body {
 .touch-target {
   touch-action: manipulation;
   -webkit-tap-highlight-color: transparent;
+}
+
+.pc-btn-press:not(:disabled):not([aria-disabled="true"]):active,
+.pc-choice-card:active {
+  transform: translate3d(0, 1px, 0) scale(0.975);
 }

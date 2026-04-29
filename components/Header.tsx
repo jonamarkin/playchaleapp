@@ -75,7 +75,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenCreate, activeView, onNavigate })
         >
           <button
             onClick={onOpenCreate}
-            className={`transition-all duration-300 px-3 sm:px-5 md:px-7 py-2 md:py-2.5 rounded-full flex items-center gap-2 md:gap-3 group shadow-lg ${headerTheme === 'light' ? 'bg-black text-white hover:bg-[#C6FF00] hover:text-black' : 'bg-[#C6FF00] text-black hover:bg-white'}`}
+            className={`hidden md:flex transition-all duration-300 px-3 sm:px-5 md:px-7 py-2 md:py-2.5 rounded-full items-center gap-2 md:gap-3 group shadow-lg ${headerTheme === 'light' ? 'bg-black text-white hover:bg-[#C6FF00] hover:text-black' : 'bg-[#C6FF00] text-black hover:bg-white'}`}
           >
             <span className="hidden sm:block text-[10px] md:text-xs font-black uppercase tracking-widest">Create Game</span>
             <div className={`rounded-full p-1 transition-transform group-hover:translate-x-1 ${headerTheme === 'light' ? 'bg-white/10' : 'bg-black/10'}`}>
@@ -94,7 +94,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenCreate, activeView, onNavigate })
 
       {isMenuOpen && (
           <div
-            className="pc-slide-panel fixed inset-0 z-[110] bg-black text-white flex flex-col p-8 pt-32"
+            className="pc-slide-panel fixed inset-0 z-[240] bg-black text-white flex flex-col p-8 pt-32"
           >
             <div className="flex justify-between items-center absolute top-8 left-8 right-8">
               <div className="flex items-center gap-4 cursor-pointer" onClick={() => { onNavigate('home'); setIsMenuOpen(false); }}>

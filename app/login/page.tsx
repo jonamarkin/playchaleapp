@@ -72,7 +72,7 @@ export default function LoginPage() {
                     <button
                         onClick={() => handleSocialAuth('google')}
                         disabled={isLoading}
-                        className="w-full bg-white text-black p-4 rounded-full flex items-center justify-center gap-3 hover:bg-gray-200 transition-all font-bold text-sm uppercase tracking-wider relative overflow-hidden group"
+                        className="pc-btn-press touch-target w-full bg-white text-black p-4 rounded-full flex items-center justify-center gap-3 hover:bg-gray-200 transition-all font-bold text-sm uppercase tracking-wider relative overflow-hidden group"
                     >
                         {isLoading ? (
                             <span className="opacity-50">Connecting...</span>
