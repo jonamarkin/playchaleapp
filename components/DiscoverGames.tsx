@@ -140,6 +140,61 @@ const CalendarView = ({ games, onSelectDate, selectedDate }: { games: Game[], on
   );
 };
 
+const MobileGameRow = ({ game, onClick }: { game: Game; onClick: () => void }) => {
+  const openSpots = Math.max(0, game.spotsTotal - game.spotsTaken);
+  const isFull = openSpots === 0;
+
+  return (
+    <button
+      type="button"
+      onClick={onClick}
+      className="pc-card-lift touch-target group w-full rounded-[30px] border border-black/5 bg-white p-3 text-left shadow-sm"
+    >
+      <div className="flex gap-4">
+        <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-[24px] bg-black">
+          <Image
+            src={game.imageUrl}
+            alt={game.title}
+            fill
+            sizes="112px"
+            className="object-cover transition-transform duration-700 group-hover:scale-105"
+          />
+          <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+          <span className={`absolute bottom-2 left-2 rounded-full px-2.5 py-1 text-[8px] font-black uppercase tracking-widest ${isFull ? 'bg-red-500 text-white' : 'bg-[#C6FF00] text-black'}`}>
+            {isFull ? 'Full' : `${openSpots} open`}
+          </span>
+        </div>
+
+        <div className="flex min-w-0 flex-1 flex-col py-1">
+          <div className="mb-2 flex items-center justify-between gap-3">
+            <span className="rounded-full bg-black/5 px-3 py-1 text-[8px] font-black uppercase tracking-widest text-black/45">
+              {game.sport}
+            </span>
+            <span className="text-[10px] font-black uppercase tracking-widest text-black">
+              {game.price}
+            </span>
+          </div>
+
+          <h3 className="line-clamp-2 text-lg font-black italic uppercase leading-[0.95] tracking-tighter text-black">
+            {game.title}
+          </h3>
+
+          <div className="mt-auto space-y-1.5 pt-3 text-[9px] font-black uppercase tracking-widest text-black/40">
+            <div className="flex items-center gap-2">
+              <ICONS.Clock />
+              <span className="truncate">{game.date} · {game.time}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <ICONS.MapPin />
+              <span className="truncate">{game.location}</span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </button>
+  );
+};
+
 import { useRouter } from 'next/navigation';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
 
@@ -156,6 +211,8 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
 
   const sports = ['All', 'Football', 'Basketball', 'Tennis', 'Padel'];
+  const priceOptions = ['All', 'Free', 'Paid'] as const;
+  const activeFilterCount = [filter !== 'All', priceFilter !== 'All', skillFilter !== 'All Levels', !!search, !!selectedDay].filter(Boolean).length;
 
   const filteredGames = useMemo(() => {
     return games.filter(g => {
@@ -173,9 +230,9 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
   }, [games, filter, search, priceFilter, skillFilter, selectedDay]);
 
   return (
-    <section className={`px-4 md:px-12 ${isFullPage ? 'pt-28 md:pt-36 pb-32 min-h-screen bg-white relative' : 'py-24 md:py-32 bg-transparent'}`}>
+    <section className={`px-4 md:px-12 ${isFullPage ? 'pt-24 md:pt-36 pb-32 min-h-screen bg-white relative' : 'py-20 md:py-32 bg-transparent'}`}>
       {isFullPage && (
-        <div className="absolute top-8 right-8 z-50">
+        <div className="absolute top-8 right-8 z-50 hidden md:block">
           {user ? (
             <button
               onClick={() => router.push('/home')}
@@ -201,11 +258,79 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
                 <span className="w-2 h-2 rounded-full bg-[#C6FF00] shadow-[0_0_10px_#C6FF00]"></span>
                 GAME ARENA
               </div>
-              <h2 className="font-black text-black leading-[0.85] md:leading-[0.8] tracking-tighter italic text-5xl sm:text-7xl md:text-[9rem]">
+              <h2 className="font-black text-black leading-[0.85] md:leading-[0.8] tracking-tighter italic text-4xl sm:text-7xl md:text-[9rem]">
                 Find Your <br className="hidden md:block" /> Perfect Match.
               </h2>
 
-              <div className="flex flex-col gap-5 pt-2 md:pt-6">
+              <div className="sticky top-[72px] z-40 md:hidden rounded-[32px] border border-black/5 bg-black p-3 text-white shadow-xl">
+                <div className="relative">
+                  <div className="absolute left-5 top-1/2 -translate-y-1/2 text-white/35">
+                    <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
+                  </div>
+                  <input
+                    type="text"
+                    placeholder="Search games nearby"
+                    className="w-full rounded-full border border-white/10 bg-white/10 py-4 pl-12 pr-5 text-sm font-black text-white outline-none transition-all placeholder:text-white/25 focus:border-[#C6FF00]"
+                    value={search}
+                    onChange={(e) => setSearch(e.target.value)}
+                  />
+                </div>
+
+                <div className="mt-3 flex gap-2 overflow-x-auto hide-scrollbar">
+                  {sports.map((sport) => (
+                    <button
+                      key={sport}
+                      onClick={() => setFilter(sport)}
+                      className={`pc-btn-press shrink-0 rounded-full px-4 py-2.5 text-[9px] font-black uppercase tracking-widest ${filter === sport ? 'bg-[#C6FF00] text-black' : 'bg-white/10 text-white/55'}`}
+                    >
+                      {sport}
+                    </button>
+                  ))}
+                </div>
+
+                <div className="mt-3 grid grid-cols-[1fr_auto] gap-2">
+                  <div className="flex rounded-full bg-white/10 p-1">
+                    {priceOptions.map((price) => (
+                      <button
+                        key={price}
+                        onClick={() => setPriceFilter(price)}
+                        className={`flex-1 rounded-full py-2 text-[9px] font-black uppercase tracking-widest ${priceFilter === price ? 'bg-white text-black' : 'text-white/45'}`}
+                      >
+                        {price}
+                      </button>
+                    ))}
+                  </div>
+                  <button
+                    onClick={() => {
+                      setDisplayMode(displayMode === 'grid' ? 'calendar' : 'grid');
+                      if (displayMode === 'calendar') setSelectedDay(null);
+                    }}
+                    className="pc-btn-press rounded-full bg-[#C6FF00] px-4 py-2 text-[9px] font-black uppercase tracking-widest text-black"
+                  >
+                    {displayMode === 'grid' ? 'Calendar' : 'List'}
+                  </button>
+                </div>
+
+                <div className="mt-3 flex items-center justify-between px-2 text-[9px] font-black uppercase tracking-widest text-white/35">
+                  <span>{filteredGames.length} games found</span>
+                  {activeFilterCount > 0 && (
+                    <button
+                      onClick={() => {
+                        setFilter('All');
+                        setSearch('');
+                        setPriceFilter('All');
+                        setSkillFilter('All Levels');
+                        setSelectedDay(null);
+                      }}
+                      className="text-[#C6FF00]"
+                    >
+                      Reset
+                    </button>
+                  )}
+                </div>
+              </div>
+
+              <div className="hidden md:flex flex-col gap-5 pt-2 md:pt-6">
                 <div className="flex flex-col md:flex-row gap-3">
                   <div className="flex-1 relative">
                     <div className="absolute left-6 top-1/2 -translate-y-1/2 text-black/30">
@@ -261,7 +386,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
                   <div className="w-px h-6 bg-black/10 hidden sm:block"></div>
                   <div className="flex flex-wrap gap-2 items-center">
                     <span className="text-[9px] font-black uppercase tracking-widest text-black/30 mr-1">Price:</span>
-                    {(['All', 'Free', 'Paid'] as const).map(p => (
+                    {priceOptions.map(p => (
                       <button
                         key={p}
                         onClick={() => setPriceFilter(p)}
@@ -328,11 +453,18 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+          <>
+            <div className="space-y-3 md:hidden">
+              {filteredGames.map((game) => (
+                <MobileGameRow key={game.id} game={game} onClick={() => onOpenGame(game)} />
+              ))}
+            </div>
+            <div className="hidden md:grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
               {filteredGames.map((game) => (
                 <GameCard key={game.id} game={game} onClick={() => onOpenGame(game)} />
               ))}
-          </div>
+            </div>
+          </>
         )}
 
         {filteredGames.length === 0 && (

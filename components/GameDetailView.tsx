@@ -70,8 +70,11 @@ const GameDetailView: React.FC<GameDetailProps> = ({
         }, 1500);
     };
 
+    const openSpots = game ? Math.max(0, game.spotsTotal - (game.participants?.length || game.spotsTaken)) : 0;
+    const isFull = game ? openSpots <= 0 : false;
+
     return (
-        <div className="w-full max-w-5xl mx-auto p-4 md:p-8 space-y-8 pb-32">
+        <div className="w-full max-w-5xl mx-auto p-4 md:p-8 space-y-8 pb-[calc(12rem+env(safe-area-inset-bottom))] md:pb-32">
 
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
@@ -99,7 +102,7 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                         </button>
                     )}
                     {type === 'manage' && (
-                        <button onClick={() => setIsEditing(!isEditing)} className="bg-white/10 text-white px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:bg-white hover:text-black transition-all">
+                        <button onClick={() => setIsEditing(!isEditing)} className="hidden md:block bg-white/10 text-white px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:bg-white hover:text-black transition-all">
                             {isEditing ? 'Cancel Edit' : 'Edit Details'}
                         </button>
                     )}
@@ -323,7 +326,7 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                             </div>
 
                             {type === 'join' && (
-                                <div className="pt-8 mt-4 border-t border-white/10">
+                                <div className="hidden md:block pt-8 mt-4 border-t border-white/10">
                                     <Button onClick={handleJoin} disabled={loading} className="w-full py-7 rounded-full bg-[#C6FF00] text-black font-black uppercase tracking-widest hover:bg-lime-400 hover:scale-[1.02] shadow-xl text-xs">
                                         {loading ? 'Joining...' : 'Join Squad'}
                                     </Button>
@@ -362,6 +365,53 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                             </div>
                         )}
 
+                    </div>
+                </div>
+            )}
+
+            {game && (type === 'join' || type === 'manage') && (
+                <div className="fixed inset-x-0 bottom-[calc(6.85rem+env(safe-area-inset-bottom))] z-[120] px-3 md:hidden">
+                    <div className="mx-auto max-w-md rounded-[30px] border border-white/10 bg-black/90 p-3 text-white shadow-[0_-18px_60px_rgba(0,0,0,0.45)] backdrop-blur-2xl">
+                        <div className="mb-3 flex items-center justify-between gap-4 px-2">
+                            <div className="min-w-0">
+                                <p className="truncate text-[10px] font-black uppercase tracking-widest text-white/35">
+                                    {game.date} · {game.time}
+                                </p>
+                                <p className="truncate text-sm font-black italic uppercase tracking-tight text-white">
+                                    {game.title}
+                                </p>
+                            </div>
+                            <div className="shrink-0 rounded-full bg-white/10 px-3 py-1 text-[9px] font-black uppercase tracking-widest text-[#C6FF00]">
+                                {isFull ? 'Full' : `${openSpots} open`}
+                            </div>
+                        </div>
+
+                        {type === 'join' ? (
+                            <button
+                                onClick={handleJoin}
+                                disabled={loading || isFull}
+                                className="pc-btn-press touch-target flex min-h-[56px] w-full items-center justify-center rounded-full bg-[#C6FF00] px-6 text-[11px] font-black uppercase tracking-widest text-black shadow-xl shadow-lime-500/15 disabled:opacity-45"
+                            >
+                                {loading ? 'Joining...' : isFull ? 'Squad Full' : 'Join Squad'}
+                            </button>
+                        ) : (
+                            <div className="grid grid-cols-2 gap-2">
+                                <button
+                                    onClick={() => setIsEditing(!isEditing)}
+                                    className="pc-btn-press touch-target min-h-[54px] rounded-full bg-[#C6FF00] px-4 text-[10px] font-black uppercase tracking-widest text-black"
+                                >
+                                    {isEditing ? 'Cancel' : 'Edit'}
+                                </button>
+                                {onShare && (
+                                    <button
+                                        onClick={() => onShare(game)}
+                                        className="pc-btn-press touch-target min-h-[54px] rounded-full border border-white/10 bg-white/10 px-4 text-[10px] font-black uppercase tracking-widest text-white"
+                                    >
+                                        Share
+                                    </button>
+                                )}
+                            </div>
+                        )}
                     </div>
                 </div>
             )}

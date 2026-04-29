@@ -11,8 +11,8 @@
 ## Phase 2 Screen Polish
 
 - Home: compact mobile hero, denser quick actions, and lighter sidebar content.
-- Discover: sticky mobile search/filter surface, filter chips, and compact list cards.
-- Game detail: sticky bottom join/manage action bar.
+- Discover: sticky mobile search/filter surface, filter chips, and compact list cards. Complete.
+- Game detail: sticky bottom join/manage action bar. Complete.
 - Messages: app-style drill-in flow with composer positioned above bottom nav.
 - Stats/Profile: mobile tabs for overview, sport stats, history, and profile actions.
 

@@ -89,14 +89,14 @@ export default function GameClientPage({ initialGame }: GameClientPageProps) {
             {isHost && !isGameComplete && (
                 <button
                     onClick={() => setShowPostGameModal(true)}
-                    className="fixed bottom-6 right-6 z-50 bg-[#C6FF00] text-black px-6 py-4 rounded-full font-black uppercase text-[10px] tracking-widest shadow-2xl hover:scale-105 transition-all flex items-center gap-2"
+                    className="fixed bottom-[calc(12.2rem+env(safe-area-inset-bottom))] right-4 z-[125] bg-[#C6FF00] text-black px-5 py-3 md:bottom-6 md:right-6 md:px-6 md:py-4 rounded-full font-black uppercase text-[10px] tracking-widest shadow-2xl hover:scale-105 transition-all flex items-center gap-2"
                 >
                     <span>📊</span> Complete Game
                 </button>
             )}
 
             {isGameComplete && (
-                <div className="fixed bottom-6 right-6 z-50 bg-green-500 text-white px-6 py-4 rounded-full font-black uppercase text-[10px] tracking-widest shadow-2xl flex items-center gap-2">
+                <div className="fixed bottom-[calc(12.2rem+env(safe-area-inset-bottom))] right-4 z-[125] bg-green-500 text-white px-5 py-3 md:bottom-6 md:right-6 md:px-6 md:py-4 rounded-full font-black uppercase text-[10px] tracking-widest shadow-2xl flex items-center gap-2">
                     <span>✓</span> Game Completed
                 </div>
             )}
