@@ -3,6 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
+import { CheckCircle2, Trophy } from 'lucide-react';
 import { ICONS } from '@/constants/icons';
 import { Game, PlayerProfile, JoinRequest, Participant, MatchRecord } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -19,6 +20,8 @@ interface GameDetailProps {
     onRemoveParticipant?: (gameId: string, playerId: string) => void;
     onShare?: (item: any) => void;
     onClose?: () => void; // Optional, maybe for back navigation
+    onCompleteGame?: () => void;
+    isGameComplete?: boolean;
 }
 
 const SPORT_ICONS: Record<string, React.ReactNode> = {
@@ -31,7 +34,7 @@ const SPORT_ICONS: Record<string, React.ReactNode> = {
 };
 
 const GameDetailView: React.FC<GameDetailProps> = ({
-    type, data, currentUser, onJoin, onUpdate, onManageRequest, onRemoveParticipant, onShare
+    type, data, currentUser, onJoin, onUpdate, onManageRequest, onRemoveParticipant, onShare, onClose, onCompleteGame, isGameComplete
 }) => {
     const [loading, setLoading] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -78,8 +81,18 @@ const GameDetailView: React.FC<GameDetailProps> = ({
 
             {/* Header Section */}
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
-                <div className="space-y-4">
-                    <div className="flex items-center gap-3">
+                <div className="min-w-0 space-y-4">
+                    {onClose && (
+                        <button
+                            type="button"
+                            onClick={onClose}
+                            aria-label="Go back"
+                            className="pc-btn-press touch-target inline-flex h-11 w-11 shrink-0 items-center justify-center rounded-full border border-white/10 bg-white/5 text-white shadow-lg shadow-black/20 backdrop-blur-xl transition-all hover:bg-white hover:text-black md:h-12 md:w-12"
+                        >
+                            <ICONS.ChevronRight className="rotate-180" />
+                        </button>
+                    )}
+                    <div className="flex flex-wrap items-center gap-3">
                         <span className="bg-[#C6FF00] text-black px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em]">
                             {type === 'report' ? 'Match Report' : (type === 'manage' ? 'Host Tools' : 'Upcoming Match')}
                         </span>
@@ -89,7 +102,7 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                             </span>
                         )}
                     </div>
-                    <h1 className="text-4xl md:text-7xl font-black italic uppercase tracking-tighter leading-none text-white">
+                    <h1 className="max-w-full break-words text-4xl md:text-7xl font-black italic uppercase tracking-tighter leading-none text-white">
                         {game?.title || match?.title}
                     </h1>
                 </div>
@@ -105,6 +118,22 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                         <button onClick={() => setIsEditing(!isEditing)} className="hidden md:block bg-white/10 text-white px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:bg-white hover:text-black transition-all">
                             {isEditing ? 'Cancel Edit' : 'Edit Details'}
                         </button>
+                    )}
+                    {type === 'manage' && (onCompleteGame || isGameComplete) && (
+                        isGameComplete ? (
+                            <div className="hidden md:flex items-center gap-2 rounded-full bg-green-500 px-6 py-4 text-[10px] font-black uppercase tracking-widest text-white shadow-2xl">
+                                <CheckCircle2 className="h-4 w-4" />
+                                Game Completed
+                            </div>
+                        ) : (
+                            <button
+                                onClick={onCompleteGame}
+                                className="hidden md:flex items-center gap-2 rounded-full bg-[#C6FF00] px-6 py-4 text-[10px] font-black uppercase tracking-widest text-black shadow-2xl transition-all hover:scale-105"
+                            >
+                                <Trophy className="h-4 w-4" />
+                                Complete Game
+                            </button>
+                        )
                     )}
                 </div>
             </div>
@@ -217,7 +246,7 @@ const GameDetailView: React.FC<GameDetailProps> = ({
 
                     {/* Left Col: Info & Image */}
                     <div className="lg:col-span-2 space-y-8">
-                        <div className="relative aspect-video rounded-[48px] overflow-hidden border border-white/10 shadow-2xl">
+                        <div className="relative aspect-[16/10] overflow-hidden rounded-[32px] border border-white/10 shadow-2xl sm:aspect-video md:rounded-[48px]">
                             <Image
                                 src={game.imageUrl}
                                 alt={game.title}
@@ -228,14 +257,14 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                             <div className="absolute inset-0 bg-gradient-to-t from-black via-transparent to-transparent opacity-80" />
 
                             {/* Float Badge */}
-                            <div className="absolute top-8 left-8 bg-black/30 backdrop-blur-xl border border-white/10 px-6 py-3 rounded-full flex items-center gap-3">
+                            <div className="absolute left-5 top-5 flex items-center gap-3 rounded-full border border-white/10 bg-black/30 px-5 py-3 backdrop-blur-xl md:left-8 md:top-8 md:px-6">
                                 <div className="text-[#C6FF00]">{SPORT_ICONS[game.sport] || '⚽'}</div>
                                 <span className="text-white text-[10px] font-black uppercase tracking-widest">{game.sport}</span>
                             </div>
 
-                            <div className="absolute bottom-8 left-8">
+                            <div className="absolute bottom-24 left-5 right-5 md:bottom-8 md:left-8 md:right-8">
                                 <p className="text-[#C6FF00] font-black uppercase tracking-[0.2em] text-[10px] mb-2">Location</p>
-                                <p className="text-3xl font-black italic uppercase text-white leading-none">{game.location}</p>
+                                <p className="max-w-[17rem] whitespace-normal break-words text-xl font-black italic uppercase leading-tight text-white sm:max-w-none sm:text-2xl md:text-3xl md:leading-none">{game.location}</p>
                             </div>
                         </div>
 
@@ -395,21 +424,39 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                                 {loading ? 'Joining...' : isFull ? 'Squad Full' : 'Join Squad'}
                             </button>
                         ) : (
-                            <div className="grid grid-cols-2 gap-2">
-                                <button
-                                    onClick={() => setIsEditing(!isEditing)}
-                                    className="pc-btn-press touch-target min-h-[54px] rounded-full bg-[#C6FF00] px-4 text-[10px] font-black uppercase tracking-widest text-black"
-                                >
-                                    {isEditing ? 'Cancel' : 'Edit'}
-                                </button>
-                                {onShare && (
-                                    <button
-                                        onClick={() => onShare(game)}
-                                        className="pc-btn-press touch-target min-h-[54px] rounded-full border border-white/10 bg-white/10 px-4 text-[10px] font-black uppercase tracking-widest text-white"
-                                    >
-                                        Share
-                                    </button>
+                            <div className="space-y-2">
+                                {(onCompleteGame || isGameComplete) && (
+                                    isGameComplete ? (
+                                        <div className="flex min-h-[54px] items-center justify-center gap-2 rounded-full bg-green-500 px-4 text-[10px] font-black uppercase tracking-widest text-white">
+                                            <CheckCircle2 className="h-4 w-4" />
+                                            Game Completed
+                                        </div>
+                                    ) : (
+                                        <button
+                                            onClick={onCompleteGame}
+                                            className="pc-btn-press touch-target flex min-h-[54px] w-full items-center justify-center gap-2 rounded-full bg-[#C6FF00] px-4 text-[10px] font-black uppercase tracking-widest text-black"
+                                        >
+                                            <Trophy className="h-4 w-4" />
+                                            Complete Game
+                                        </button>
+                                    )
                                 )}
+                                <div className="grid grid-cols-2 gap-2">
+                                    <button
+                                        onClick={() => setIsEditing(!isEditing)}
+                                        className="pc-btn-press touch-target min-h-[54px] rounded-full bg-white px-4 text-[10px] font-black uppercase tracking-widest text-black"
+                                    >
+                                        {isEditing ? 'Cancel' : 'Edit'}
+                                    </button>
+                                    {onShare && (
+                                        <button
+                                            onClick={() => onShare(game)}
+                                            className="pc-btn-press touch-target min-h-[54px] rounded-full border border-white/10 bg-white/10 px-4 text-[10px] font-black uppercase tracking-widest text-white"
+                                        >
+                                            Share
+                                        </button>
+                                    )}
+                                </div>
                             </div>
                         )}
                     </div>

@@ -231,7 +231,7 @@ const MessageCenter: React.FC<MessageCenterProps> = ({
         </div>
 
         {/* Pane 3: Chat/Challenge View */}
-        <div className={`${mobileView !== 'chat' ? 'hidden md:flex' : 'flex'} fixed inset-x-3 top-3 bottom-[calc(6.95rem+env(safe-area-inset-bottom))] z-[120] md:static md:inset-auto md:z-auto flex-1 bg-white/5 border border-white/10 rounded-[32px] md:rounded-[56px] flex-col overflow-hidden relative min-h-0`}>
+        <div className={`${mobileView !== 'chat' ? 'hidden md:flex' : 'flex'} fixed inset-x-3 top-[calc(0.75rem+env(safe-area-inset-top))] bottom-[calc(6.95rem+env(safe-area-inset-bottom))] z-[120] md:static md:inset-auto md:z-auto flex-1 bg-white/5 border border-white/10 rounded-[32px] md:rounded-[56px] flex-col overflow-hidden relative min-h-0`}>
           {activeThread ? (
               <div key={activeThread.key} className="pc-view-enter flex-1 flex flex-col h-full min-h-0">
                 <div className="p-4 md:p-10 border-b border-white/5 flex justify-between items-center bg-white/5 backdrop-blur-md relative z-10 shrink-0">

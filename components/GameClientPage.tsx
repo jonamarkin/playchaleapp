@@ -33,7 +33,7 @@ export default function GameClientPage({ initialGame }: GameClientPageProps) {
         ? (user && data.organizer_id === user.id ? 'manage' : 'join')
         : null;
     const isHost = user && data && 'organizer_id' in data && data.organizer_id === user.id;
-    const isGameComplete = data && 'completed_at' in data && data.completed_at;
+    const isGameComplete = Boolean(data && 'completed_at' in data && data.completed_at);
 
     if (!data || !viewType) {
         return (
@@ -71,37 +71,17 @@ export default function GameClientPage({ initialGame }: GameClientPageProps) {
     };
 
     return (
-        <div className="min-h-screen bg-black pt-20 relative">
+        <div className="min-h-screen bg-black pt-[calc(1rem+env(safe-area-inset-top))] md:pt-20 relative">
             {/* Background Ambient */}
             <div className="fixed top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-[#C6FF00]/5 to-transparent pointer-events-none" />
-
-            <button
-                onClick={() => router.back()}
-                className="fixed top-24 left-4 md:left-8 z-50 w-10 h-10 bg-black/50 backdrop-blur-md border border-white/10 text-white rounded-full flex items-center justify-center hover:bg-white hover:text-black transition-all"
-            >
-                <ICONS.ChevronRight className="rotate-180" />
-            </button>
-
-            {/* Complete Game Button (Host only, after game time) */}
-            {isHost && !isGameComplete && (
-                <button
-                    onClick={() => setShowPostGameModal(true)}
-                    className="fixed bottom-[calc(12.2rem+env(safe-area-inset-bottom))] right-4 z-[125] bg-[#C6FF00] text-black px-5 py-3 md:bottom-6 md:right-6 md:px-6 md:py-4 rounded-full font-black uppercase text-[10px] tracking-widest shadow-2xl hover:scale-105 transition-all flex items-center gap-2"
-                >
-                    <span>📊</span> Complete Game
-                </button>
-            )}
-
-            {isGameComplete && (
-                <div className="fixed bottom-[calc(12.2rem+env(safe-area-inset-bottom))] right-4 z-[125] bg-green-500 text-white px-5 py-3 md:bottom-6 md:right-6 md:px-6 md:py-4 rounded-full font-black uppercase text-[10px] tracking-widest shadow-2xl flex items-center gap-2">
-                    <span>✓</span> Game Completed
-                </div>
-            )}
 
             <GameDetailView
                 type={viewType}
                 data={data}
                 currentUser={profile ?? undefined}
+                onClose={() => router.back()}
+                isGameComplete={isGameComplete}
+                onCompleteGame={isHost && !isGameComplete ? () => setShowPostGameModal(true) : undefined}
                 onJoin={() => {
                     if (user && data.id) {
                         joinGame({ gameId: data.id, userId: user.id });

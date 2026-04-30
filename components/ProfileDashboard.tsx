@@ -201,7 +201,7 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
             </div>
           </div>
 
-          <div className="md:hidden sticky top-3 z-30 w-full space-y-3">
+          <div className="md:hidden sticky top-[calc(0.75rem+env(safe-area-inset-top))] z-30 w-full space-y-3">
             <div className="rounded-[28px] border border-white/10 bg-black/75 p-1.5 shadow-2xl backdrop-blur-2xl">
               <div className="grid grid-cols-4 gap-1">
                 {MOBILE_PROFILE_TABS.map(tab => {
