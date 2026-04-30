@@ -3,7 +3,7 @@
 import React, { useState } from 'react';
 import Image from 'next/image';
 import Link from 'next/link';
-import { CheckCircle2, Trophy } from 'lucide-react';
+import { CheckCircle2, MapPin, Trophy } from 'lucide-react';
 import { ICONS } from '@/constants/icons';
 import { Game, PlayerProfile, JoinRequest, Participant, MatchRecord } from '@/types';
 import { Button } from '@/components/ui/button';
@@ -246,6 +246,14 @@ const GameDetailView: React.FC<GameDetailProps> = ({
 
                     {/* Left Col: Info & Image */}
                     <div className="lg:col-span-2 space-y-8">
+                        <div className="md:hidden rounded-[28px] border border-white/10 bg-white/5 p-5 text-white">
+                            <div className="mb-3 flex items-center gap-2 text-[#C6FF00]">
+                                <MapPin className="h-4 w-4" />
+                                <p className="text-[9px] font-black uppercase tracking-[0.24em]">Location</p>
+                            </div>
+                            <p className="text-xl font-black italic uppercase leading-tight">{game.location}</p>
+                        </div>
+
                         <div className="relative aspect-[16/10] overflow-hidden rounded-[32px] border border-white/10 shadow-2xl sm:aspect-video md:rounded-[48px]">
                             <Image
                                 src={game.imageUrl}
@@ -262,9 +270,9 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                                 <span className="text-white text-[10px] font-black uppercase tracking-widest">{game.sport}</span>
                             </div>
 
-                            <div className="absolute bottom-24 left-5 right-5 md:bottom-8 md:left-8 md:right-8">
+                            <div className="absolute bottom-8 left-8 right-8 hidden md:block">
                                 <p className="text-[#C6FF00] font-black uppercase tracking-[0.2em] text-[10px] mb-2">Location</p>
-                                <p className="max-w-[17rem] whitespace-normal break-words text-xl font-black italic uppercase leading-tight text-white sm:max-w-none sm:text-2xl md:text-3xl md:leading-none">{game.location}</p>
+                                <p className="break-words text-3xl font-black italic uppercase leading-none text-white">{game.location}</p>
                             </div>
                         </div>
 
