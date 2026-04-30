@@ -12,7 +12,7 @@ import { Game } from '@/types';
 const GameCard = ({ game, isHost, onClick }: { game: Game; isHost: boolean; onClick: () => void }) => (
     <div
         onClick={onClick}
-        className="touch-scale bg-white border-2 border-black/5 p-5 sm:p-6 rounded-[28px] sm:rounded-[32px] flex gap-4 sm:gap-5 items-center hover:border-[#C6FF00] transition-all cursor-pointer group shadow-sm"
+        className="touch-scale bg-white border-2 border-black/10 p-5 sm:p-6 rounded-[28px] sm:rounded-[32px] flex gap-4 sm:gap-5 items-center hover:border-black/20 transition-all cursor-pointer group shadow-sm"
     >
         <Image
             src={game.imageUrl}
@@ -25,7 +25,7 @@ const GameCard = ({ game, isHost, onClick }: { game: Game; isHost: boolean; onCl
             <div className="flex items-center gap-2 mb-1">
                 <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-black/40">{game.sport}</span>
                 {game.visibility === 'private' && (
-                    <span className="bg-black text-[#C6FF00] px-2 py-0.5 rounded-full text-[7px] sm:text-[8px] font-black uppercase tracking-wider">Private</span>
+                    <span className="bg-black text-white px-2 py-0.5 rounded-full text-[7px] sm:text-[8px] font-black uppercase tracking-wider">Private</span>
                 )}
                 {isHost && (
                     <span className="bg-[#C6FF00] text-black px-2 py-0.5 rounded-full text-[7px] sm:text-[8px] font-black uppercase tracking-wider">Host</span>
@@ -95,7 +95,7 @@ export default function MyGamesPage() {
                 ) : (
                     <div className="space-y-4">
                             {activeTab === 'hosted' && hostedGames.length === 0 && (
-                                <div className="pc-view-enter py-16 text-center bg-gray-50 rounded-[32px] border border-black/5">
+                                <div className="pc-view-enter py-16 text-center bg-gray-50 rounded-[32px] border border-black/10">
                                     <div className="text-4xl mb-4">🏟️</div>
                                     <p className="text-black/40 font-bold uppercase text-sm tracking-widest mb-4">You haven&apos;t hosted any games yet</p>
                                     <button
@@ -108,7 +108,7 @@ export default function MyGamesPage() {
                             )}
 
                             {activeTab === 'joined' && joinedGames.length === 0 && (
-                                <div className="pc-view-enter py-16 text-center bg-gray-50 rounded-[32px] border border-black/5">
+                                <div className="pc-view-enter py-16 text-center bg-gray-50 rounded-[32px] border border-black/10">
                                     <div className="text-4xl mb-4">🤝</div>
                                     <p className="text-black/40 font-bold uppercase text-sm tracking-widest mb-4">You haven&apos;t joined any games yet</p>
                                     <button
@@ -141,10 +141,10 @@ export default function MyGamesPage() {
                 )}
 
                 {/* Quick Actions */}
-                <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-black/5">
+                <div className="flex flex-col sm:flex-row gap-3 pt-6 border-t border-black/10">
                     <button
                         onClick={() => router.push('/discover')}
-                        className="flex-1 bg-black text-[#C6FF00] py-4 rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all"
+                        className="flex-1 bg-black text-white py-4 rounded-full font-black uppercase text-[10px] tracking-widest hover:bg-[#C6FF00] hover:text-black transition-all"
                     >
                         Discover Games
                     </button>

@@ -45,7 +45,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenCreate, activeView, onNavigate })
 
   return (
     <>
-      <header className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 px-4 md:px-8 py-3 md:py-4 flex justify-between items-center ${headerTheme === 'light' ? 'bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100' : 'bg-transparent'}`}>
+      <header className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 px-4 md:px-8 py-3 md:py-4 flex justify-between items-center ${headerTheme === 'light' ? 'bg-white/95 backdrop-blur-xl shadow-lg border-b border-black/10' : 'bg-transparent'}`}>
         <div className="flex items-center gap-3 md:gap-6">
           <div
             className="pc-fade-left flex items-center gap-3 md:gap-4 cursor-pointer group"
@@ -85,7 +85,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenCreate, activeView, onNavigate })
 
           <button
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`backdrop-blur-md w-10 h-10 md:w-11 md:h-11 flex items-center justify-center rounded-full shadow-sm transition-all border active:scale-90 ${headerTheme === 'light' ? 'bg-white/90 border-gray-100 text-black' : 'bg-white/10 border-white/20 text-white'}`}
+            className={`backdrop-blur-md w-10 h-10 md:w-11 md:h-11 flex items-center justify-center rounded-full shadow-sm transition-all border active:scale-90 ${headerTheme === 'light' ? 'bg-white/90 border-black/10 text-black' : 'bg-white/10 border-white/20 text-white'}`}
           >
             {isMenuOpen ? <ICONS.X /> : <ICONS.Menu />}
           </button>

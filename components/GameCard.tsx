@@ -17,7 +17,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick }) => {
   return (
     <div
       onClick={onClick}
-      className="pc-card-lift touch-target group bg-white hover:bg-black rounded-[48px] p-6 flex flex-col cursor-pointer transition-all duration-500 hover:shadow-[0_60px_120px_rgba(0,0,0,0.25)] border border-black/5 hover:border-white/10 relative overflow-hidden h-full min-h-[620px]"
+      className="pc-card-lift touch-target group bg-white hover:bg-black rounded-[48px] p-6 flex flex-col cursor-pointer transition-all duration-500 hover:shadow-[0_60px_120px_rgba(0,0,0,0.25)] border border-black/10 hover:border-white/20 relative overflow-hidden h-full min-h-[620px]"
     >
       {/* Visual Identity Section */}
       <div className="relative h-64 md:h-80 rounded-[40px] overflow-hidden mb-8">
@@ -52,7 +52,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick }) => {
       {/* Content Section */}
       <div className="flex-1 flex flex-col px-4 pb-4">
         <div className="mb-10">
-          <h3 className="text-3xl md:text-5xl font-black tracking-tighter italic leading-[0.9] uppercase text-black group-hover:text-[#C6FF00] mb-5 transition-colors duration-300">
+          <h3 className="text-3xl md:text-5xl font-black tracking-tighter italic leading-[0.9] uppercase text-black group-hover:text-white mb-5 transition-colors duration-300">
             {game.title}
           </h3>
 
@@ -86,7 +86,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick }) => {
           </div>
 
           {/* Action Row - Integrated Button Design */}
-          <div className="flex items-center justify-between pt-8 border-t border-black/5 group-hover:border-white/10 transition-colors -mr-6">
+          <div className="flex items-center justify-between pt-8 border-t border-black/10 group-hover:border-white/20 transition-colors -mr-6">
             <div className="flex -space-x-4 shrink-0 pl-0">
               {game.participants?.slice(0, 3).map((p) => (
                 <Image key={p.id} src={p.avatar} className="w-12 h-12 rounded-full border-[4px] border-white group-hover:border-black transition-colors object-cover shadow-md" alt="participant" width={48} height={48} />

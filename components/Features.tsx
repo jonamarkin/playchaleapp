@@ -78,7 +78,7 @@ export function Features() {
       <div className="relative z-10 px-4 md:px-12 max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row items-end justify-between mb-16 md:mb-28 gap-8">
           <div className="space-y-6 max-w-3xl">
-            <div className="inline-flex items-center gap-3 bg-black text-[#C6FF00] px-5 py-2 rounded-full font-black text-[10px] uppercase tracking-[0.4em]">
+            <div className="inline-flex items-center gap-3 bg-black text-white px-5 py-2 rounded-full font-black text-[10px] uppercase tracking-[0.4em]">
               <span className="w-1.5 h-1.5 rounded-full bg-[#C6FF00] animate-pulse"></span>
               CORE ADVANTAGE
             </div>
@@ -98,7 +98,7 @@ export function Features() {
           {features.map((feature, index) => (
             <div
               key={index}
-              className="pc-card-lift min-w-[300px] lg:min-w-0 bg-white hover:bg-black border border-black/5 hover:border-white/10 rounded-[48px] p-10 flex flex-col transition-all duration-500 snap-center relative group"
+              className="pc-card-lift min-w-[300px] lg:min-w-0 bg-white hover:bg-black border border-black/10 hover:border-white/20 rounded-[48px] p-10 flex flex-col transition-all duration-500 snap-center relative group"
               style={{ transitionDelay: `${index * 20}ms` }}
             >
               {/* Highlight bar on hover */}
@@ -111,7 +111,7 @@ export function Features() {
               </div>
 
               <div className="space-y-3 mb-12">
-                <h3 className="font-black text-2xl md:text-3xl leading-none tracking-tighter italic uppercase text-black group-hover:text-[#C6FF00] transition-colors">
+                <h3 className="font-black text-2xl md:text-3xl leading-none tracking-tighter italic uppercase text-black group-hover:text-white transition-colors">
                   {feature.title}
                 </h3>
                 <p className="text-sm font-bold tracking-tight text-black/30 group-hover:text-white/40 transition-colors">
@@ -119,7 +119,7 @@ export function Features() {
                 </p>
               </div>
 
-              <div className="mt-auto pt-8 border-t border-black/5 group-hover:border-white/10 flex items-end justify-between transition-colors">
+              <div className="mt-auto pt-8 border-t border-black/10 group-hover:border-white/20 flex items-end justify-between transition-colors">
                 <div>
                   <div className="text-4xl md:text-5xl font-black italic tracking-tighter text-black group-hover:text-white leading-none mb-1 transition-colors">
                     {feature.stat}
@@ -128,7 +128,7 @@ export function Features() {
                     {feature.label}
                   </div>
                 </div>
-                <div className="w-12 h-12 rounded-full border border-black/5 flex items-center justify-center text-black/10 group-hover:text-[#C6FF00] group-hover:border-[#C6FF00] transition-all group-hover:rotate-45">
+                <div className="w-12 h-12 rounded-full border border-black/10 flex items-center justify-center text-black/10 group-hover:text-[#C6FF00] group-hover:border-[#C6FF00] transition-all group-hover:rotate-45">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                 </div>
               </div>

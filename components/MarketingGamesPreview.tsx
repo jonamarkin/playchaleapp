@@ -38,7 +38,7 @@ export default function MarketingGamesPreview({ games }: MarketingGamesPreviewPr
             </div>
             <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter">Games Near You</h2>
           </div>
-          <Link href="/discover" className="touch-scale-sm touch-target bg-black text-[#C6FF00] px-8 py-4 rounded-full text-[10px] font-black uppercase tracking-widest transition-all w-full md:w-auto text-center">
+          <Link href="/discover" className="touch-scale-sm touch-target bg-black text-white px-8 py-4 rounded-full text-[10px] font-black uppercase tracking-widest transition-all w-full md:w-auto text-center hover:bg-[#C6FF00] hover:text-black">
             Explore Full Feed
           </Link>
         </div>
@@ -53,7 +53,7 @@ export default function MarketingGamesPreview({ games }: MarketingGamesPreviewPr
               <Link
                 key={game.id}
                 href={`/game/${game.slug || game.id}`}
-                className="touch-card touch-target group bg-white hover:bg-black rounded-[48px] p-6 flex flex-col cursor-pointer transition-all duration-500 hover:shadow-[0_60px_120px_rgba(0,0,0,0.25)] border border-black/5 hover:border-white/10 relative overflow-hidden h-full min-h-[560px]"
+                className="touch-card touch-target group bg-white hover:bg-black rounded-[48px] p-6 flex flex-col cursor-pointer transition-all duration-500 hover:shadow-[0_60px_120px_rgba(0,0,0,0.25)] border border-black/10 hover:border-white/20 relative overflow-hidden h-full min-h-[560px]"
               >
                 <div className="relative h-64 md:h-72 rounded-[40px] overflow-hidden mb-8">
                   <Image
@@ -82,7 +82,7 @@ export default function MarketingGamesPreview({ games }: MarketingGamesPreviewPr
 
                 <div className="flex-1 flex flex-col px-4 pb-4">
                   <div className="mb-8">
-                    <h3 className="text-3xl md:text-4xl font-black tracking-tighter italic leading-[0.9] uppercase text-black group-hover:text-[#C6FF00] mb-5 transition-colors duration-300">
+                    <h3 className="text-3xl md:text-4xl font-black tracking-tighter italic leading-[0.9] uppercase text-black group-hover:text-white mb-5 transition-colors duration-300">
                       {game.title}
                     </h3>
                     <div className="space-y-3">
@@ -113,7 +113,7 @@ export default function MarketingGamesPreview({ games }: MarketingGamesPreviewPr
                       </div>
                     </div>
 
-                    <div className="flex items-center justify-between pt-6 border-t border-black/5 group-hover:border-white/10 transition-colors -mr-6">
+                    <div className="flex items-center justify-between pt-6 border-t border-black/10 group-hover:border-white/20 transition-colors -mr-6">
                       <span className="text-[10px] font-black uppercase tracking-[0.25em] text-black/30 group-hover:text-white/30">
                         {game.organizer}
                       </span>

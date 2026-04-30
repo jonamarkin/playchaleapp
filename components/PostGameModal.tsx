@@ -210,7 +210,7 @@ const PostGameModal: React.FC<PostGameModalProps> = ({ game, userId, onClose, on
                                                 min="0"
                                                 value={gameResult[field.key] || 0}
                                                 onChange={(e) => setGameResult(prev => ({ ...prev, [field.key]: parseInt(e.target.value) || 0 }))}
-                                                className="w-full text-center text-4xl font-black p-4 bg-gray-50 rounded-2xl border-2 border-black/10 focus:border-[#C6FF00] focus:outline-none"
+                                                className="w-full text-center text-4xl font-black p-4 bg-gray-50 rounded-2xl border-2 border-black/10 focus:border-black focus:outline-none"
                                             />
                                         </div>
                                     ))}
@@ -256,7 +256,7 @@ const PostGameModal: React.FC<PostGameModalProps> = ({ game, userId, onClose, on
                                                                 min="0"
                                                                 value={(player.stats[stat.key] as number) || 0}
                                                                 onChange={(e) => updatePlayerStat(player.id, stat.key, parseInt(e.target.value) || 0)}
-                                                                className="w-full text-center text-lg font-bold p-2 bg-white rounded-xl border border-black/10 focus:border-[#C6FF00] focus:outline-none"
+                                                                className="w-full text-center text-lg font-bold p-2 bg-white rounded-xl border border-black/10 focus:border-black focus:outline-none"
                                                             />
                                                         ) : (
                                                             <Switch
@@ -290,7 +290,7 @@ const PostGameModal: React.FC<PostGameModalProps> = ({ game, userId, onClose, on
 
                                 {/* Summary */}
                                 <div className="bg-gray-50 rounded-2xl p-4 space-y-4">
-                                    <div className="flex justify-between items-center pb-3 border-b border-black/5">
+                                    <div className="flex justify-between items-center pb-3 border-b border-black/10">
                                         <span className="font-bold">Final Score</span>
                                         <span className="text-xl font-black">
                                             {gameResult[sportConfig.gameResult[0]?.key] || 0} - {gameResult[sportConfig.gameResult[1]?.key] || 0}
@@ -313,7 +313,7 @@ const PostGameModal: React.FC<PostGameModalProps> = ({ game, userId, onClose, on
                 </div>
 
                 {/* Footer */}
-                <div className="p-6 border-t border-black/5 flex gap-3">
+                <div className="p-6 border-t border-black/10 flex gap-3">
                     {step !== 'attendance' && (
                         <button
                             onClick={() => setStep(steps[currentStepIndex - 1].key)}
@@ -325,7 +325,7 @@ const PostGameModal: React.FC<PostGameModalProps> = ({ game, userId, onClose, on
                     {step !== 'review' ? (
                         <button
                             onClick={() => setStep(steps[currentStepIndex + 1].key)}
-                            className="flex-1 py-4 bg-black text-[#C6FF00] rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all"
+                            className="flex-1 py-4 bg-black text-white rounded-full font-black uppercase text-[10px] tracking-widest hover:bg-[#C6FF00] hover:text-black transition-all"
                         >
                             Continue
                         </button>

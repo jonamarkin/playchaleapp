@@ -26,10 +26,10 @@ export default function MarketingPlayersPreview({ players }: MarketingPlayersPre
           </div>
 
           <h2 className="font-black leading-[0.85] tracking-tighter italic uppercase text-5xl sm:text-7xl md:text-9xl text-white">
-            Built for <br className="hidden md:block" /> Glory.
+            Built for <br /> Glory.
           </h2>
 
-          <p className="font-bold max-w-2xl mx-auto text-sm sm:text-lg md:text-xl leading-tight tracking-tight px-4 text-white/50">
+          <p className="font-bold max-w-[19rem] sm:max-w-2xl mx-auto text-sm sm:text-lg md:text-xl leading-tight tracking-tight px-4 text-white/50">
             Find active players nearby, compare form, and build your local sports circle.
           </p>
         </div>
@@ -46,7 +46,7 @@ export default function MarketingPlayersPreview({ players }: MarketingPlayersPre
               <Link
                 key={player.id}
                 href={`/profile/${player.slug || player.id}`}
-                className="touch-scale touch-target group relative overflow-hidden rounded-[32px] sm:rounded-[40px] border transition-all duration-500 cursor-pointer flex flex-col shadow-sm bg-white/5 hover:bg-white/10 text-white border-white/10 hover:shadow-2xl"
+                className="touch-scale touch-target group relative overflow-hidden rounded-[32px] sm:rounded-[40px] border transition-all duration-500 cursor-pointer flex flex-col shadow-sm bg-white/5 hover:bg-white/10 text-white border-white/10 hover:border-white/20 hover:shadow-2xl"
               >
                 <div className="p-6 sm:p-8 flex flex-col gap-6">
                   <div className="flex items-center gap-5">
@@ -56,7 +56,7 @@ export default function MarketingPlayersPreview({ players }: MarketingPlayersPre
                         alt={player.name}
                         width={128}
                         height={128}
-                        className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover border-[6px] border-black/5 group-hover:border-[#C6FF00] transition-all duration-500 shadow-2xl"
+                        className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover border-[6px] border-white/20 group-hover:border-[#C6FF00] transition-all duration-500 shadow-2xl"
                       />
                       <div className="absolute -bottom-2 -right-2 bg-[#C6FF00] text-black w-10 h-10 rounded-full flex items-center justify-center font-black text-base shadow-2xl border-4 border-black group-hover:scale-110 transition-transform">
                         #{idx + 1}
@@ -72,7 +72,7 @@ export default function MarketingPlayersPreview({ players }: MarketingPlayersPre
                           Verified Legend
                         </span>
                       </div>
-                      <h3 className="text-2xl sm:text-4xl font-black tracking-tighter leading-[0.9] italic uppercase group-hover:text-[#C6FF00] transition-colors break-words line-clamp-2">
+                      <h3 className="text-2xl sm:text-4xl font-black tracking-tighter leading-[0.9] italic uppercase group-hover:text-white transition-colors break-words line-clamp-2">
                         {player.name}
                       </h3>
                     </div>

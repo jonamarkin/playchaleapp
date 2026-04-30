@@ -61,24 +61,24 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
           </div>
 
           <h2 className={`font-black leading-[0.85] tracking-tighter italic uppercase ${isFullPage ? 'text-5xl sm:text-7xl md:text-[9rem] text-black' : 'text-5xl sm:text-7xl md:text-9xl text-white'}`}>
-            Built for <br className="hidden md:block" /> Glory.
+            Built for <br /> Glory.
           </h2>
 
-          <p className={`font-bold max-w-2xl mx-auto text-sm sm:text-lg md:text-xl leading-tight tracking-tight px-4 ${isFullPage ? 'text-black/60' : 'text-white/50'}`}>
+          <p className={`font-bold max-w-[19rem] sm:max-w-2xl mx-auto text-sm sm:text-lg md:text-xl leading-tight tracking-tight px-4 ${isFullPage ? 'text-black/60' : 'text-white/50'}`}>
             Find active players nearby, compare form, and build your local sports circle.
           </p>
 
           {isFullPage && (
-            <div className="max-w-4xl mx-auto space-y-6 sm:space-y-8 pt-4 sm:pt-6">
-              <div className="grid grid-cols-1 sm:grid-cols-12 gap-4 px-2 sm:px-0">
+            <div className="mx-auto w-full max-w-[calc(100vw-2rem)] sm:max-w-4xl min-w-0 space-y-6 sm:space-y-8 pt-4 sm:pt-6">
+              <div className="grid w-full min-w-0 grid-cols-1 sm:grid-cols-12 gap-4 px-2 sm:px-0">
                 {/* Search Input */}
-                <div className="sm:col-span-8 relative group">
+                <div className="sm:col-span-8 relative group min-w-0">
                   <Input
                     type="text"
                     placeholder="Search players..."
                     value={search}
                     onChange={(e) => setSearch(e.target.value)}
-                    className="w-full bg-black/5 border-2 border-transparent focus:border-black rounded-full pl-12 sm:pl-16 pr-6 sm:pr-8 h-auto py-4 sm:py-6 text-black font-black text-sm sm:text-base outline-none transition-all placeholder:text-black/20 shadow-sm focus-visible:ring-0"
+                    className="w-full bg-black/5 border-2 border-black/10 focus:border-black rounded-full pl-12 sm:pl-16 pr-6 sm:pr-8 h-auto py-4 sm:py-6 text-black font-black text-sm sm:text-base outline-none transition-all placeholder:text-black/20 shadow-sm focus-visible:ring-0"
                   />
                   <div className="absolute left-6 sm:left-7 top-1/2 -translate-y-1/2 text-black/20 group-focus-within:text-black transition-colors">
                     <svg width="20" height="20" className="sm:w-6 sm:h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
@@ -86,14 +86,14 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                 </div>
 
                 {/* Location Filter Dropdown */}
-                <div className="sm:col-span-4 relative group">
+                <div className="sm:col-span-4 relative group min-w-0">
                   <Select value={activeLocation} onValueChange={setActiveLocation}>
-                    <SelectTrigger className="w-full bg-black/5 border-2 border-transparent focus:border-black rounded-full pl-6 pr-6 h-auto py-4 sm:py-6 text-black font-black text-sm sm:text-base outline-none transition-all shadow-sm hover:bg-black/10 focus:ring-0">
+                    <SelectTrigger className="w-full bg-black/5 border-2 border-black/10 focus:border-black rounded-full pl-6 pr-6 h-auto py-4 sm:py-6 text-black font-black text-sm sm:text-base outline-none transition-all shadow-sm hover:bg-black/10 focus:ring-0">
                       <SelectValue placeholder="Select Location" />
                     </SelectTrigger>
-                    <SelectContent className="bg-white/80 backdrop-blur-xl border border-black/5 rounded-3xl shadow-2xl p-2">
+                    <SelectContent className="bg-white/80 backdrop-blur-xl border border-black/10 rounded-3xl shadow-2xl p-2">
                       {locations.map(loc => (
-                        <SelectItem key={loc} value={loc} className="rounded-xl font-bold py-3 text-black focus:bg-black focus:text-lime cursor-pointer">
+                        <SelectItem key={loc} value={loc} className="rounded-xl font-bold py-3 text-black focus:bg-black focus:text-white cursor-pointer">
                           {loc}
                         </SelectItem>
                       ))}
@@ -106,12 +106,12 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
               </div>
 
               {/* Sport Filter Pills */}
-              <div className="flex flex-wrap justify-center gap-2 sm:gap-3 px-2">
+              <div className="mx-auto grid w-full max-w-[22rem] grid-cols-2 gap-2 px-2 sm:max-w-none sm:flex sm:flex-wrap sm:justify-center sm:gap-3">
                 {sports.map(sport => (
                   <button
                     key={sport}
                     onClick={() => setActiveSport(sport)}
-                    className={`px-5 sm:px-8 py-2 sm:py-3 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] transition-all ${activeSport === sport ? 'bg-black text-white shadow-xl scale-105' : 'bg-gray-100 text-black/40 hover:bg-gray-200'}`}
+                    className={`w-full shrink-0 px-2 sm:w-auto sm:px-8 py-2 sm:py-3 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-[0.08em] sm:tracking-[0.2em] transition-all ${activeSport === sport ? 'bg-black text-white shadow-xl scale-105' : 'bg-gray-100 text-black/40 hover:bg-gray-200'}`}
                   >
                     {sport}
                   </button>
@@ -133,6 +133,8 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
               let metaClasses = "";
               let borderClasses = "";
               let nameHoverClasses = "";
+              let previewStatClasses = "";
+              let avatarBorderClasses = "";
 
               if (isFullPage) {
                 if (isEven) {
@@ -140,23 +142,29 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                   cardClasses = "bg-white hover:bg-black";
                   textClasses = "text-black group-hover:text-white";
                   metaClasses = "text-black/40 group-hover:text-white/50";
-                  borderClasses = "border-black/5 group-hover:border-white/10";
-                  nameHoverClasses = "group-hover:text-[#C6FF00]";
+                  borderClasses = "border-black/10 hover:border-white/20 group-hover:border-white/20";
+                  nameHoverClasses = "group-hover:text-white";
+                  previewStatClasses = "text-black group-hover:text-[#C6FF00]";
+                  avatarBorderClasses = "border-black/10 group-hover:border-[#C6FF00]";
                 } else {
                   // BLACK Card -> WHITE Hover
                   cardClasses = "bg-black hover:bg-white";
                   textClasses = "text-white group-hover:text-black";
                   metaClasses = "text-white/50 group-hover:text-black/40";
-                  borderClasses = "border-white/10 group-hover:border-black/5";
+                  borderClasses = "border-white/10 hover:border-black/10 group-hover:border-black/10";
                   nameHoverClasses = "group-hover:text-black";
+                  previewStatClasses = "text-[#C6FF00] group-hover:text-black";
+                  avatarBorderClasses = "border-white/20 group-hover:border-[#C6FF00]";
                 }
               } else {
                 // Widget Mode (Always Dark Transparent)
                 cardClasses = "bg-white/5 hover:bg-white/10";
                 textClasses = "text-white";
                 metaClasses = "text-white/40";
-                borderClasses = "border-white/10";
-                nameHoverClasses = "group-hover:text-[#C6FF00]";
+                borderClasses = "border-white/10 hover:border-white/20 group-hover:border-white/20";
+                nameHoverClasses = "group-hover:text-white";
+                previewStatClasses = "text-[#C6FF00]";
+                avatarBorderClasses = "border-white/20 group-hover:border-[#C6FF00]";
               }
 
               return (
@@ -180,7 +188,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                           width={192}
                           height={192}
                           loading={isFullPage && idx < 3 ? 'eager' : 'lazy'}
-                          className="w-24 h-24 sm:w-36 sm:h-36 md:w-48 md:h-48 rounded-full object-cover border-[6px] sm:border-[8px] border-black/5 group-hover:border-[#C6FF00] transition-all duration-500 shadow-2xl"
+                          className={`w-24 h-24 sm:w-36 sm:h-36 md:w-48 md:h-48 rounded-full object-cover border-[6px] sm:border-[8px] transition-all duration-500 shadow-2xl ${avatarBorderClasses}`}
                         />
                         <div className="absolute -bottom-2 -right-2 bg-[#C6FF00] text-black w-9 h-9 sm:w-14 sm:h-14 rounded-full flex items-center justify-center font-black text-base sm:text-2xl shadow-2xl border-4 border-black group-hover:scale-110 transition-transform">
                           #{idx + 1}
@@ -213,7 +221,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                           <p className={`text-[7px] sm:text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] transition-colors ${metaClasses} truncate`}>Win Rate</p>
                         </div>
                         <div className={`text-center border-x px-1 sm:px-4 transition-colors ${borderClasses}`}>
-                          <p className={`text-lg sm:text-2xl md:text-3xl font-black italic drop-shadow-sm transition-transform group-hover:scale-110 ${!isFullPage || isEven ? 'text-black group-hover:text-[#C6FF00]' : 'text-[#C6FF00] group-hover:text-black'}`}>
+                          <p className={`text-lg sm:text-2xl md:text-3xl font-black italic drop-shadow-sm transition-transform group-hover:scale-110 ${previewStatClasses}`}>
                             {previewStat.value}
                           </p>
                           <p className={`text-[7px] sm:text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] transition-colors ${metaClasses} truncate`}>{previewStat.label}</p>

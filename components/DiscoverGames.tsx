@@ -67,7 +67,7 @@ const CalendarView = ({ games, onSelectDate, selectedDate }: { games: Game[], on
   const nextMonthWithGames = gamesThisMonth === 0 ? findNextMonthWithGames() : null;
 
   return (
-    <div className="bg-black text-white p-6 md:p-10 rounded-[48px] shadow-2xl">
+    <div className="bg-black text-white p-6 md:p-10 rounded-[48px] border border-white/10 shadow-2xl">
       <div className="flex justify-between items-center mb-10">
         <h3 className="text-3xl font-black italic tracking-tighter uppercase">{monthName} {currentMonth.getFullYear()}</h3>
         <div className="flex gap-3">
@@ -97,7 +97,7 @@ const CalendarView = ({ games, onSelectDate, selectedDate }: { games: Game[], on
                 ${isSelected ? 'bg-[#C6FF00] text-black border-[#C6FF00] scale-105 shadow-lg shadow-[#C6FF00]/30' :
                   isToday ? 'bg-white/10 border-[#C6FF00]/50' :
                     gameCount > 0 ? 'bg-white/5 border-white/10 hover:border-[#C6FF00]/50 hover:bg-white/10' :
-                      'bg-white/5 border-white/5 hover:border-white/20'}`}
+                      'bg-white/5 border-white/10 hover:border-white/20'}`}
             >
               <span className={`text-sm md:text-lg font-black ${isToday && !isSelected ? 'text-[#C6FF00]' : ''}`}>{d}</span>
               {gameCount > 0 && !isSelected && (
@@ -148,7 +148,7 @@ const MobileGameRow = ({ game, onClick }: { game: Game; onClick: () => void }) =
     <button
       type="button"
       onClick={onClick}
-      className="pc-card-lift touch-target group w-full rounded-[30px] border border-black/5 bg-white p-3 text-left shadow-sm"
+      className="pc-card-lift touch-target group w-full rounded-[30px] border border-black/10 bg-white p-3 text-left shadow-sm"
     >
       <div className="flex gap-4">
         <div className="relative h-28 w-28 shrink-0 overflow-hidden rounded-[24px] bg-black">
@@ -236,7 +236,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
           {user ? (
             <button
               onClick={() => router.push('/home')}
-              className="touch-scale-sm touch-target bg-black text-[#C6FF00] px-6 py-3 rounded-full font-black uppercase tracking-widest text-[10px] transition-all shadow-lg"
+              className="touch-scale-sm touch-target bg-black text-white px-6 py-3 rounded-full font-black uppercase tracking-widest text-[10px] transition-all shadow-lg hover:bg-[#C6FF00] hover:text-black"
             >
               Go to Dashboard
             </button>
@@ -259,10 +259,10 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
                 GAME ARENA
               </div>
               <h2 className="font-black text-black leading-[0.85] md:leading-[0.8] tracking-tighter italic text-4xl sm:text-7xl md:text-[9rem]">
-                Find Your <br className="hidden md:block" /> Perfect Match.
+                Find Your <br /> <span className="whitespace-nowrap">Perfect <span className="ml-[0.06em] inline-block">Match.</span></span>
               </h2>
 
-              <div className="sticky top-3 z-40 md:hidden rounded-[32px] border border-black/5 bg-black p-3 text-white shadow-xl">
+              <div className="sticky top-3 z-40 md:hidden rounded-[32px] border border-white/10 bg-black p-3 text-white shadow-xl">
                 <div className="relative">
                   <div className="absolute left-5 top-1/2 -translate-y-1/2 text-white/35">
                     <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><circle cx="11" cy="11" r="8" /><line x1="21" y1="21" x2="16.65" y2="16.65" /></svg>
@@ -288,7 +288,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
                   ))}
                 </div>
 
-                <div className="mt-3 grid grid-cols-[1fr_auto] gap-2">
+                <div className="mt-3 space-y-2">
                   <div className="flex rounded-full bg-white/10 p-1">
                     {priceOptions.map((price) => (
                       <button
@@ -305,7 +305,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
                       setDisplayMode(displayMode === 'grid' ? 'calendar' : 'grid');
                       if (displayMode === 'calendar') setSelectedDay(null);
                     }}
-                    className="pc-btn-press rounded-full bg-[#C6FF00] px-4 py-2 text-[9px] font-black uppercase tracking-widest text-black"
+                    className="pc-btn-press w-full rounded-full bg-[#C6FF00] px-3 py-2 text-[9px] font-black uppercase tracking-widest text-black"
                   >
                     {displayMode === 'grid' ? 'Calendar' : 'List'}
                   </button>
@@ -339,7 +339,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
                     <input
                       type="text"
                       placeholder="Search by city, pitch or title..."
-                      className="w-full bg-gray-50 rounded-full pl-14 pr-6 py-4 md:py-5 border-2 border-black/5 focus:border-black outline-none font-bold text-black text-sm md:text-base transition-all"
+                      className="w-full bg-gray-50 rounded-full pl-14 pr-6 py-4 md:py-5 border-2 border-black/10 focus:border-black outline-none font-bold text-black text-sm md:text-base transition-all"
                       value={search}
                       onChange={(e) => setSearch(e.target.value)}
                     />
@@ -363,7 +363,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
                   </div>
                 </div>
 
-                <div className="flex flex-wrap items-center gap-4 border-t border-black/5 pt-5 md:pt-6">
+                <div className="flex flex-wrap items-center gap-4 border-t border-black/10 pt-5 md:pt-6">
                   <div className="flex items-center gap-2">
                     <span className="text-[9px] font-black uppercase tracking-widest text-black/30">Sport:</span>
                     <Select value={filter} onValueChange={setFilter}>
@@ -390,7 +390,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
                       <button
                         key={p}
                         onClick={() => setPriceFilter(p)}
-                        className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${priceFilter === p ? 'bg-[#C6FF00] text-black' : 'bg-gray-100 text-black/70 hover:bg-gray-200'}`}
+                        className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${priceFilter === p ? 'bg-black text-white' : 'bg-gray-100 text-black/70 hover:bg-gray-200'}`}
                       >
                         {p}
                       </button>
@@ -409,7 +409,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
               </div>
               <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter">Games Near You</h2>
             </div>
-            <button onClick={() => router.push('/discover')} className="touch-scale-sm touch-target bg-black text-[#C6FF00] px-8 py-4 rounded-full text-[10px] font-black uppercase tracking-widest transition-all w-full md:w-auto">Explore Full Feed</button>
+            <button onClick={() => router.push('/discover')} className="touch-scale-sm touch-target bg-black text-white px-8 py-4 rounded-full text-[10px] font-black uppercase tracking-widest transition-all w-full md:w-auto hover:bg-[#C6FF00] hover:text-black">Explore Full Feed</button>
           </div>
         )}
 
@@ -423,13 +423,13 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
                 <h4 className="text-lg font-black italic uppercase tracking-tighter">
                   {selectedDay ? `Games on Oct ${selectedDay}` : 'Available Games'}
                 </h4>
-                <span className="bg-black text-[#C6FF00] px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">{filteredGames.length} Found</span>
+                <span className="bg-black text-white px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">{filteredGames.length} Found</span>
               </div>
               <div className="space-y-4 max-h-[700px] overflow-y-auto pr-2 hide-scrollbar">
                 {filteredGames.map((game) => (
                     <div
                       key={game.id}
-                      className="pc-view-enter touch-target bg-gray-50 rounded-[28px] p-5 flex gap-5 items-center border border-black/5 hover:border-black transition-all cursor-pointer group"
+                      className="pc-view-enter touch-target bg-gray-50 rounded-[28px] p-5 flex gap-5 items-center border border-black/10 hover:border-black/20 transition-all cursor-pointer group"
                       onClick={() => onOpenGame(game)}
                     >
                       <Image src={game.imageUrl} alt={game.title} width={80} height={80} className="w-20 h-20 rounded-[20px] object-cover" />
