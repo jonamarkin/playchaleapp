@@ -58,7 +58,7 @@ export default function MarketingPlayersPreview({ players }: MarketingPlayersPre
                         height={128}
                         className="w-24 h-24 sm:w-32 sm:h-32 rounded-full object-cover border-[6px] border-white/20 group-hover:border-[#C6FF00] transition-all duration-500 shadow-2xl"
                       />
-                      <div className="absolute -bottom-2 -right-2 bg-[#C6FF00] text-black w-10 h-10 rounded-full flex items-center justify-center font-black text-base shadow-2xl border-4 border-black group-hover:scale-110 transition-transform">
+                      <div className="absolute -bottom-2 -right-2 bg-[#C6FF00] text-black w-10 h-10 rounded-full flex items-center justify-center font-black text-base shadow-2xl border-4 border-black group-hover:scale-[1.02] transition-transform">
                         #{idx + 1}
                       </div>
                     </div>
@@ -86,7 +86,7 @@ export default function MarketingPlayersPreview({ players }: MarketingPlayersPre
                       <p className="text-[7px] sm:text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] text-white/40 truncate">Win Rate</p>
                     </div>
                     <div className="text-center border-x border-white/10 px-1 sm:px-4">
-                      <p className="text-lg sm:text-2xl md:text-3xl font-black italic text-[#C6FF00] group-hover:scale-110 transition-transform">
+                      <p className="text-lg sm:text-2xl md:text-3xl font-black italic text-[#C6FF00] group-hover:scale-[1.02] transition-transform">
                         {previewStat.value}
                       </p>
                       <p className="text-[7px] sm:text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] text-white/40 truncate">{previewStat.label}</p>

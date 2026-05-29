@@ -61,7 +61,7 @@ export default function MarketingGamesPreview({ games }: MarketingGamesPreviewPr
                     alt={game.title}
                     fill
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-                    className="object-cover group-hover:scale-110 transition-transform duration-[1.5s] ease-out"
+                    className="object-cover group-hover:scale-[1.02] transition-transform duration-[1.5s] ease-out"
                   />
                   <div className="absolute inset-0 bg-gradient-to-b from-black/60 via-transparent to-transparent opacity-60 group-hover:opacity-80 transition-opacity" />
                   <div className="absolute top-6 left-6 right-6 flex justify-between items-start">

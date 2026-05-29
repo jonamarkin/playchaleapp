@@ -5,6 +5,7 @@ import MarketingGamesPreview from '@/components/MarketingGamesPreview';
 import MarketingPlayersPreview from '@/components/MarketingPlayersPreview';
 import Programs from '@/components/Programs';
 import Testimonials from '@/components/Testimonials';
+import MarketingFooter from '@/components/MarketingFooter';
 import { GAMES, PROGRAMS, TOP_PLAYERS } from '@/constants';
 
 export default function LandingPage() {
@@ -20,6 +21,7 @@ export default function LandingPage() {
       </div>
       <Programs programs={PROGRAMS} />
       <Testimonials />
+      <MarketingFooter />
     </div>
   );
 }

@@ -41,7 +41,7 @@ export default function MarketingFooter() {
                   placeholder="Enter your email for match alerts..."
                   className="w-full bg-white/5 border border-white/10 rounded-full px-8 py-5 text-sm font-bold outline-none focus:border-[#C6FF00] transition-all"
                 />
-                <button className="absolute right-2 top-2 bottom-2 bg-[#C6FF00] text-black px-6 rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 active:scale-95 transition-all">
+                <button className="absolute right-2 top-2 bottom-2 bg-[#C6FF00] text-black px-6 rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-[1.02] active:scale-95 transition-all">
                   Join
                 </button>
               </div>

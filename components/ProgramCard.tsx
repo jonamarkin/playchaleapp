@@ -18,7 +18,7 @@ const ProgramCard: React.FC<ProgramCardProps> = ({ program, href }) => {
       className={`pc-card-lift touch-target w-[300px] md:w-[400px] h-[580px] md:h-[680px] rounded-[56px] flex flex-col p-8 md:p-12 transition-all duration-500 cursor-pointer shadow-lg hover:shadow-[0_40px_80px_rgba(0,0,0,0.05)] relative overflow-hidden group`}
       style={{ backgroundColor: isPrimary ? '#C6FF00' : '#F5F5F0' }}
     >
-      <div className="absolute top-[-40px] right-[-40px] opacity-[0.03] group-hover:rotate-45 transition-transform duration-[2s] pointer-events-none">
+      <div className="absolute top-[-40px] right-[-40px] opacity-[0.03] group-hover:rotate-12 transition-transform duration-[2s] pointer-events-none">
         <ICONS.TennisBall className="w-80 h-80" />
       </div>
 

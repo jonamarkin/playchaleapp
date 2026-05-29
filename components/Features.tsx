@@ -140,7 +140,7 @@ export function Features() {
               <div className="absolute top-0 left-10 right-10 h-1 bg-[#C6FF00] rounded-b-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
 
               <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-50 rounded-3xl flex items-center justify-center mb-10 group-hover:bg-[#C6FF00] transition-colors duration-500">
-                <div className="text-black transition-transform duration-500 group-hover:scale-110">
+                <div className="text-black transition-transform duration-500 group-hover:scale-[1.02]">
                   {feature.icon}
                 </div>
               </div>
@@ -163,7 +163,7 @@ export function Features() {
                     {feature.label}
                   </div>
                 </div>
-                <div className="w-12 h-12 rounded-full border border-black/10 flex items-center justify-center text-black/10 group-hover:text-[#C6FF00] group-hover:border-[#C6FF00] transition-all group-hover:rotate-45">
+                <div className="w-12 h-12 rounded-full border border-black/10 flex items-center justify-center text-black/10 group-hover:text-[#C6FF00] group-hover:border-[#C6FF00] transition-all group-hover:rotate-12">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                 </div>
               </div>

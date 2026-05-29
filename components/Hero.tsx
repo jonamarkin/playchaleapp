@@ -13,16 +13,16 @@ const Hero: React.FC<HeroProps> = ({ discoverHref = '/discover' }) => {
   return (
     <section id="top" className="relative min-h-[90vh] md:min-h-screen bg-black text-white overflow-hidden rounded-b-[60px] md:rounded-b-[100px] z-10 flex flex-col justify-center">
       {/* Navbar */}
-      <nav className="absolute top-0 left-0 right-0 p-6 md:p-10 flex justify-between items-center z-50">
-        <div className="flex items-center gap-3">
-          <ICONS.Logo />
-        </div>
-        <a
-          href="https://app.domain.com"
-          className="pc-btn-press touch-target block text-[10px] font-black uppercase tracking-[0.2em] hover:text-[#C6FF00] transition-colors"
+      <nav className="absolute top-0 left-0 right-0 px-6 pt-10 md:px-12 md:pt-12 flex justify-start items-center z-50">
+        <motion.div 
+          initial={{ y: -20, opacity: 0 }}
+          animate={{ y: 0, opacity: 1 }}
+          transition={{ duration: 0.8, delay: 0.1 }}
+          className="flex items-center gap-4 hover:scale-[1.02] transition-transform cursor-pointer"
         >
-          Member Sign In
-        </a>
+          <ICONS.Logo />
+          <span className="font-black text-2xl md:text-3xl tracking-tighter italic uppercase text-white drop-shadow-md">PlayChale.</span>
+        </motion.div>
       </nav>
 
       {/* Background Layer */}
@@ -75,19 +75,13 @@ const Hero: React.FC<HeroProps> = ({ discoverHref = '/discover' }) => {
                 <span className="w-2 h-2 rounded-full bg-black animate-ping"></span>
                 ACTIVE IN YOUR CITY
               </div>
-              <h1 className="text-6xl sm:text-6xl md:text-8xl lg:text-[10rem] font-black leading-[0.85] tracking-tighter italic">
-                <span className="whitespace-nowrap">Step Out,</span> <br /> <span className="text-[#C6FF00] whitespace-nowrap">PlayChale.</span>
+              <h1 className="text-6xl sm:text-7xl md:text-8xl lg:text-[10rem] font-black leading-[0.85] tracking-tighter italic drop-shadow-2xl">
+                <span className="whitespace-nowrap">Step Out,</span> <br /> 
+                <span className="text-transparent bg-clip-text bg-gradient-to-br from-[#C6FF00] to-[#8eb800] whitespace-nowrap drop-shadow-[0_0_40px_rgba(198,255,0,0.4)]">PlayChale.</span>
               </h1>
             </motion.div>
 
-            <motion.p 
-              initial={{ y: 30, opacity: 0 }}
-              animate={{ y: 0, opacity: 1 }}
-              transition={{ duration: 0.8, delay: 0.4 }}
-              className="text-xl md:text-3xl text-white/80 max-w-2xl leading-tight font-bold tracking-tight"
-            >
-              Create, Compete, Build your legacy
-            </motion.p>
+
 
             <motion.div 
               initial={{ y: 30, opacity: 0 }}
@@ -97,10 +91,10 @@ const Hero: React.FC<HeroProps> = ({ discoverHref = '/discover' }) => {
             >
               <Link
                 href={discoverHref}
-                className="pc-btn-press touch-target w-full sm:w-auto bg-[#C6FF00] text-black px-8 py-4 md:px-12 md:py-6 rounded-full font-black uppercase tracking-widest text-[11px] flex items-center justify-center gap-4 hover:shadow-[0_0_40px_rgba(198,255,0,0.4)] transition-all group"
+                className="pc-btn-press touch-target w-full sm:w-auto bg-[#C6FF00] text-black px-8 py-4 md:px-12 md:py-6 rounded-full font-black uppercase tracking-widest text-[11px] flex items-center justify-center gap-4 shadow-[0_0_30px_rgba(198,255,0,0.3)] hover:shadow-[0_0_60px_rgba(198,255,0,0.6)] transition-all duration-500 group"
               >
                 Discover Games
-                <div className="pc-icon-kick bg-black text-white rounded-full p-1 group-hover:rotate-45 transition-transform">
+                <div className="pc-icon-kick bg-black text-white rounded-full p-1 group-hover:rotate-12 transition-transform">
                   <ICONS.ChevronRight />
                 </div>
               </Link>
@@ -133,7 +127,7 @@ const Hero: React.FC<HeroProps> = ({ discoverHref = '/discover' }) => {
             className="lg:col-span-4 hidden lg:flex flex-col gap-6"
           >
             <div className="pc-card-lift glass rounded-[48px] p-8 border border-white/10 space-y-6 shadow-2xl relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-6 opacity-10 rotate-12 group-hover:rotate-45 transition-transform duration-[2s]"><ICONS.Logo /></div>
+              <div className="absolute top-0 right-0 p-6 opacity-10 rotate-12 group-hover:rotate-12 transition-transform duration-[2s]"><ICONS.Logo /></div>
 
               <div className="flex justify-between items-center">
                 <h4 className="text-[10px] font-black uppercase tracking-widest text-[#C6FF00]">Happening Nearby</h4>

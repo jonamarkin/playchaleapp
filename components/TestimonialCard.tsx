@@ -65,7 +65,7 @@ const TestimonialCard: React.FC<TestimonialCardProps> = ({ testimonial }) => {
             alt="Academy Life"
             fill
             sizes="(max-width: 1024px) 100vw, 33vw"
-            className="object-cover group-hover:scale-110 transition-transform duration-[2s]"
+            className="object-cover group-hover:scale-[1.02] transition-transform duration-[2s]"
           />
           <div className="absolute inset-0 bg-black/10"></div>
         </div>
