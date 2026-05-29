@@ -1,5 +1,7 @@
+"use client";
 import React from 'react';
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 
 const IconUsers = () => (
   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
@@ -70,14 +72,25 @@ export function Features() {
     <section className="pc-content-visibility relative py-24 md:py-40 bg-[#FDFDFB] overflow-hidden">
       {/* Background Watermark Text */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full select-none pointer-events-none overflow-hidden opacity-[0.03]">
-        <h2 className="text-[20rem] md:text-[35rem] font-black italic tracking-tighter leading-none text-black whitespace-nowrap">
+        <motion.h2 
+          initial={{ x: "10%" }}
+          whileInView={{ x: "-10%" }}
+          transition={{ duration: 10, ease: "linear" }}
+          className="text-[20rem] md:text-[35rem] font-black italic tracking-tighter leading-none text-black whitespace-nowrap"
+        >
           DOMINATE DOMINATE DOMINATE
-        </h2>
+        </motion.h2>
       </div>
 
       <div className="relative z-10 px-4 md:px-12 max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row items-end justify-between mb-16 md:mb-28 gap-8">
-          <div className="space-y-6 max-w-3xl">
+          <motion.div 
+            initial={{ opacity: 0, y: 50 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true, margin: "-100px" }}
+            transition={{ duration: 0.6 }}
+            className="space-y-6 max-w-3xl"
+          >
             <div className="inline-flex items-center gap-3 bg-black text-white px-5 py-2 rounded-full font-black text-[10px] uppercase tracking-[0.4em]">
               <span className="w-1.5 h-1.5 rounded-full bg-[#C6FF00] animate-pulse"></span>
               CORE ADVANTAGE
@@ -85,21 +98,43 @@ export function Features() {
             <h2 className="text-5xl md:text-8xl font-black tracking-tighter italic leading-[0.85] uppercase text-black">
               Everything <br /> you need to <span className="text-[#C6FF00] bg-black px-4 inline-block transform -rotate-1">Win.</span>
             </h2>
-          </div>
-          <p className="text-lg md:text-xl text-black/40 font-bold max-w-md tracking-tight leading-tight lg:text-right">
+          </motion.div>
+          <motion.p 
+            initial={{ opacity: 0, y: 30 }}
+            whileInView={{ opacity: 1, y: 0 }}
+            viewport={{ once: true }}
+            transition={{ duration: 0.6, delay: 0.2 }}
+            className="text-lg md:text-xl text-black/40 font-bold max-w-md tracking-tight leading-tight lg:text-right"
+          >
             Stop settling for casual. PlayChale gives you the pro tools to organize, compete, and climb the local ranks.
-          </p>
+          </motion.p>
         </div>
 
         {/* Features Scroll Area */}
-        <div
+        <motion.div
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-50px" }}
+          variants={{
+            hidden: { opacity: 0 },
+            show: {
+              opacity: 1,
+              transition: {
+                staggerChildren: 0.15
+              }
+            }
+          }}
           className="flex lg:grid lg:grid-cols-3 gap-6 md:gap-10 overflow-x-auto lg:overflow-visible pb-12 lg:pb-0 hide-scrollbar snap-x snap-mandatory lg:snap-none"
         >
           {features.map((feature, index) => (
-            <div
+            <motion.div
               key={index}
-              className="pc-card-lift min-w-[300px] lg:min-w-0 bg-white hover:bg-black border border-black/10 hover:border-white/20 rounded-[48px] p-10 flex flex-col transition-all duration-500 snap-center relative group"
-              style={{ transitionDelay: `${index * 20}ms` }}
+              variants={{
+                hidden: { opacity: 0, y: 40 },
+                show: { opacity: 1, y: 0, transition: { type: "spring", bounce: 0.4 } }
+              }}
+              whileHover={{ y: -10 }}
+              className="pc-card-lift min-w-[300px] lg:min-w-0 bg-white hover:bg-black border border-black/10 hover:border-white/20 rounded-[48px] p-10 flex flex-col transition-colors duration-500 snap-center relative group"
             >
               {/* Highlight bar on hover */}
               <div className="absolute top-0 left-10 right-10 h-1 bg-[#C6FF00] rounded-b-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500" />
@@ -132,13 +167,19 @@ export function Features() {
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                 </div>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
 
         {/* Bottom Call to Action */}
-        <div className="mt-20 md:mt-32 text-center">
-          <div className="inline-block p-1 bg-gray-100 rounded-full">
+        <motion.div 
+          initial={{ opacity: 0, scale: 0.9 }}
+          whileInView={{ opacity: 1, scale: 1 }}
+          viewport={{ once: true }}
+          transition={{ duration: 0.5, delay: 0.4 }}
+          className="mt-20 md:mt-32 text-center"
+        >
+          <div className="inline-block p-1 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors cursor-pointer">
             <div className="flex items-center gap-2 px-6 py-3">
               <div className="flex -space-x-3">
                 {[1, 2, 3, 4].map(i => (
@@ -150,7 +191,7 @@ export function Features() {
               </p>
             </div>
           </div>
-        </div>
+        </motion.div>
       </div>
     </section>
   );
