@@ -1,0 +1,578 @@
+openapi: 3.1.0
+info:
+  title: PlayChale API
+  version: 0.1.0
+  description: |
+    REST contract between the PlayChale web app and its backend.
+
+    The web app's mock backend (`mocks/api/router.ts`) implements this spec today, and the
+    real backend must implement it too. TypeScript mirrors live in `lib/api/types.ts` and
+    `types.ts`. Keep all three in sync until client types are generated from this file.
+
+    Conventions:
+    - JSON bodies, camelCase fields.
+    - Errors always use the `Error` schema with a stable machine-readable `code`.
+    - Lists are cursor-paginated (`Page`): pass `nextCursor` back as `cursor` until it is null.
+    - Auth is an httpOnly session cookie (`pc_session`) set by the auth endpoints.
+servers:
+  - url: /api
+    description: Mock API served by the Next.js app (default when NEXT_PUBLIC_API_URL is unset)
+
+security:
+  - session: []
+
+tags:
+  - name: Auth
+  - name: Me
+  - name: Players
+  - name: Games
+  - name: Results
+
+paths:
+  /auth/session:
+    get:
+      operationId: getSession
+      tags: [Auth]
+      summary: Current session
+      security: []
+      responses:
+        '200':
+          description: 'Signed-in user, or `user: null` when signed out'
+          content: { application/json: { schema: { $ref: '#/components/schemas/Session' } } }
+
+  /auth/signup:
+    post:
+      operationId: signup
+      tags: [Auth]
+      summary: Create an account and start a session
+      security: []
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/Credentials' } } }
+      responses:
+        '201':
+          description: Account created; sets the session cookie
+          headers: { Set-Cookie: { $ref: '#/components/headers/SessionCookie' } }
+          content: { application/json: { schema: { $ref: '#/components/schemas/Session' } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '409':
+          description: '`EMAIL_TAKEN`'
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+
+  /auth/login:
+    post:
+      operationId: login
+      tags: [Auth]
+      summary: Sign in
+      description: The mock accepts any password and signs unknown emails in as the demo player; the real backend returns 401.
+      security: []
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/Credentials' } } }
+      responses:
+        '200':
+          description: Signed in; sets the session cookie
+          headers: { Set-Cookie: { $ref: '#/components/headers/SessionCookie' } }
+          content: { application/json: { schema: { $ref: '#/components/schemas/Session' } } }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+
+  /auth/logout:
+    post:
+      operationId: logout
+      tags: [Auth]
+      summary: End the session
+      responses:
+        '204': { description: Session cleared }
+
+  /me/profile:
+    get:
+      operationId: getMyProfile
+      tags: [Me]
+      summary: The signed-in player's profile
+      responses:
+        '200': { description: Profile, content: { application/json: { schema: { $ref: '#/components/schemas/PlayerProfile' } } } }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/ProfileRequired' }
+    put:
+      operationId: saveMyProfile
+      tags: [Me]
+      summary: Create or update the profile (onboarding)
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/CreateProfileInput' } } }
+      responses:
+        '200': { description: Updated, content: { application/json: { schema: { $ref: '#/components/schemas/PlayerProfile' } } } }
+        '201': { description: Created, content: { application/json: { schema: { $ref: '#/components/schemas/PlayerProfile' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+
+  /me/avatar:
+    put:
+      operationId: updateMyAvatar
+      tags: [Me]
+      summary: Set the avatar URL
+      description: |
+        The mock accepts a data URL. The real backend should issue a presigned upload URL
+        (e.g. `POST /me/avatar/upload-url`) and accept the resulting object URL here.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, required: [avatarUrl], properties: { avatarUrl: { type: string } } }
+      responses:
+        '200': { description: Updated profile, content: { application/json: { schema: { $ref: '#/components/schemas/PlayerProfile' } } } }
+        '403': { $ref: '#/components/responses/ProfileRequired' }
+
+  /me/games:
+    get:
+      operationId: listMyGames
+      tags: [Me]
+      summary: Games the player hosts or has joined
+      responses:
+        '200':
+          description: Hosted and joined games
+          content:
+            application/json:
+              schema:
+                type: object
+                required: [hostedGames, joinedGames]
+                properties:
+                  hostedGames: { type: array, items: { $ref: '#/components/schemas/Game' } }
+                  joinedGames: { type: array, items: { $ref: '#/components/schemas/Game' } }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+
+  /me/stat-approvals:
+    get:
+      operationId: listMyStatApprovals
+      tags: [Me, Results]
+      summary: Stat lines awaiting the player's review
+      responses:
+        '200':
+          description: Pending approvals
+          content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/StatApproval' } } } }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+
+  /players:
+    get:
+      operationId: listPlayers
+      tags: [Players]
+      summary: Player directory
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+      responses:
+        '200':
+          description: A page of players
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Page'
+                  - properties: { items: { type: array, items: { $ref: '#/components/schemas/PlayerProfile' } } }
+
+  /players/{idOrSlug}:
+    get:
+      operationId: getPlayer
+      tags: [Players]
+      summary: A player by id or slug
+      security: []
+      parameters: [{ $ref: '#/components/parameters/IdOrSlug' }]
+      responses:
+        '200': { description: Player, content: { application/json: { schema: { $ref: '#/components/schemas/PlayerProfile' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /games:
+    get:
+      operationId: listGames
+      tags: [Games]
+      summary: Public games
+      description: Private games are never listed; they are reachable by link only.
+      security: []
+      parameters:
+        - $ref: '#/components/parameters/Cursor'
+        - $ref: '#/components/parameters/Limit'
+        - { name: sport, in: query, schema: { type: string }, description: 'Filter by sport; `All` or omitted for every sport' }
+      responses:
+        '200':
+          description: A page of games
+          content:
+            application/json:
+              schema:
+                allOf:
+                  - $ref: '#/components/schemas/Page'
+                  - properties: { items: { type: array, items: { $ref: '#/components/schemas/Game' } } }
+    post:
+      operationId: createGame
+      tags: [Games]
+      summary: Host a game
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/CreateGameInput' } } }
+      responses:
+        '201': { description: Created, content: { application/json: { schema: { $ref: '#/components/schemas/Game' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/ProfileRequired' }
+
+  /games/{idOrSlug}:
+    get:
+      operationId: getGame
+      tags: [Games]
+      summary: A game by id or slug
+      security: []
+      parameters: [{ $ref: '#/components/parameters/IdOrSlug' }]
+      responses:
+        '200': { description: Game, content: { application/json: { schema: { $ref: '#/components/schemas/Game' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /games/{id}/join:
+    post:
+      operationId: joinGame
+      tags: [Games]
+      summary: Join a game
+      description: Idempotent; joining a game you are already in returns the game unchanged.
+      parameters: [{ $ref: '#/components/parameters/GameId' }]
+      responses:
+        '200': { description: Updated game, content: { application/json: { schema: { $ref: '#/components/schemas/Game' } } } }
+        '401': { $ref: '#/components/responses/Unauthenticated' }
+        '403': { $ref: '#/components/responses/ProfileRequired' }
+        '404': { $ref: '#/components/responses/NotFound' }
+        '409':
+          description: '`GAME_FULL`'
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+
+  /games/{id}/complete:
+    post:
+      operationId: completeGame
+      tags: [Games]
+      summary: Mark a game completed (host only)
+      parameters: [{ $ref: '#/components/parameters/GameId' }]
+      responses:
+        '200': { description: Updated game, content: { application/json: { schema: { $ref: '#/components/schemas/Game' } } } }
+        '403': { $ref: '#/components/responses/NotHost' }
+
+  /games/{id}/results:
+    get:
+      operationId: getGameResults
+      tags: [Results]
+      summary: Result, player stat lines and MVP votes for a game
+      security: []
+      parameters: [{ $ref: '#/components/parameters/GameId' }]
+      responses:
+        '200': { description: Results, content: { application/json: { schema: { $ref: '#/components/schemas/GameResultsResponse' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+    put:
+      operationId: submitGameResults
+      tags: [Results]
+      summary: Submit or replace the game result (host only)
+      description: Resets approval status to `pending` and recounts approvals.
+      parameters: [{ $ref: '#/components/parameters/GameId' }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { $ref: '#/components/schemas/SubmitResultsInput' } } }
+      responses:
+        '200': { description: Saved result, content: { application/json: { schema: { $ref: '#/components/schemas/GameResult' } } } }
+        '403': { $ref: '#/components/responses/NotHost' }
+
+  /games/{id}/player-stats:
+    put:
+      operationId: submitPlayerStats
+      tags: [Results]
+      summary: Submit per-player stat lines (host only)
+      description: The host's own line is auto-approved; every other line awaits that player's review.
+      parameters: [{ $ref: '#/components/parameters/GameId' }]
+      requestBody:
+        required: true
+        content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/PlayerStatsInput' } } } }
+      responses:
+        '200': { description: Saved stat lines, content: { application/json: { schema: { type: array, items: { $ref: '#/components/schemas/PlayerGameStat' } } } } }
+        '403': { $ref: '#/components/responses/NotHost' }
+
+  /games/{id}/player-stats/me/approval:
+    put:
+      operationId: reviewMyStats
+      tags: [Results]
+      summary: Approve or reject your own stat line
+      description: The result becomes `approved` once approvals / stat lines ≥ the approval threshold.
+      parameters: [{ $ref: '#/components/parameters/GameId' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, required: [approved], properties: { approved: { type: boolean } } }
+      responses:
+        '200': { description: Updated stat line, content: { application/json: { schema: { $ref: '#/components/schemas/PlayerGameStat' } } } }
+        '404': { $ref: '#/components/responses/NotFound' }
+
+  /games/{id}/mvp-vote:
+    put:
+      operationId: voteMvp
+      tags: [Results]
+      summary: Cast or change your MVP vote (participants only)
+      parameters: [{ $ref: '#/components/parameters/GameId' }]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { type: object, required: [votedForId], properties: { votedForId: { type: string } } }
+      responses:
+        '200': { description: Vote, content: { application/json: { schema: { $ref: '#/components/schemas/MvpVote' } } } }
+        '400': { $ref: '#/components/responses/BadRequest' }
+        '403':
+          description: '`NOT_PARTICIPANT`'
+          content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+
+components:
+  securitySchemes:
+    session:
+      type: apiKey
+      in: cookie
+      name: pc_session
+
+  headers:
+    SessionCookie:
+      description: '`pc_session=<token>; HttpOnly; SameSite=Lax; Path=/; Max-Age=2592000` (Secure in production)'
+      schema: { type: string }
+
+  parameters:
+    Cursor: { name: cursor, in: query, schema: { type: string }, description: '`nextCursor` from the previous page' }
+    Limit: { name: limit, in: query, schema: { type: integer, minimum: 1, maximum: 100 } }
+    IdOrSlug: { name: idOrSlug, in: path, required: true, schema: { type: string } }
+    GameId: { name: id, in: path, required: true, schema: { type: string }, description: Game id or slug }
+
+  responses:
+    BadRequest:
+      description: Invalid input (`INVALID_*` codes)
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    Unauthenticated:
+      description: '`UNAUTHENTICATED`: no valid session'
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    ProfileRequired:
+      description: '`PROFILE_REQUIRED`: signed in but onboarding not finished'
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    NotHost:
+      description: '`NOT_HOST`: only the game host can do this'
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+    NotFound:
+      description: '`*_NOT_FOUND`'
+      content: { application/json: { schema: { $ref: '#/components/schemas/Error' } } }
+
+  schemas:
+    Error:
+      type: object
+      required: [error]
+      properties:
+        error:
+          type: object
+          required: [code, message]
+          properties:
+            code: { type: string, examples: [GAME_FULL] }
+            message: { type: string, description: Human-readable; safe to show to users }
+
+    Page:
+      type: object
+      required: [items, nextCursor]
+      properties:
+        items: { type: array, items: {} }
+        nextCursor: { type: [string, 'null'] }
+
+    AuthUser:
+      type: object
+      required: [id, email]
+      properties:
+        id: { type: string }
+        email: { type: string, format: email }
+
+    Session:
+      type: object
+      required: [user, hasProfile]
+      properties:
+        user: { oneOf: [{ $ref: '#/components/schemas/AuthUser' }, { type: 'null' }] }
+        hasProfile: { type: boolean }
+
+    Credentials:
+      type: object
+      required: [email, password]
+      properties:
+        email: { type: string, format: email }
+        password: { type: string, format: password }
+
+    SportStats:
+      type: object
+      required: [gamesPlayed, winRate, mvps, reliability, rating]
+      additionalProperties: { type: number, description: 'Sport-specific counters, e.g. goals, assists, aces' }
+      properties:
+        gamesPlayed: { type: integer }
+        winRate: { type: string, examples: ['68%'] }
+        mvps: { type: integer }
+        reliability: { type: string, examples: ['98%'] }
+        rating: { type: number }
+
+    PlayerProfile:
+      type: object
+      required: [id, name, avatar, mainSport, attributes, sportStats, stats, bio]
+      properties:
+        id: { type: string }
+        slug: { type: string }
+        name: { type: string }
+        avatar: { type: string }
+        mainSport: { type: string }
+        location: { type: string }
+        bio: { type: string }
+        attributes:
+          type: object
+          properties:
+            pace: { type: integer }
+            shooting: { type: integer }
+            passing: { type: integer }
+            dribbling: { type: integer }
+            defending: { type: integer }
+            physical: { type: integer }
+        sportStats: { type: object, additionalProperties: { $ref: '#/components/schemas/SportStats' } }
+        stats: { $ref: '#/components/schemas/SportStats', description: 'Stats for mainSport' }
+        matchHistory: { type: array, items: { type: object } }
+
+    CreateProfileInput:
+      type: object
+      required: [name, sports, location]
+      properties:
+        name: { type: string }
+        sports: { type: array, minItems: 1, items: { type: string } }
+        level: { type: string }
+        location: { type: string }
+
+    Participant:
+      type: object
+      required: [id, name, avatar]
+      properties:
+        id: { type: string }
+        slug: { type: string }
+        name: { type: string }
+        avatar: { type: string }
+        role: { type: string, examples: [Host, Player] }
+
+    Game:
+      type: object
+      required: [id, sport, title, location, time, date, spotsTotal, spotsTaken, skillLevel, organizer, imageUrl, price, status, visibility]
+      properties:
+        id: { type: string }
+        slug: { type: string }
+        sport: { type: string }
+        title: { type: string }
+        location: { type: string }
+        date: { type: string, description: 'Display date. TODO(backend): switch to an ISO 8601 startsAt timestamp' }
+        time: { type: string }
+        spotsTotal: { type: integer }
+        spotsTaken: { type: integer }
+        skillLevel: { type: string, enum: [Beginner, Intermediate, Competitive, All Levels] }
+        organizer: { type: string }
+        organizerId: { type: string }
+        imageUrl: { type: string }
+        price: { type: string, description: 'TODO(backend): split into amount (minor units) + currency' }
+        status: { type: string, enum: [upcoming, ongoing, completed] }
+        visibility: { type: string, enum: [public, private] }
+        completedAt: { type: string, format: date-time }
+        participants: { type: array, items: { $ref: '#/components/schemas/Participant' } }
+
+    CreateGameInput:
+      type: object
+      required: [title, sport]
+      properties:
+        title: { type: string }
+        sport: { type: string }
+        location: { type: string }
+        date: { type: string }
+        time: { type: string }
+        spotsTotal: { type: integer, minimum: 2 }
+        skillLevel: { type: string, enum: [Beginner, Intermediate, Competitive, All Levels] }
+        price: { type: string }
+        visibility: { type: string, enum: [public, private] }
+        imageUrl: { type: string }
+
+    GameResult:
+      type: object
+      required: [gameId, enteredBy, resultData, status, approvalThreshold, approvalsCount, rejectionsCount]
+      properties:
+        gameId: { type: string }
+        enteredBy: { type: string }
+        resultData: { type: object, additionalProperties: { type: number }, examples: [{ team_a_score: 3, team_b_score: 2 }] }
+        status: { type: string, enum: [pending, approved, disputed] }
+        approvalThreshold: { type: number, minimum: 0, maximum: 1 }
+        approvalsCount: { type: integer }
+        rejectionsCount: { type: integer }
+
+    SubmitResultsInput:
+      type: object
+      required: [resultData, approvalThreshold]
+      properties:
+        resultData: { type: object, additionalProperties: { type: number } }
+        approvalThreshold: { type: number, minimum: 0, maximum: 1 }
+
+    PlayerStatsInput:
+      type: object
+      required: [userId, stats, showedUp]
+      properties:
+        userId: { type: string }
+        stats: { type: object, additionalProperties: { type: [number, boolean] } }
+        showedUp: { type: boolean }
+
+    PlayerGameStat:
+      type: object
+      required: [gameId, userId, stats, showedUp, approvedByPlayer, approvedAt]
+      properties:
+        gameId: { type: string }
+        userId: { type: string }
+        stats: { type: object, additionalProperties: { type: [number, boolean] } }
+        showedUp: { type: boolean }
+        approvedByPlayer: { type: [boolean, 'null'], description: 'null = awaiting review' }
+        approvedAt: { type: [string, 'null'], format: date-time }
+
+    MvpVote:
+      type: object
+      required: [gameId, voterId, votedForId]
+      properties:
+        gameId: { type: string }
+        voterId: { type: string }
+        votedForId: { type: string }
+
+    GameResultsResponse:
+      type: object
+      required: [result, playerStats, mvpVotes]
+      properties:
+        result: { oneOf: [{ $ref: '#/components/schemas/GameResult' }, { type: 'null' }] }
+        playerStats:
+          type: array
+          items:
+            allOf:
+              - $ref: '#/components/schemas/PlayerGameStat'
+              - type: object
+                properties:
+                  player:
+                    oneOf:
+                      - { type: object, properties: { id: { type: string }, name: { type: string }, avatar: { type: string } } }
+                      - { type: 'null' }
+        mvpVotes: { type: array, items: { $ref: '#/components/schemas/MvpVote' } }
+
+    StatApproval:
+      allOf:
+        - $ref: '#/components/schemas/PlayerGameStat'
+        - type: object
+          required: [game, result]
+          properties:
+            game:
+              oneOf:
+                - type: object
+                  properties:
+                    id: { type: string }
+                    slug: { type: string }
+                    title: { type: string }
+                    sport: { type: string }
+                    date: { type: string }
+                    time: { type: string }
+                    imageUrl: { type: string }
+                - { type: 'null' }
+            result:
+              oneOf:
+                - { type: object, properties: { resultData: { type: object }, status: { type: string } } }
+                - { type: 'null' }

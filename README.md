@@ -27,7 +27,7 @@
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
 - **Animations:** Framer Motion
-- **Data:** TanStack Query + Zustand, backed by an in-browser mock backend (`lib/mock/`) until the real API is ready
+- **Data:** Server Components prefetch into TanStack Query; a REST client talks to a built-in mock API until the real backend is ready (see [docs/architecture.md](docs/architecture.md))
 - **Package Manager:** pnpm
 
 ---
@@ -55,34 +55,36 @@ pnpm dev
 
 Open [http://localhost:3000](http://localhost:3000) to view the app.
 
-### Mock data
+### Mock API
 
-There is no backend yet. All data comes from `lib/mock/`:
+There is no backend yet. The app serves a mock implementation of the REST contract ([docs/api/openapi.yaml](docs/api/openapi.yaml)) at `/api`, from `mocks/api/`:
 
 - **Sign in** with any email and password. Unknown emails sign in as the demo player (Marcus J., `demo@playchale.app`), who hosts a game so host-only flows can be tested.
-- **Onboarding** creates a new local account and profile.
-- Changes (created games, joins, results) are saved to `localStorage` under `playchale_mock_db_v1`. Clear that key, or call `resetMockDb()` from `lib/mock/db.ts`, to start from the seed data again.
-- Seed data is built from `constants.tsx` in `lib/mock/seed.ts`.
+- **Onboarding** creates a new account and profile.
+- Data is shared by every browser using the dev server and saved to `.mock-db.json`. Delete that file and restart the server to reseed from `constants.tsx`.
+- `MOCK_API_LATENCY_MS` (default 150) simulates network latency for browser requests.
+- To use a real backend, set `NEXT_PUBLIC_API_URL`. The mock turns itself off.
 
 ---
 
 ## 📁 Project Structure
 
 ```
-playchale/
-├── app/                    # Next.js App Router pages
-│   ├── (app)/              # Protected app routes
-│   │   ├── home/           # Dashboard home
-│   │   ├── discover/       # Game discovery
-│   │   ├── community/      # Community features
-│   │   ├── messages/       # Player messaging
-│   │   └── stats/          # Performance statistics
-│   ├── (marketing)/        # Public landing pages
-│   └── onboarding/         # User onboarding flow
-├── components/             # Reusable UI components
-├── providers/              # React Context providers
-├── types.ts                # TypeScript type definitions
-└── constants.tsx           # App constants and mock data
+playchaleapp/
+├── app/                    # Routes: page.tsx (server: guards, metadata, prefetch) + *-view.tsx (client UI)
+│   ├── (app)/              # App routes (home, discover, community, game, profile, stats, messages, mygames)
+│   ├── (marketing)/        # Landing page
+│   ├── api/[...path]/      # Serves the mock API
+│   ├── login/ onboarding/
+├── features/<domain>/      # queries.ts (keys + query options) and hooks.ts (client hooks)
+├── lib/api/                # Typed REST client, browser/server transports, contract types
+├── lib/query/              # QueryClient + server prefetch helper
+├── lib/auth/               # Server route guards
+├── mocks/api/              # Mock backend (router, store, seed)
+├── components/             # Shared UI components
+├── providers/              # React Query, framer-motion providers
+├── proxy.ts                # Redirects signed-out users away from private routes
+└── docs/                   # Architecture notes and OpenAPI contract
 ```
 
 ---
