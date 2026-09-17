@@ -1,27 +1,18 @@
-'use client';
+import type { Metadata } from 'next';
+import { gamesListQuery } from '@/features/games/queries';
+import { serverApi } from '@/lib/api/server';
+import { Prefetch } from '@/lib/query/prefetch';
+import DiscoverView from './discover-view';
 
-import React from 'react';
-import { motion } from 'framer-motion';
-import DiscoverGames from '@/components/DiscoverGames';
-import { usePlayChale } from '@/providers/PlayChaleProvider';
-
-import { useRouter } from 'next/navigation';
+export const metadata: Metadata = {
+  title: 'Discover Games | PlayChale',
+  description: 'Find pickup games, matches and tournaments near you.',
+};
 
 export default function DiscoverPage() {
-  const { games } = usePlayChale();
-  const router = useRouter();
-
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-    >
-      <DiscoverGames
-        games={games}
-        onOpenGame={(game) => router.push(`/game/${game.slug || game.id}`)}
-        isFullPage
-      />
-    </motion.div>
+    <Prefetch queries={(qc) => [qc.prefetchInfiniteQuery(gamesListQuery(serverApi))]}>
+      <DiscoverView />
+    </Prefetch>
   );
 }

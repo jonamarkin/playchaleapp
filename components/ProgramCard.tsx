@@ -4,7 +4,7 @@ import React from 'react';
 import Image from 'next/image';
 import { Program } from '@/types';
 import { ICONS } from '@/constants';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 
 interface ProgramCardProps {
   program: Program;
@@ -15,7 +15,7 @@ const ProgramCard: React.FC<ProgramCardProps> = ({ program, onClick }) => {
   const isPrimary = program.accentColor === '#C6FF00';
 
   return (
-    <motion.div
+    <m.div
       whileHover={{ y: -10 }}
       onClick={onClick}
       className={`w-[300px] md:w-[400px] h-[580px] md:h-[680px] rounded-[56px] flex flex-col p-8 md:p-12 transition-all duration-500 cursor-pointer shadow-lg hover:shadow-[0_40px_80px_rgba(0,0,0,0.05)] relative overflow-hidden group`}
@@ -63,7 +63,7 @@ const ProgramCard: React.FC<ProgramCardProps> = ({ program, onClick }) => {
           </button>
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 };
 

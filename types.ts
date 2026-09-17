@@ -16,12 +16,12 @@ export interface Game {
   spotsTaken: number;
   skillLevel: 'Beginner' | 'Intermediate' | 'Competitive' | 'All Levels';
   organizer: string;
-  organizer_id?: string;
+  organizerId?: string;
   imageUrl: string;
   price: string;
   status: 'upcoming' | 'ongoing' | 'completed';
   visibility: 'public' | 'private';
-  completed_at?: string;
+  completedAt?: string;
   participants?: Participant[];
   requests?: JoinRequest[];
 }

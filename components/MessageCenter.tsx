@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
 import { ICONS } from '@/constants';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { Message, Game, Challenge } from '@/types';
 
 interface MessageCenterProps {
@@ -179,7 +179,7 @@ const MessageCenter: React.FC<MessageCenterProps> = ({
         <div className={`${mobileView !== 'chat' ? 'hidden md:flex' : 'flex'} flex-1 bg-white/5 border border-white/10 rounded-[40px] md:rounded-[56px] flex flex-col overflow-hidden relative`}>
           <AnimatePresence mode="wait">
             {activeThread ? (
-              <motion.div key={activeThread.user.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col h-full">
+              <m.div key={activeThread.user.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="flex-1 flex flex-col h-full">
                 <div className="p-6 md:p-10 border-b border-white/5 flex justify-between items-center bg-white/5 backdrop-blur-md relative z-10 shrink-0">
                   <div className="flex items-center gap-3 md:gap-5">
                     <button onClick={() => setMobileView('threads')} className="md:hidden p-2 bg-white/5 rounded-full"><ICONS.ChevronRight className="rotate-180" /></button>
@@ -277,7 +277,7 @@ const MessageCenter: React.FC<MessageCenterProps> = ({
                     </button>
                   </div>
                 </div>
-              </motion.div>
+              </m.div>
             ) : (
               <div className="flex-1 flex flex-col items-center justify-center opacity-20 text-center p-8 space-y-6 md:space-y-8">
                 <ICONS.Logo />

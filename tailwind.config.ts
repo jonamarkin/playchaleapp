@@ -5,6 +5,8 @@ const config: Config = {
     './app/**/*.{js,ts,jsx,tsx,mdx}',
     './components/**/*.{js,ts,jsx,tsx,mdx}',
     './providers/**/*.{js,ts,jsx,tsx,mdx}',
+    './features/**/*.{js,ts,jsx,tsx,mdx}',
+    './constants.tsx',
   ],
   theme: {
     container: {
@@ -61,6 +63,11 @@ const config: Config = {
       },
       fontFamily: {
         sans: ['Inter', 'system-ui', 'sans-serif'],
+      },
+      // `fade-in` starts at 1% instead of 0%: Chrome ignores elements first painted at opacity 0
+      // as LCP candidates, so fully transparent entrances make LCP go unreported or late. Visually identical.
+      animationOpacity: {
+        DEFAULT: '0.01',
       },
       animation: {
         float: 'float 6s ease-in-out infinite',

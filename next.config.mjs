@@ -7,6 +7,8 @@ const nextConfig = {
   // next-pwa requires webpack, so we're explicitly acknowledging this
   turbopack: {},
   images: {
+    // Serve modern formats; Next falls back to the original for browsers without support
+    formats: ['image/avif', 'image/webp'],
     // Disable image optimization in development for faster compile times
     unoptimized: process.env.NODE_ENV === 'development',
     remotePatterns: [

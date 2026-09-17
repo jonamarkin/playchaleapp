@@ -1,22 +1,13 @@
-'use client';
-
 import React from 'react';
+import Link from 'next/link';
 import { ICONS } from '@/constants';
-import { motion } from 'framer-motion';
+import BackToTopButton from '@/components/BackToTopButton';
 
-interface FooterProps {
-  onNavigate: (view: any) => void;
-}
-
-const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
-  const scrollToTop = () => {
-    window.scrollTo({ top: 0, behavior: 'smooth' });
-  };
-
+const Footer: React.FC = () => {
   return (
     <footer className="relative bg-black text-white pt-32 pb-12 px-6 md:px-12 overflow-hidden rounded-t-[60px] md:rounded-t-[100px] mt-[-60px] z-20 shadow-[0_-20px_50px_rgba(0,0,0,0.5)]">
       {/* Background Decor */}
-      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[#C6FF00]/5 blur-[120px] rounded-full -mr-20 -mt-20 pointer-events-none opacity-50"></div>
+      <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-[radial-gradient(closest-side,rgba(198,255,0,0.05),transparent)] rounded-full -mr-20 -mt-20 pointer-events-none opacity-50"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 lg:gap-24 mb-24">
@@ -61,7 +52,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   { label: 'Pitch Partners', path: '/discover' }
                 ].map(item => (
                   <li key={item.label}>
-                    <button onClick={() => onNavigate(item.path)} className="text-sm font-black italic uppercase tracking-tight hover:text-[#C6FF00] transition-colors text-left">{item.label}</button>
+                    <Link href={item.path} className="text-sm font-black italic uppercase tracking-tight hover:text-[#C6FF00] transition-colors text-left">{item.label}</Link>
                   </li>
                 ))}
               </ul>
@@ -77,7 +68,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   { label: 'Guidelines', path: '/home' }
                 ].map(item => (
                   <li key={item.label}>
-                    <button onClick={() => onNavigate(item.path)} className="text-sm font-black italic uppercase tracking-tight hover:text-[#C6FF00] transition-colors text-left">{item.label}</button>
+                    <Link href={item.path} className="text-sm font-black italic uppercase tracking-tight hover:text-[#C6FF00] transition-colors text-left">{item.label}</Link>
                   </li>
                 ))}
               </ul>
@@ -92,15 +83,7 @@ const Footer: React.FC<FooterProps> = ({ onNavigate }) => {
                   </button>
                 ))}
               </div>
-              <button
-                onClick={scrollToTop}
-                className="group flex items-center gap-3 text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-white transition-colors"
-              >
-                Back to Top
-                <div className="w-8 h-8 rounded-full border border-white/10 flex items-center justify-center group-hover:bg-[#C6FF00] group-hover:text-black transition-all">
-                  <div className="-rotate-90 scale-75"><ICONS.ChevronRight /></div>
-                </div>
-              </button>
+              <BackToTopButton />
             </div>
           </div>
         </div>

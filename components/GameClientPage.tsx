@@ -2,11 +2,13 @@
 
 import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { usePlayChale } from '@/providers/PlayChaleProvider';
+import { useSession } from '@/features/auth/session';
+import { useUIStore } from '@/hooks/useUIStore';
 import GameDetailView from '@/components/GameDetailView';
 import PostGameModal from '@/components/PostGameModal';
 import { ICONS } from '@/constants';
-import { useGame, useJoinGame, useProfile } from '@/hooks/useData';
+import { useGame, useJoinGame } from '@/features/games/hooks';
+import { useMyProfile } from '@/features/players/hooks';
 
 interface GameClientPageProps {
     slug: string;
@@ -14,33 +16,17 @@ interface GameClientPageProps {
 
 export default function GameClientPage({ slug }: GameClientPageProps) {
     const router = useRouter();
-    const { user, triggerToast } = usePlayChale();
+    const { user, hasProfile } = useSession();
+    const triggerToast = useUIStore((state) => state.triggerToast);
     const { mutate: joinGame } = useJoinGame();
-    const { data: profile } = useProfile(user?.id);
+    const { data: profile } = useMyProfile(hasProfile);
 
-    const { data, isLoading } = useGame(slug);
+    const { data } = useGame(slug);
     const [showPostGameModal, setShowPostGameModal] = useState(false);
 
-    const isHost = !!user && !!data && data.organizer_id === user.id;
-    const isGameComplete = !!data?.completed_at;
+    const isHost = !!user && !!data && data.organizerId === user.id;
+    const isGameComplete = !!data?.completedAt;
     const viewType = isHost ? 'manage' : 'join';
-
-    if (!isLoading && !data) {
-        return (
-            <div className="min-h-screen bg-black flex items-center justify-center text-white">
-                <div className="flex flex-col items-center gap-4 text-center px-6">
-                    <p className="font-black italic uppercase tracking-tighter text-3xl">Game Not Found</p>
-                    <p className="font-black uppercase tracking-widest text-xs opacity-50">This game does not exist or has been removed.</p>
-                    <button
-                        onClick={() => router.push('/discover')}
-                        className="mt-4 bg-[#C6FF00] text-black px-6 py-3 rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all"
-                    >
-                        Discover Games
-                    </button>
-                </div>
-            </div>
-        );
-    }
 
     if (!data) {
         return (
@@ -110,16 +96,18 @@ export default function GameClientPage({ slug }: GameClientPageProps) {
                 data={data}
                 currentUser={profile ?? undefined}
                 onJoin={() => {
-                    if (user && data.id) {
+                    if (!user) {
+                        router.push(`/login?next=${encodeURIComponent(`/game/${slug}`)}`);
+                    } else if (!hasProfile) {
+                        router.push(`/onboarding?next=${encodeURIComponent(`/game/${slug}`)}`);
+                    } else {
                         joinGame(
-                            { gameId: data.id, userId: user.id },
+                            data.id,
                             {
                                 onSuccess: () => triggerToast("JOIN REQUEST SENT!"),
                                 onError: (error) => triggerToast(error.message.toUpperCase()),
                             }
                         );
-                    } else {
-                        router.push('/login');
                     }
                 }}
                 onShare={handleShare}

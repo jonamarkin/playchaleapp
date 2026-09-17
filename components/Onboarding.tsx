@@ -1,27 +1,27 @@
 'use client';
 
 import React, { useState } from 'react';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { ICONS } from '@/constants';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useAuthStore } from '@/lib/mock/auth';
 
-interface OnboardingData {
+export interface OnboardingData {
   name: string;
   sports: string[];
   level: string;
   location: string;
   email: string;
+  password: string;
 }
 
 interface OnboardingProps {
-  onComplete: (data: OnboardingData) => void;
+  /** Rejects with an Error whose message is shown to the user */
+  onComplete: (data: OnboardingData) => Promise<void>;
   onSkip: () => void;
 }
 
 const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
-  const signUp = useAuthStore((state) => state.signUp);
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<{
@@ -69,15 +69,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
     setIsLoading(true);
 
     try {
-      // Mock auth: creates (or resumes) a local account for this email
-      signUp(data.email);
-      onComplete({
-        name: data.name,
-        sports: data.sports,
-        level: data.level,
-        location: data.location,
-        email: data.email
-      });
+      await onComplete(data);
     } catch (error: any) {
       console.error('Signup error:', error);
       alert(error.message || 'Failed to sign up');
@@ -85,18 +77,16 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
     }
   };
 
-  const handleSocialAuth = (provider: 'google' | 'github') => {
-    // Mock auth: social sign-up creates a local account with a placeholder email
+  const handleSocialAuth = async (provider: 'google' | 'github') => {
+    // TODO(backend): real OAuth. For now social sign-up creates an account with a placeholder email.
     setIsLoading(true);
     const email = data.email || `${data.name.replace(/\s+/g, '.').toLowerCase() || 'athlete'}.${Date.now()}@${provider}.mock`;
-    signUp(email);
-    onComplete({
-      name: data.name,
-      sports: data.sports,
-      level: data.level,
-      location: data.location,
-      email
-    });
+    try {
+      await onComplete({ ...data, email, password: crypto.randomUUID() });
+    } catch (error: any) {
+      alert(error.message || 'Failed to sign up');
+      setIsLoading(false);
+    }
   };
 
   // Total steps is now 6 (Sport, Level, Location, Name, Report, Auth)
@@ -106,13 +96,13 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
     <div className="fixed inset-0 z-[150] bg-black text-white flex flex-col overflow-hidden">
       {/* Background Ambience */}
       <div className="absolute inset-0 pointer-events-none opacity-20">
-        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#C6FF00]/10 blur-[150px] rounded-full -mr-40 -mt-40"></div>
-        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/10 blur-[150px] rounded-full -ml-40 -mb-40"></div>
+        <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[radial-gradient(closest-side,rgba(198,255,0,0.10),transparent)] rounded-full -mr-40 -mt-40"></div>
+        <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[radial-gradient(closest-side,rgba(59,130,246,0.10),transparent)] rounded-full -ml-40 -mb-40"></div>
       </div>
 
       {/* Progress Bar */}
       <div className="absolute top-0 left-0 right-0 h-1.5 bg-white/5 flex z-50">
-        <motion.div
+        <m.div
           className="h-full bg-[#C6FF00] shadow-[0_0_20px_#C6FF00]"
           initial={{ width: '0%' }}
           animate={{ width: `${(step / TOTAL_STEPS) * 100}%` }}
@@ -157,7 +147,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
         <div className="max-w-6xl mx-auto flex flex-col items-center justify-center min-h-full">
           <AnimatePresence mode="wait">
             {step === 1 && (
-              <motion.div
+              <m.div
                 key="step1"
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -200,11 +190,11 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                     Confirm Selection ({data.sports.length})
                   </Button>
                 </div>
-              </motion.div>
+              </m.div>
             )}
 
             {step === 2 && (
-              <motion.div
+              <m.div
                 key="step2"
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -229,11 +219,11 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                     </button>
                   ))}
                 </div>
-              </motion.div>
+              </m.div>
             )}
 
             {step === 3 && (
-              <motion.div
+              <m.div
                 key="step3"
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -263,11 +253,11 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                   </div>
                   <p className="mt-6 text-[10px] font-black uppercase tracking-[0.3em] text-white/20">Press enter to lock region</p>
                 </div>
-              </motion.div>
+              </m.div>
             )}
 
             {step === 4 && (
-              <motion.div
+              <m.div
                 key="step4"
                 initial={{ opacity: 0, y: 40 }}
                 animate={{ opacity: 1, y: 0 }}
@@ -300,11 +290,11 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                   </div>
                   <p className="mt-6 text-[10px] font-black uppercase tracking-[0.3em] text-white/20">This is how you'll be known in the Arena</p>
                 </div>
-              </motion.div>
+              </m.div>
             )}
 
             {step === 5 && (
-              <motion.div
+              <m.div
                 key="step5"
                 initial={{ opacity: 0, scale: 0.9 }}
                 animate={{ opacity: 1, scale: 1 }}
@@ -339,11 +329,11 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                 <div className="flex flex-col md:flex-row items-center justify-center gap-6 pt-6 md:pt-10">
                   <Button onClick={nextStep} className="w-full md:w-auto h-auto bg-[#C6FF00] text-black px-12 py-5 md:py-6 rounded-full font-black uppercase tracking-widest text-[10px] md:text-[11px] shadow-2xl shadow-lime-500/20 hover:scale-105 hover:bg-[#b0ff00] transition-all">Sign Athlete Contract</Button>
                 </div>
-              </motion.div>
+              </m.div>
             )}
 
             {step === 6 && (
-              <motion.div
+              <m.div
                 key="step6"
                 initial={{ opacity: 0, x: 100 }}
                 animate={{ opacity: 1, x: 0 }}
@@ -430,7 +420,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                     </div>
                   </div>
                 )}
-              </motion.div>
+              </m.div>
             )}
           </AnimatePresence>
         </div>

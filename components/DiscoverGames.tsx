@@ -4,7 +4,7 @@ import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
 import { ICONS } from '@/constants';
 import GameCard from '@/components/GameCard';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { Game } from '@/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
@@ -142,13 +142,13 @@ const CalendarView = ({ games, onSelectDate, selectedDate }: { games: Game[], on
 };
 
 import { useRouter } from 'next/navigation';
-import { usePlayChale } from '@/providers/PlayChaleProvider';
+import { useSession } from '@/features/auth/session';
 
 // ... existing code ...
 
 const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage = false }) => {
   const router = useRouter();
-  const { user } = usePlayChale();
+  const { user } = useSession();
   const [filter, setFilter] = useState('All');
   const [search, setSearch] = useState('');
   const [priceFilter, setPriceFilter] = useState<'All' | 'Free' | 'Paid'>('All');
@@ -198,15 +198,10 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
         {isFullPage ? (
           <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-10 md:mb-16 gap-8">
             <div className="space-y-6 md:space-y-8 max-w-full lg:max-w-4xl w-full">
-              <motion.div
-                initial={{ opacity: 0, x: -20 }}
-                whileInView={{ opacity: 1, x: 0 }}
-                viewport={{ once: true }}
-                className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.5em] text-black/50"
-              >
+              <div className="animate-in fade-in slide-in-from-left-5 [animation-duration:400ms] inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.5em] text-black/50">
                 <span className="w-2 h-2 rounded-full bg-[#C6FF00] shadow-[0_0_10px_#C6FF00]"></span>
                 GAME ARENA
-              </motion.div>
+              </div>
               <h2 className="font-black text-black leading-[0.85] md:leading-[0.8] tracking-tighter italic text-5xl sm:text-7xl md:text-[9rem]">
                 Find Your <br className="hidden md:block" /> Perfect Match.
               </h2>
@@ -309,7 +304,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
               <div className="space-y-4 max-h-[700px] overflow-y-auto pr-2 hide-scrollbar">
                 <AnimatePresence mode="popLayout">
                   {filteredGames.map((game) => (
-                    <motion.div
+                    <m.div
                       key={game.id}
                       initial={{ opacity: 0, x: 20 }}
                       animate={{ opacity: 1, x: 0 }}
@@ -329,7 +324,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
                           <div className="flex items-center gap-1"><ICONS.MapPin /> {game.location.split(' ').slice(0, 2).join(' ')}</div>
                         </div>
                       </div>
-                    </motion.div>
+                    </m.div>
                   ))}
                 </AnimatePresence>
                 {filteredGames.length === 0 && (
@@ -339,13 +334,13 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
             </div>
           </div>
         ) : (
-          <motion.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
+          <m.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
             <AnimatePresence mode="popLayout">
-              {filteredGames.map((game) => (
-                <GameCard key={game.id} game={game} onClick={() => onOpenGame(game)} />
+              {filteredGames.map((game, index) => (
+                <GameCard key={game.id} game={game} priority={isFullPage && index < 2} onClick={() => onOpenGame(game)} />
               ))}
             </AnimatePresence>
-          </motion.div>
+          </m.div>
         )}
 
         {filteredGames.length === 0 && (

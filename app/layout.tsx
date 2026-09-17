@@ -1,7 +1,10 @@
 import type { Metadata, Viewport } from 'next';
 import { Inter } from 'next/font/google';
 import './globals.css';
-import { PlayChaleProvider } from '@/providers/PlayChaleProvider';
+import { QueryProvider } from '@/providers/QueryProvider';
+import { MotionProvider } from '@/providers/MotionProvider';
+import { SessionProvider } from '@/features/auth/session';
+import { getSession } from '@/lib/api/server';
 
 const inter = Inter({
   subsets: ['latin'],
@@ -41,23 +44,21 @@ export const viewport: Viewport = {
   userScalable: false,
 };
 
-
-import { QueryProvider } from '@/providers/QueryProvider';
-
-// ...
-
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const session = await getSession();
+
   return (
-    <html lang="en" className={inter.variable}>
+    // data-scroll-behavior lets Next disable smooth scrolling during route changes
+    <html lang="en" className={inter.variable} data-scroll-behavior="smooth">
       <body className="font-sans">
         <QueryProvider>
-          <PlayChaleProvider>
-            {children}
-          </PlayChaleProvider>
+          <SessionProvider session={session}>
+            <MotionProvider>{children}</MotionProvider>
+          </SessionProvider>
         </QueryProvider>
       </body>
     </html>

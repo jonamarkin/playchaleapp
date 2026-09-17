@@ -4,19 +4,21 @@ import React from 'react';
 import Image from 'next/image';
 import { Game } from '@/types';
 import { ICONS } from '@/constants';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 
 interface GameCardProps {
   game: Game;
   onClick: () => void;
+  /** Load the cover eagerly; set for cards visible on first paint (LCP candidates) */
+  priority?: boolean;
 }
 
-const GameCard: React.FC<GameCardProps> = ({ game, onClick }) => {
+const GameCard: React.FC<GameCardProps> = ({ game, onClick, priority = false }) => {
   const isFull = game.spotsTaken === game.spotsTotal;
   const fillPercentage = (game.spotsTaken / game.spotsTotal) * 100;
 
   return (
-    <motion.div
+    <m.div
       layout
       onClick={onClick}
       className="touch-card touch-target group bg-white hover:bg-black rounded-[48px] p-6 flex flex-col cursor-pointer transition-all duration-500 hover:shadow-[0_60px_120px_rgba(0,0,0,0.25)] border border-black/5 hover:border-white/10 relative overflow-hidden h-full min-h-[620px]"
@@ -27,6 +29,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick }) => {
           src={game.imageUrl}
           alt={game.title}
           fill
+          priority={priority}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
           className="object-cover group-hover:scale-110 transition-transform duration-[1.5s] ease-out"
         />
@@ -80,7 +83,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick }) => {
               </span>
             </div>
             <div className="h-3 w-full bg-gray-100 group-hover:bg-white/5 rounded-full overflow-hidden transition-colors">
-              <motion.div
+              <m.div
                 initial={{ width: 0 }}
                 whileInView={{ width: `${fillPercentage}%` }}
                 className={`h-full transition-all duration-1000 ${fillPercentage > 85 ? 'bg-red-500' : 'bg-black group-hover:bg-[#C6FF00]'}`}
@@ -111,7 +114,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick }) => {
           </div>
         </div>
       </div>
-    </motion.div>
+    </m.div>
   );
 };
 

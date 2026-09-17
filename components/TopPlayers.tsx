@@ -3,7 +3,7 @@
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
 import { ICONS } from '@/constants';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { PlayerProfile } from '@/types';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -48,15 +48,15 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
     <section className={`relative overflow-hidden ${isFullPage ? 'bg-[#FDFDFB] pt-24 sm:pt-32 md:pt-40 pb-20 sm:pb-32 md:pb-40' : 'py-20 sm:py-24 md:py-32 bg-black text-white rounded-[40px] sm:rounded-[60px] md:rounded-[120px] mx-2 md:mx-10 mb-20 shadow-2xl'}`}>
       {!isFullPage && (
         <>
-          <div className="absolute top-0 right-0 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-[#C6FF00]/10 blur-[80px] sm:blur-[120px] rounded-full -mr-20 sm:-mr-40 -mt-20 sm:-mt-40 pointer-events-none opacity-50"></div>
-          <div className="absolute bottom-0 left-0 w-[200px] sm:w-[400px] h-[200px] sm:h-[400px] bg-blue-500/5 blur-[60px] sm:blur-[100px] rounded-full -ml-10 sm:-ml-20 -mb-10 sm:-mb-20 pointer-events-none"></div>
+          <div className="absolute top-0 right-0 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-[radial-gradient(closest-side,rgba(198,255,0,0.10),transparent)] rounded-full -mr-20 sm:-mr-40 -mt-20 sm:-mt-40 pointer-events-none opacity-50"></div>
+          <div className="absolute bottom-0 left-0 w-[200px] sm:w-[400px] h-[200px] sm:h-[400px] bg-[radial-gradient(closest-side,rgba(59,130,246,0.05),transparent)] rounded-full -ml-10 sm:-ml-20 -mb-10 sm:-mb-20 pointer-events-none"></div>
         </>
       )}
 
       <div className="max-w-7xl mx-auto relative z-10 px-4 md:px-12">
         {/* Header Section */}
         <div className={`text-center space-y-6 md:space-y-10 mb-12 sm:mb-16 md:mb-24 ${isFullPage ? 'text-black' : 'text-white'}`}>
-          <motion.div
+          <m.div
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -64,7 +64,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
           >
             <span className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${isFullPage ? 'bg-black' : 'bg-white animate-pulse'}`}></span>
             {isFullPage ? 'THE COMMUNITY HUB' : 'CITY HALL OF FAME'}
-          </motion.div>
+          </m.div>
 
           <h2 className={`font-black leading-[0.85] tracking-tighter italic uppercase ${isFullPage ? 'text-5xl sm:text-7xl md:text-[9rem] text-black' : 'text-5xl sm:text-7xl md:text-9xl text-white'}`}>
             Built for <br className="hidden md:block" /> Glory.
@@ -129,7 +129,8 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
 
         {/* Players Grid with the "Black-out" hover effect */}
         <div className={`grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-3 gap-4 md:gap-6 ${isFullPage ? 'w-full' : ''}`}>
-          <AnimatePresence mode="popLayout">
+          {/* initial={false}: cards present on first render are visible immediately (server-rendered); filter changes still animate */}
+          <AnimatePresence mode="popLayout" initial={false}>
             {filteredPlayers.map((player, idx) => {
               const previewStat = getPreviewStat(player);
               const isEven = idx % 2 === 0;
@@ -167,7 +168,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
               }
 
               return (
-                <motion.div
+                <m.div
                   key={player.id}
                   layout
                   initial={{ opacity: 0, y: 20 }}
@@ -193,6 +194,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                           alt={player.name}
                           width={192}
                           height={192}
+                          priority={isFullPage && idx < 2}
                           className="w-24 h-24 sm:w-36 sm:h-36 md:w-48 md:h-48 rounded-full object-cover border-[6px] sm:border-[8px] border-black/5 group-hover:border-[#C6FF00] transition-all duration-500 shadow-2xl"
                         />
                         <div className="absolute -bottom-2 -right-2 bg-[#C6FF00] text-black w-9 h-9 sm:w-14 sm:h-14 rounded-full flex items-center justify-center font-black text-base sm:text-2xl shadow-2xl border-4 border-black group-hover:scale-110 transition-transform">
@@ -253,14 +255,14 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
               );
             })}
           </AnimatePresence>
         </div>
 
         {!isFullPage && (
-          <motion.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-16 sm:mt-24 md:mt-32 text-center">
+          <m.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-16 sm:mt-24 md:mt-32 text-center">
             <button
               onClick={onViewAll}
               className="touch-scale-sm touch-target bg-white text-black px-8 sm:px-12 md:px-20 py-6 md:py-8 rounded-full font-black uppercase tracking-[0.2em] text-[10px] md:text-[11px] hover:bg-[#C6FF00] hover:text-black transition-all shadow-2xl flex items-center gap-3 sm:gap-5 mx-auto"
@@ -268,7 +270,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
               View Full City Rankings
               <div className="bg-black text-[#C6FF00] p-2 rounded-full"><ICONS.ChevronRight /></div>
             </button>
-          </motion.div>
+          </m.div>
         )}
       </div>
     </section>

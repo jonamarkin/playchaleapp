@@ -65,3 +65,6 @@ Desktop.ini
 # Misc
 *.cache
 .eslintcache
+
+# Mock API data (delete to reseed)
+.mock-db.json

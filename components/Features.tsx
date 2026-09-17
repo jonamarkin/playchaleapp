@@ -2,7 +2,7 @@
 
 import React, { useState, useRef, useEffect } from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 
 const IconUsers = () => (
   <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>
@@ -108,7 +108,7 @@ export function Features() {
 
       <div className="relative z-10 px-4 md:px-12 max-w-7xl mx-auto">
         <div className="flex flex-col lg:flex-row items-end justify-between mb-16 md:mb-28 gap-8">
-          <motion.div
+          <m.div
             initial={{ opacity: 0, x: -30 }}
             whileInView={{ opacity: 1, x: 0 }}
             viewport={{ once: true }}
@@ -121,8 +121,8 @@ export function Features() {
             <h2 className="text-5xl md:text-8xl font-black tracking-tighter italic leading-[0.85] uppercase text-black">
               Everything <br /> you need to <span className="text-[#C6FF00] bg-black px-4 inline-block transform -rotate-1">Win.</span>
             </h2>
-          </motion.div>
-          <motion.p
+          </m.div>
+          <m.p
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
@@ -130,7 +130,7 @@ export function Features() {
             className="text-lg md:text-xl text-black/40 font-bold max-w-md tracking-tight leading-tight lg:text-right"
           >
             Stop settling for casual. PlayChale gives you the pro tools to organize, compete, and climb the local ranks.
-          </motion.p>
+          </m.p>
         </div>
 
         {/* Features Scroll Area */}
@@ -139,7 +139,7 @@ export function Features() {
           className="flex lg:grid lg:grid-cols-3 gap-6 md:gap-10 overflow-x-auto lg:overflow-visible pb-12 lg:pb-0 hide-scrollbar snap-x snap-mandatory lg:snap-none"
         >
           {features.map((feature, index) => (
-            <motion.div
+            <m.div
               key={index}
               initial={{ y: 40, opacity: 0 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -151,7 +151,7 @@ export function Features() {
               className="min-w-[300px] lg:min-w-0 bg-white hover:bg-black border border-black/5 hover:border-white/10 rounded-[48px] p-10 flex flex-col transition-all duration-500 snap-center relative group"
             >
               {/* Highlight bar on hover */}
-              <motion.div
+              <m.div
                 className="absolute top-0 left-10 right-10 h-1 bg-[#C6FF00] rounded-b-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500"
               />
 
@@ -183,12 +183,12 @@ export function Features() {
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                 </div>
               </div>
-            </motion.div>
+            </m.div>
           ))}
         </div>
 
         {/* Bottom Call to Action */}
-        <motion.div
+        <m.div
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -206,7 +206,7 @@ export function Features() {
               </p>
             </div>
           </div>
-        </motion.div>
+        </m.div>
       </div>
     </section>
   );

@@ -2,13 +2,13 @@
 
 import React, { useState, useEffect } from 'react';
 import { ICONS, DEFAULT_SPORT_IMAGES, CURRENCIES } from '@/constants';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { Game, PlayerProfile, Challenge, Participant, JoinRequest, MatchRecord } from '@/types';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Button } from '@/components/ui/button';
 import ImageUpload from '@/components/ImageUpload';
-import { usePlayChale } from '@/providers/PlayChaleProvider';
+import { useAvatarUploader } from '@/features/players/hooks';
 import { format } from "date-fns"
 import { Calendar as CalendarIcon } from "lucide-react"
 import { cn } from "@/lib/utils"
@@ -65,7 +65,7 @@ const ProSelect = ({ value, onChange, options, label, iconMap }: { value: string
         {isOpen && (
           <>
             <div className="fixed inset-0 z-[210]" onClick={() => setIsOpen(false)} />
-            <motion.div
+            <m.div
               initial={{ opacity: 0, y: 10, scale: 0.95 }}
               animate={{ opacity: 1, y: 0, scale: 1 }}
               exit={{ opacity: 0, y: 10, scale: 0.95 }}
@@ -93,7 +93,7 @@ const ProSelect = ({ value, onChange, options, label, iconMap }: { value: string
                   </button>
                 ))}
               </div>
-            </motion.div>
+            </m.div>
           </>
         )}
       </AnimatePresence>
@@ -104,7 +104,7 @@ const ProSelect = ({ value, onChange, options, label, iconMap }: { value: string
 const GameModal: React.FC<ModalProps> = ({
   type: initialType, item: initialItem, onClose, onJoin, onCreate, onUpdateStats, onUpdateProfile, onOpenContact, onSendMessage, onSendChallenge, onUpdateGame, onManageRequest, onRemoveParticipant, onShareMatch, onShareProfile
 }) => {
-  const { uploadAvatar } = usePlayChale();
+  const uploadAvatar = useAvatarUploader();
   const [loading, setLoading] = useState(false);
   const [step, setStep] = useState(1);
   const [date, setDate] = useState<Date | undefined>(new Date());
@@ -275,9 +275,9 @@ const GameModal: React.FC<ModalProps> = ({
 
   return (
     <div className="fixed inset-0 z-[200] flex items-center justify-center p-4">
-      <motion.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-black/95 backdrop-blur-2xl" />
+      <m.div initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} onClick={onClose} className="absolute inset-0 bg-black/95 backdrop-blur-2xl" />
 
-      <motion.div
+      <m.div
         initial={{ scale: 0.9, opacity: 0, y: 30 }}
         animate={{ scale: 1, opacity: 1, y: 0 }}
         exit={{ scale: 0.9, opacity: 0, y: 30 }}
@@ -293,7 +293,7 @@ const GameModal: React.FC<ModalProps> = ({
         </div>
 
         {step === 2 ? (
-          <motion.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="py-12 text-center space-y-6">
+          <m.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="py-12 text-center space-y-6">
             <div className="w-20 h-20 md:w-24 md:h-24 bg-[#C6FF00] rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-lime-500/20">
               {/* Fix: removed invalid md:width and md:height props and use className instead */}
               <svg viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 md:w-10 md:h-10"><polyline points="20 6 9 17 4 12" /></svg>
@@ -304,7 +304,7 @@ const GameModal: React.FC<ModalProps> = ({
             <p className={`${isDarkTheme ? 'text-white/60' : 'text-black/60'} font-black uppercase tracking-[0.2em] text-[9px] md:text-[10px]`}>
               {type === 'challenge' ? 'Wait for the opponent to accept.' : 'Action complete.'}
             </p>
-          </motion.div>
+          </m.div>
         ) : (
           <div className="space-y-6 md:space-y-8">
             <div className="space-y-2">
@@ -324,7 +324,7 @@ const GameModal: React.FC<ModalProps> = ({
             <AnimatePresence mode="wait">
               {/* Post-Match Report View (Rich Details for History) */}
               {type === 'match-detail' && completedMatch && (
-                <motion.div key="post-match" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-10">
+                <m.div key="post-match" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-10">
                   <div className="relative h-64 md:h-80 rounded-[40px] overflow-hidden">
                     <img src={completedMatch.imageUrl} className="w-full h-full object-cover" />
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
@@ -397,12 +397,12 @@ const GameModal: React.FC<ModalProps> = ({
                   <div className="pt-8 border-t border-white/10">
                     <button onClick={onClose} className="w-full bg-white text-black py-5 rounded-full font-black uppercase tracking-widest text-[11px] hover:bg-[#C6FF00] transition-all">Close Report</button>
                   </div>
-                </motion.div>
+                </m.div>
               )}
 
               {/* Edit Profile View */}
               {type === 'edit-profile' && player && (
-                <motion.form key="edit-profile" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} onSubmit={handleProfileSubmit} className="space-y-8">
+                <m.form key="edit-profile" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} onSubmit={handleProfileSubmit} className="space-y-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-4">Full Name</label>
@@ -448,12 +448,12 @@ const GameModal: React.FC<ModalProps> = ({
                   <Button type="submit" disabled={loading} className="w-full h-auto bg-[#C6FF00] text-black py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] transition-all flex items-center justify-center gap-4 shadow-2xl hover:bg-[#b0ff00]">
                     {loading ? 'Saving...' : 'Update Profile'}
                   </Button>
-                </motion.form>
+                </m.form>
               )}
 
               {/* Edit Stats View */}
               {type === 'stats' && player && (
-                <motion.form key="edit-stats" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} onSubmit={handleStatsSubmit} className="space-y-12">
+                <m.form key="edit-stats" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} onSubmit={handleStatsSubmit} className="space-y-12">
                   <div className="space-y-6">
                     <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 px-2">Technical Attributes</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-6 bg-white/5 p-8 rounded-[40px] border border-white/10">
@@ -521,12 +521,12 @@ const GameModal: React.FC<ModalProps> = ({
                   <button type="submit" disabled={loading} className="w-full bg-[#C6FF00] text-black py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] transition-all flex items-center justify-center gap-4 shadow-2xl">
                     {loading ? 'Saving...' : 'Update Pro Stats'}
                   </button>
-                </motion.form>
+                </m.form>
               )}
 
               {/* Share Profile View */}
               {type === 'share-profile' && player && (
-                <motion.div key="share-profile" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="space-y-8">
+                <m.div key="share-profile" initial={{ opacity: 0, scale: 0.9 }} animate={{ opacity: 1, scale: 1 }} className="space-y-8">
                   <div className="relative aspect-[3/4] max-w-[340px] mx-auto bg-zinc-900 rounded-[48px] overflow-hidden border border-white/10 shadow-2xl p-8 flex flex-col items-center text-center space-y-6">
                     <div className="absolute top-0 right-0 p-8 opacity-10">
                       <ICONS.Logo />
@@ -565,12 +565,12 @@ const GameModal: React.FC<ModalProps> = ({
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
                     Copy Pro Profile Link
                   </button>
-                </motion.div>
+                </m.div>
               )}
 
               {/* Create Game View */}
               {type === 'create' && (
-                <motion.form key="create-view" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} onSubmit={handleCreateSubmit} className="space-y-8">
+                <m.form key="create-view" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} onSubmit={handleCreateSubmit} className="space-y-8">
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     <div className="space-y-2">
                       <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-4">Discipline</label>
@@ -755,12 +755,12 @@ const GameModal: React.FC<ModalProps> = ({
                       {loading ? 'Publishing...' : 'Publish Match to Feed'}
                     </Button>
                   </div>
-                </motion.form>
+                </m.form>
               )}
 
               {/* Organizer Management View */}
               {type === 'manage-game' && game && (
-                <motion.div key="manage-view" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-10">
+                <m.div key="manage-view" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-10">
 
                   {isEditing ? (
                     <form onSubmit={handleUpdateMatch} className="space-y-6 bg-white/5 p-8 rounded-[40px] border border-white/10">
@@ -816,7 +816,7 @@ const GameModal: React.FC<ModalProps> = ({
                       </div>
                       <div className="space-y-3">
                         {game.requests?.map((req: JoinRequest) => (
-                          <motion.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} key={req.id} className="bg-white/5 p-5 rounded-[28px] border border-white/10 flex items-center justify-between group">
+                          <m.div initial={{ opacity: 0, x: -10 }} animate={{ opacity: 1, x: 0 }} key={req.id} className="bg-white/5 p-5 rounded-[28px] border border-white/10 flex items-center justify-between group">
                             <div className="flex items-center gap-4">
                               <img src={req.avatar} className="w-10 h-10 rounded-full border border-white/20" />
                               <div>
@@ -828,7 +828,7 @@ const GameModal: React.FC<ModalProps> = ({
                               <button onClick={() => onManageRequest?.(game.id, req.id, true)} className="w-9 h-9 bg-[#C6FF00] text-black rounded-full flex items-center justify-center hover:scale-110 transition-all shadow-lg"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg></button>
                               <button onClick={() => onManageRequest?.(game.id, req.id, false)} className="w-9 h-9 bg-white/10 text-white rounded-full flex items-center justify-center hover:bg-red-500 transition-all"><ICONS.X /></button>
                             </div>
-                          </motion.div>
+                          </m.div>
                         ))}
                         {(!game.requests || game.requests.length === 0) && (
                           <div className="py-12 bg-white/5 rounded-[28px] border border-dashed border-white/10 text-center text-[10px] font-black uppercase tracking-widest text-white/20">No pending requests</div>
@@ -862,12 +862,12 @@ const GameModal: React.FC<ModalProps> = ({
                       </div>
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
               )}
 
               {/* Game Join View (Upcoming Matches) */}
               {type === 'join' && game && (
-                <motion.div key="game-view" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+                <m.div key="game-view" initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
                   <div className="relative h-48 md:h-64 rounded-[32px] overflow-hidden">
                     <img src={game.imageUrl} className="w-full h-full object-cover" alt={game.title} />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
@@ -959,12 +959,12 @@ const GameModal: React.FC<ModalProps> = ({
                       {loading ? 'Processing...' : ((game.spotsTaken || 0) >= (game.spotsTotal || 1) ? 'Match Full' : 'Join This Match')}
                     </button>
                   </div>
-                </motion.div>
+                </m.div>
               )}
 
               {/* Contact Organizer View */}
               {type === 'contact-organizer' && game && (
-                <motion.div key="contact-view" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
+                <m.div key="contact-view" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
                   <p className="text-white/60 font-bold leading-relaxed">Sending a message to <span className="text-white">{game.organizer || 'Host'}</span> regarding <span className="text-[#C6FF00]">{game.title}</span>.</p>
                   <form onSubmit={handleContactSubmit} className="space-y-6">
                     <div className="space-y-2">
@@ -981,12 +981,12 @@ const GameModal: React.FC<ModalProps> = ({
                       {loading ? 'Sending...' : 'Send Message to Host'}
                     </button>
                   </form>
-                </motion.div>
+                </m.div>
               )}
 
               {/* Player Profile View */}
               {type === 'profile' && player && (
-                <motion.div key="profile" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8 md:space-y-10">
+                <m.div key="profile" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8 md:space-y-10">
                   <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-start">
                     <img src={player.avatar} className="w-28 h-28 md:w-32 md:h-32 rounded-full border-4 border-[#C6FF00]" />
                     <div className="flex-1 space-y-4 text-center md:text-left">
@@ -1014,12 +1014,12 @@ const GameModal: React.FC<ModalProps> = ({
                       Issue Challenge
                     </button>
                   </div>
-                </motion.div>
+                </m.div>
               )}
 
               {/* Detailed Stats View */}
               {type === 'detailed-stats' && player && (
-                <motion.div key="detailed-stats" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8 md:space-y-10">
+                <m.div key="detailed-stats" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8 md:space-y-10">
                   <div className="space-y-4">
                     <h4 className="text-white font-black italic uppercase tracking-tighter text-xl">Technical Profile</h4>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-4 bg-white/5 p-6 md:p-8 rounded-[32px] md:rounded-[40px] border border-white/5">
@@ -1030,7 +1030,7 @@ const GameModal: React.FC<ModalProps> = ({
                             <span className="text-sm font-black text-[#C6FF00]">{val}</span>
                           </div>
                           <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
-                            <motion.div
+                            <m.div
                               initial={{ width: 0 }}
                               animate={{ width: `${val}%` }}
                               transition={{ duration: 1, delay: 0.2 }}
@@ -1078,12 +1078,12 @@ const GameModal: React.FC<ModalProps> = ({
                       ))}
                     </div>
                   </div>
-                </motion.div>
+                </m.div>
               )}
 
               {/* Challenge Form View */}
               {type === 'challenge' && player && (
-                <motion.form key="challenge" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -20 }} onSubmit={handleChallengeSubmit} className="space-y-6">
+                <m.form key="challenge" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0, x: -20 }} onSubmit={handleChallengeSubmit} className="space-y-6">
                   <div className="grid grid-cols-2 gap-4">
                     <ProSelect
                       label="Discipline"
@@ -1111,12 +1111,12 @@ const GameModal: React.FC<ModalProps> = ({
                   <button disabled={loading} className="w-full bg-[#C6FF00] text-black py-5 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] transition-all flex items-center justify-center gap-4 shadow-xl">
                     {loading ? 'Issuing...' : 'Send Challenge Request'}
                   </button>
-                </motion.form>
+                </m.form>
               )}
             </AnimatePresence>
           </div>
         )}
-      </motion.div>
+      </m.div>
     </div>
   );
 };

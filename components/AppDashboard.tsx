@@ -3,7 +3,7 @@
 import React from 'react';
 import Image from 'next/image';
 import { ICONS } from '@/constants';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 import { PlayerProfile, Game } from '@/types';
 
 interface AppDashboardProps {
@@ -22,28 +22,20 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
         {/* Welcome Header */}
         <header className="flex flex-col gap-6 sm:gap-8">
           <div className="space-y-3 sm:space-y-4">
-            <motion.div
-              initial={{ opacity: 0, x: -20 }}
-              animate={{ opacity: 1, x: 0 }}
-              className="inline-flex items-center gap-2 sm:gap-3 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] sm:tracking-[0.4em] text-black/30"
+            <div
+              className="animate-in fade-in slide-in-from-left-5 [animation-duration:400ms] inline-flex items-center gap-2 sm:gap-3 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.3em] sm:tracking-[0.4em] text-black/30"
             >
               <span className="w-1 h-1 sm:w-1.5 sm:h-1.5 rounded-full bg-black"></span>
               Athlete Command Center
-            </motion.div>
-            <motion.h1
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.1 }}
-              className="text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-black italic tracking-tighter uppercase leading-[0.85]"
+            </div>
+            <h1
+              className="animate-in fade-in slide-in-from-bottom-5 [animation-duration:400ms] [animation-delay:100ms] fill-mode-both text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-black italic tracking-tighter uppercase leading-[0.85]"
             >
               Welcome back, <br /> <span className="text-[#C6FF00] bg-black px-3 sm:px-5 inline-block -rotate-1 shadow-2xl">{player.name.split(' ')[0]}</span>
-            </motion.h1>
+            </h1>
           </div>
-          <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            animate={{ opacity: 1, scale: 1 }}
-            transition={{ delay: 0.3 }}
-            className="bg-black text-white p-5 sm:p-6 md:p-8 rounded-[32px] sm:rounded-[40px] flex items-center gap-5 sm:gap-8 shadow-2xl relative overflow-hidden w-fit"
+          <div
+            className="animate-in fade-in zoom-in-90 [animation-duration:400ms] [animation-delay:300ms] fill-mode-both bg-black text-white p-5 sm:p-6 md:p-8 rounded-[32px] sm:rounded-[40px] flex items-center gap-5 sm:gap-8 shadow-2xl relative overflow-hidden w-fit"
           >
             <div className="absolute top-0 right-0 p-4 sm:p-6 opacity-5 rotate-12"><ICONS.Logo /></div>
             <div className="text-right">
@@ -53,18 +45,15 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#C6FF00] text-black flex items-center justify-center font-black shadow-xl">
               <ICONS.UpArrow />
             </div>
-          </motion.div>
+          </div>
         </header>
 
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 sm:gap-10 md:gap-14">
           {/* Main Feed */}
           <div className="lg:col-span-8 space-y-8 sm:space-y-10 md:space-y-12">
             {/* Spotlight Match */}
-            <motion.div
-              initial={{ opacity: 0, y: 30 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 0.2 }}
-              className="relative aspect-[4/3] sm:aspect-video md:aspect-[21/9] rounded-[32px] sm:rounded-[48px] md:rounded-[56px] overflow-hidden group cursor-pointer shadow-2xl border-2 sm:border-4 border-black/5"
+            <div
+              className="animate-in fade-in slide-in-from-bottom-[30px] [animation-duration:400ms] [animation-delay:200ms] fill-mode-both relative aspect-[4/3] sm:aspect-video md:aspect-[21/9] rounded-[32px] sm:rounded-[48px] md:rounded-[56px] overflow-hidden group cursor-pointer shadow-2xl border-2 sm:border-4 border-black/5"
               onClick={() => onViewMatch(upcomingGames[0])}
             >
               <Image
@@ -83,7 +72,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
                   <div className="flex items-center gap-2 sm:gap-3"><ICONS.MapPin /> {upcomingGames[0].location.split('•')[0]}</div>
                 </div>
               </div>
-            </motion.div>
+            </div>
 
             {/* Quick Actions & Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
@@ -92,7 +81,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
                 { label: 'Season MVPs', value: player.stats.mvps, icon: <ICONS.UpArrow />, bg: "bg-black", textColor: "text-[#C6FF00]", labelColor: "text-white/40", iconColor: "text-[#C6FF00]/30" },
                 { label: 'Match Reliability', value: player.stats.reliability, icon: <ICONS.Clock />, bg: "bg-white", textColor: "text-black", labelColor: "text-black/30", iconColor: "text-black/10" }
               ].map((stat, i) => (
-                <motion.div
+                <m.div
                   key={i}
                   whileHover={{ y: -8 }}
                   className={`${stat.bg} border-2 ${stat.bg === 'bg-black' ? 'border-white/10' : 'border-black/5'} rounded-[32px] sm:rounded-[40px] md:rounded-[44px] p-6 sm:p-8 md:p-10 hover:border-[#C6FF00] transition-all shadow-sm flex flex-col justify-between min-h-[140px] sm:min-h-[160px]`}
@@ -102,7 +91,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
                     <h3 className={`text-3xl sm:text-4xl md:text-5xl font-black italic tracking-tighter leading-none mb-1 ${stat.textColor}`}>{stat.value}</h3>
                     <p className={`text-[9px] sm:text-[10px] font-black uppercase tracking-widest ${stat.labelColor}`}>{stat.label}</p>
                   </div>
-                </motion.div>
+                </m.div>
               ))}
             </div>
 
@@ -114,7 +103,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
               </div>
               <div className="grid grid-cols-1 gap-4 sm:gap-6 md:gap-8">
                 {upcomingGames.slice(1, 3).map(game => (
-                  <motion.div
+                  <m.div
                     key={game.id}
                     whileHover={{ scale: 1.02 }}
                     onClick={() => onViewMatch(game)}
@@ -131,7 +120,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
                     <div className="p-3 sm:p-4 bg-black/5 group-hover:bg-[#C6FF00] group-hover:text-black rounded-full transition-all shrink-0">
                       <ICONS.ChevronRight />
                     </div>
-                  </motion.div>
+                  </m.div>
                 ))}
               </div>
             </div>

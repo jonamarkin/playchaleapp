@@ -2,10 +2,11 @@
 
 import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 import { ICONS, SPORT_STATS } from '@/constants';
 import { Game } from '@/types';
-import { useSubmitGameResults, useSubmitPlayerStats, useCompleteGame } from '@/hooks/useData';
+import { useSubmitGameResults, useSubmitPlayerStats } from '@/features/stats/hooks';
+import { useCompleteGame } from '@/features/games/hooks';
 import { Switch } from '@/components/ui/switch';
 
 interface PostGameModalProps {
@@ -59,27 +60,27 @@ const PostGameModal: React.FC<PostGameModalProps> = ({ game, userId, onClose, on
 
     const handleSubmit = async () => {
         try {
-            // 1. Mark game as complete
-            await completeGame.mutateAsync(game.id);
-
-            // 2. Submit game results
+            // 1. Submit game results
             await submitResults.mutateAsync({
+                gameId: game.id,
                 input: {
-                    gameId: game.id,
                     resultData: gameResult,
                     approvalThreshold: sportConfig.approvalThreshold,
                 },
-                userId,
             });
 
-            // 3. Submit player stats
-            const statsPayload = playerStats.map(p => ({
+            // 2. Submit player stats
+            await submitStats.mutateAsync({
                 gameId: game.id,
-                userId: p.id,
-                stats: p.stats,
-                showedUp: attendance.find(a => a.id === p.id)?.showedUp ?? true,
-            }));
-            await submitStats.mutateAsync(statsPayload);
+                stats: playerStats.map(p => ({
+                    userId: p.id,
+                    stats: p.stats,
+                    showedUp: attendance.find(a => a.id === p.id)?.showedUp ?? true,
+                })),
+            });
+
+            // 3. Mark game as complete only once results are saved
+            await completeGame.mutateAsync(game.id);
 
             onComplete();
         } catch (error) {
@@ -105,14 +106,14 @@ const PostGameModal: React.FC<PostGameModalProps> = ({ game, userId, onClose, on
     };
 
     return (
-        <motion.div
+        <m.div
             initial={{ opacity: 0 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 bg-black/80 backdrop-blur-sm z-[200] flex items-center justify-center p-4"
             onClick={onClose}
         >
-            <motion.div
+            <m.div
                 initial={{ scale: 0.95, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
                 exit={{ scale: 0.95, opacity: 0 }}
@@ -146,7 +147,7 @@ const PostGameModal: React.FC<PostGameModalProps> = ({ game, userId, onClose, on
                     <AnimatePresence mode="wait">
                         {/* Step 1: Attendance */}
                         {step === 'attendance' && (
-                            <motion.div
+                            <m.div
                                 key="attendance"
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -185,12 +186,12 @@ const PostGameModal: React.FC<PostGameModalProps> = ({ game, userId, onClose, on
                                         </div>
                                     ))}
                                 </div>
-                            </motion.div>
+                            </m.div>
                         )}
 
                         {/* Step 2: Game Result */}
                         {step === 'result' && (
-                            <motion.div
+                            <m.div
                                 key="result"
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -214,12 +215,12 @@ const PostGameModal: React.FC<PostGameModalProps> = ({ game, userId, onClose, on
                                         </div>
                                     ))}
                                 </div>
-                            </motion.div>
+                            </m.div>
                         )}
 
                         {/* Step 3: Player Stats */}
                         {step === 'stats' && (
-                            <motion.div
+                            <m.div
                                 key="stats"
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -269,12 +270,12 @@ const PostGameModal: React.FC<PostGameModalProps> = ({ game, userId, onClose, on
                                         </div>
                                     ))}
                                 </div>
-                            </motion.div>
+                            </m.div>
                         )}
 
                         {/* Step 4: Review */}
                         {step === 'review' && (
-                            <motion.div
+                            <m.div
                                 key="review"
                                 initial={{ opacity: 0, x: 20 }}
                                 animate={{ opacity: 1, x: 0 }}
@@ -306,7 +307,7 @@ const PostGameModal: React.FC<PostGameModalProps> = ({ game, userId, onClose, on
                                         <span className="text-sm">{Math.round(sportConfig.approvalThreshold * 100)}% of participants</span>
                                     </div>
                                 </div>
-                            </motion.div>
+                            </m.div>
                         )}
                     </AnimatePresence>
                 </div>
@@ -338,8 +339,8 @@ const PostGameModal: React.FC<PostGameModalProps> = ({ game, userId, onClose, on
                         </button>
                     )}
                 </div>
-            </motion.div>
-        </motion.div>
+            </m.div>
+        </m.div>
     );
 };
 

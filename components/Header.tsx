@@ -1,18 +1,19 @@
 'use client';
 
 import React, { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 import { ICONS } from '@/constants';
-import { motion, AnimatePresence } from 'framer-motion';
-import { usePlayChale } from '@/providers/PlayChaleProvider';
+import { m, AnimatePresence } from 'framer-motion';
+import { useSession } from '@/features/auth/session';
+import { useLogout, useGatedModal } from '@/features/auth/hooks';
 
-interface HeaderProps {
-  onOpenCreate: () => void;
-  activeView: string;
-  onNavigate: (view: any) => void;
-}
-
-const Header: React.FC<HeaderProps> = ({ onOpenCreate, activeView, onNavigate }) => {
-  const { user, signOut } = usePlayChale();
+const Header: React.FC = () => {
+  const { user } = useSession();
+  const logout = useLogout();
+  const openModal = useGatedModal();
+  const pathname = usePathname();
+  const activeView = pathname.split('/')[1] || 'landing';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [scrolled, setScrolled] = useState(false);
 
@@ -20,9 +21,14 @@ const Header: React.FC<HeaderProps> = ({ onOpenCreate, activeView, onNavigate })
     const handleScroll = () => {
       setScrolled(window.scrollY > 50);
     };
-    window.addEventListener('scroll', handleScroll);
+    window.addEventListener('scroll', handleScroll, { passive: true });
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
+
+  // Close the menu whenever the route changes
+  useEffect(() => {
+    setIsMenuOpen(false);
+  }, [pathname]);
 
   const navItems = [
     { label: 'Home', id: 'home' },
@@ -48,41 +54,32 @@ const Header: React.FC<HeaderProps> = ({ onOpenCreate, activeView, onNavigate })
     <>
       <header className={`fixed top-0 left-0 right-0 z-[100] transition-all duration-500 px-4 md:px-8 py-3 md:py-4 flex justify-between items-center ${headerTheme === 'light' ? 'bg-white/95 backdrop-blur-xl shadow-lg border-b border-gray-100' : 'bg-transparent'}`}>
         <div className="flex items-center gap-3 md:gap-6">
-          <motion.div
-            initial={{ opacity: 0, x: -20 }}
-            animate={{ opacity: 1, x: 0 }}
-            className="flex items-center gap-3 md:gap-4 cursor-pointer group"
-            onClick={() => onNavigate('home')}
+          <Link
+            href="/home"
+            className="animate-in fade-in slide-in-from-left-5 duration-500 flex items-center gap-3 md:gap-4 cursor-pointer group"
           >
-            <ICONS.Logo />
+            <ICONS.Logo priority />
             <span className={`hidden sm:block font-black text-xl tracking-tighter transition-colors duration-300 ${headerTheme === 'light' ? 'text-black' : 'text-white'}`}>PlayChale</span>
-          </motion.div>
+          </Link>
 
-          <motion.nav
-            initial={{ opacity: 0, x: -10 }}
-            animate={{ opacity: 1, x: 0 }}
-            transition={{ delay: 0.1 }}
-            className={`hidden lg:flex transition-all duration-300 rounded-full px-2 py-1 gap-1 items-center border shadow-sm ${headerTheme === 'light' ? 'bg-black/5 border-black/10' : 'bg-white/10 border-white/20 backdrop-blur-md'}`}
+          <nav
+            className={`animate-in fade-in slide-in-from-left-2 [animation-duration:500ms] delay-100 fill-mode-both hidden lg:flex transition-all duration-300 rounded-full px-2 py-1 gap-1 items-center border shadow-sm ${headerTheme === 'light' ? 'bg-black/5 border-black/10' : 'bg-white/10 border-white/20 backdrop-blur-md'}`}
           >
             {navItems.map((item) => (
-              <button
+              <Link
                 key={item.id}
-                onClick={() => onNavigate(item.id)}
+                href={`/${item.id}`}
                 className={`px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all ${isActive(item.id) ? (headerTheme === 'light' ? 'bg-black text-white' : 'bg-[#C6FF00] text-black shadow-lg shadow-lime-500/20') : (headerTheme === 'light' ? 'text-black/70 hover:text-black hover:bg-black/5' : 'text-white/80 hover:text-white hover:bg-white/10')}`}
               >
                 {item.label}
-              </button>
+              </Link>
             ))}
-          </motion.nav>
+          </nav>
         </div>
 
-        <motion.div
-          initial={{ opacity: 0, x: 20 }}
-          animate={{ opacity: 1, x: 0 }}
-          className="flex items-center gap-2 md:gap-3"
-        >
+        <div className="animate-in fade-in slide-in-from-right-5 duration-500 flex items-center gap-2 md:gap-3">
           <button
-            onClick={onOpenCreate}
+            onClick={() => openModal('create')}
             className={`transition-all duration-300 px-3 sm:px-5 md:px-7 py-2 md:py-2.5 rounded-full flex items-center gap-2 md:gap-3 group shadow-lg ${headerTheme === 'light' ? 'bg-black text-white hover:bg-[#C6FF00] hover:text-black' : 'bg-[#C6FF00] text-black hover:bg-white'}`}
           >
             <span className="hidden sm:block text-[10px] md:text-xs font-black uppercase tracking-widest">Create Game</span>
@@ -97,12 +94,12 @@ const Header: React.FC<HeaderProps> = ({ onOpenCreate, activeView, onNavigate })
           >
             {isMenuOpen ? <ICONS.X /> : <ICONS.Menu />}
           </button>
-        </motion.div>
+        </div>
       </header>
 
       <AnimatePresence>
         {isMenuOpen && (
-          <motion.div
+          <m.div
             initial={{ x: '100%' }}
             animate={{ x: 0 }}
             exit={{ x: '100%' }}
@@ -110,28 +107,29 @@ const Header: React.FC<HeaderProps> = ({ onOpenCreate, activeView, onNavigate })
             className="fixed inset-0 z-[110] bg-black text-white flex flex-col p-8 pt-32"
           >
             <div className="flex justify-between items-center absolute top-8 left-8 right-8">
-              <div className="flex items-center gap-4 cursor-pointer" onClick={() => { onNavigate('home'); setIsMenuOpen(false); }}>
+              <Link href="/home" className="flex items-center gap-4 cursor-pointer" onClick={() => setIsMenuOpen(false)}>
                 <ICONS.Logo />
                 <span className="font-black text-2xl tracking-tighter italic uppercase">PLAYCHALE.</span>
-              </div>
+              </Link>
               <button onClick={() => setIsMenuOpen(false)} className="w-12 h-12 rounded-full border border-white/20 flex items-center justify-center"><ICONS.X /></button>
             </div>
 
             <div className="space-y-8 mt-12">
               {navItems.map((item, idx) => (
-                <button
+                <Link
                   key={item.id}
-                  onClick={() => { onNavigate(item.id); setIsMenuOpen(false); }}
+                  href={`/${item.id}`}
+                  onClick={() => setIsMenuOpen(false)}
                   className="block text-5xl md:text-7xl font-black italic tracking-tighter hover:text-[#C6FF00] transition-all text-left group"
                 >
                   <span className="text-xs not-italic opacity-30 mr-6">0{idx + 1}</span>
                   {item.label}
-                </button>
+                </Link>
               ))}
 
               {user && (
                 <button
-                  onClick={() => { signOut(); setIsMenuOpen(false); }}
+                  onClick={() => { logout.mutate(); setIsMenuOpen(false); }}
                   className="block text-5xl md:text-7xl font-black italic tracking-tighter text-red-500 hover:text-red-400 transition-all text-left mt-8 group"
                 >
                   <span className="text-xs not-italic opacity-30 mr-6 text-white">0{navItems.length + 1}</span>
@@ -139,7 +137,7 @@ const Header: React.FC<HeaderProps> = ({ onOpenCreate, activeView, onNavigate })
                 </button>
               )}
             </div>
-          </motion.div>
+          </m.div>
         )}
       </AnimatePresence>
     </>

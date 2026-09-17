@@ -3,13 +3,13 @@
 import React from 'react';
 import { TESTIMONIALS } from '@/constants';
 import TestimonialCard from '@/components/TestimonialCard';
-import { motion } from 'framer-motion';
+import { m } from 'framer-motion';
 
 const Testimonials: React.FC = () => {
   return (
     <section className="py-24 md:py-48 px-6 md:px-12 bg-white">
       <div className="max-w-7xl mx-auto">
-        <motion.div 
+        <m.div 
           initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
@@ -22,11 +22,11 @@ const Testimonials: React.FC = () => {
           <h2 className="text-6xl md:text-9xl font-black text-[#111111] leading-[0.85] tracking-tighter">
             Real Stories. <br className="hidden md:block" /> Real Growth.
           </h2>
-        </motion.div>
+        </m.div>
 
         <div className="grid grid-cols-1 gap-16 md:gap-32">
           {TESTIMONIALS.map((testimonial, idx) => (
-            <motion.div
+            <m.div
               key={testimonial.id}
               initial={{ opacity: 0, y: 50 }}
               whileInView={{ opacity: 1, y: 0 }}
@@ -34,7 +34,7 @@ const Testimonials: React.FC = () => {
               transition={{ delay: idx * 0.2 }}
             >
               <TestimonialCard testimonial={testimonial} />
-            </motion.div>
+            </m.div>
           ))}
         </div>
       </div>

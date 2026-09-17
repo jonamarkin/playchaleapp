@@ -2,17 +2,18 @@
 
 import React, { useState } from 'react';
 import Link from 'next/link';
-import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { ICONS } from '@/constants';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { useAuthStore } from '@/lib/mock/auth';
-import { hasProfile } from '@/lib/mock/db';
+import { safeNextPath, useDemoLogin, useLogin } from '@/features/auth/hooks';
+import type { Session } from '@/lib/api/types';
 
 export default function LoginPage() {
     const router = useRouter();
-    const { signIn, signInAsDemo } = useAuthStore();
+    const searchParams = useSearchParams();
+    const login = useLogin();
+    const demoLogin = useDemoLogin();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
@@ -24,9 +25,7 @@ export default function LoginPage() {
         setError(null);
 
         try {
-            // Mock auth: any password works; unknown emails sign in as the demo player
-            const user = signIn(email);
-            router.push(hasProfile(user.id) ? '/home' : '/onboarding');
+            goAfterSignIn(await login.mutateAsync({ email, password }));
         } catch (err: any) {
             console.error('Login error:', err);
             setError(err.message || 'Failed to sign in');
@@ -34,26 +33,31 @@ export default function LoginPage() {
         }
     };
 
-    const handleSocialAuth = () => {
-        // Mock auth: social sign-in goes straight to the demo player
+    const goAfterSignIn = (session: Session) => {
+        const next = searchParams.get('next');
+        router.push(session.hasProfile ? safeNextPath(next) : `/onboarding${next ? `?next=${encodeURIComponent(next)}` : ''}`);
+    };
+
+    const handleSocialAuth = async () => {
+        // TODO(backend): real OAuth. With the mock API this signs in as the demo player.
         setIsLoading(true);
-        signInAsDemo();
-        router.push('/home');
+        try {
+            goAfterSignIn(await demoLogin.mutateAsync());
+        } catch (err: any) {
+            setError(err.message || 'Failed to sign in');
+            setIsLoading(false);
+        }
     };
 
     return (
         <div className="min-h-screen bg-black text-white flex flex-col items-center justify-center relative overflow-hidden">
             {/* Background Ambience */}
             <div className="absolute inset-0 pointer-events-none opacity-20">
-                <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[#C6FF00]/10 blur-[150px] rounded-full -mr-40 -mt-40"></div>
-                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-blue-500/10 blur-[150px] rounded-full -ml-40 -mb-40"></div>
+                <div className="absolute top-0 right-0 w-[800px] h-[800px] bg-[radial-gradient(closest-side,rgba(198,255,0,0.10),transparent)] rounded-full -mr-40 -mt-40"></div>
+                <div className="absolute bottom-0 left-0 w-[600px] h-[600px] bg-[radial-gradient(closest-side,rgba(59,130,246,0.10),transparent)] rounded-full -ml-40 -mb-40"></div>
             </div>
 
-            <motion.div
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                className="z-10 w-full max-w-md p-8 space-y-8"
-            >
+            <div className="z-10 w-full max-w-md p-8 space-y-8 animate-in fade-in slide-in-from-bottom-5 duration-500">
                 <div className="text-center space-y-4">
                     <div className="flex justify-center mb-6">
                         <div className="scale-150">
@@ -133,7 +137,7 @@ export default function LoginPage() {
                         New Athlete? <span className="text-white border-b border-white/20 pb-0.5">Start Draft</span>
                     </Link>
                 </div>
-            </motion.div>
+            </div>
         </div>
     );
 }

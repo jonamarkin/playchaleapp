@@ -449,12 +449,13 @@ export const ICONS = {
   UpArrow: () => (
     <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="19" x2="12" y2="5" /><polyline points="5 12 12 5 19 12" /></svg>
   ),
-  Logo: () => (
+  Logo: ({ priority = false }: { priority?: boolean }) => (
     <div className="w-10 h-10 relative shrink-0 rounded-xl overflow-hidden shadow-sm border border-white/10">
       <Image
         src="/icons/icon-192x192.png"
         alt="PlayChale Logo"
         fill
+        priority={priority}
         className="object-cover"
         sizes="40px"
       />

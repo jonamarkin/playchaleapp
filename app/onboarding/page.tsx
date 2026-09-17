@@ -1,23 +1,24 @@
 'use client';
 
 import React from 'react';
-import { motion } from 'framer-motion';
-import Onboarding from '@/components/Onboarding';
-import { usePlayChale } from '@/providers/PlayChaleProvider';
+import { useRouter } from 'next/navigation';
+import Onboarding, { type OnboardingData } from '@/components/Onboarding';
+import { useCompleteOnboarding } from '@/features/auth/hooks';
 
 export default function OnboardingPage() {
-  const { completeOnboarding, handleNavigate } = usePlayChale();
+  const router = useRouter();
+  const { mutateAsync: completeOnboarding } = useCompleteOnboarding();
+
+  const handleComplete = async ({ email, password, name, sports, level, location }: OnboardingData) => {
+    await completeOnboarding({
+      credentials: { email, password },
+      profile: { name, sports, level, location },
+    });
+  };
 
   return (
-    <motion.div 
-      initial={{ opacity: 0 }} 
-      animate={{ opacity: 1 }} 
-      exit={{ opacity: 0 }}
-    >
-      <Onboarding 
-        onComplete={completeOnboarding} 
-        onSkip={() => handleNavigate('/discover')} 
-      />
-    </motion.div>
+    <div className="animate-in fade-in duration-300">
+      <Onboarding onComplete={handleComplete} onSkip={() => router.push('/discover')} />
+    </div>
   );
 }

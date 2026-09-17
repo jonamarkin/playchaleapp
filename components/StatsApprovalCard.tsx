@@ -2,50 +2,24 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { motion } from 'framer-motion';
 import { SPORT_STATS } from '@/constants';
-import { useApproveStats, useVoteForMVP } from '@/hooks/useData';
-
-interface PendingApproval {
-    id: string;
-    game_id: string;
-    user_id: string;
-    stats: Record<string, any>;
-    showed_up: boolean;
-    games: {
-        id: string;
-        title: string;
-        sport: string;
-        date: string;
-        time: string;
-        image_url: string;
-    };
-    game_results: {
-        result_data: Record<string, any>;
-        status: string;
-    };
-}
+import { useReviewMyStats } from '@/features/stats/hooks';
+import type { StatApproval } from '@/lib/api/types';
 
 interface StatsApprovalCardProps {
-    approval: PendingApproval;
-    userId: string;
+    approval: StatApproval;
     onApproved?: () => void;
 }
 
-const StatsApprovalCard: React.FC<StatsApprovalCardProps> = ({ approval, userId, onApproved }) => {
-    const approveStats = useApproveStats();
-    const voteForMVP = useVoteForMVP();
+const StatsApprovalCard: React.FC<StatsApprovalCardProps> = ({ approval, onApproved }) => {
+    const reviewStats = useReviewMyStats();
 
-    const sportConfig = SPORT_STATS[approval.games?.sport] || SPORT_STATS.Football;
-    const gameResult = approval.game_results?.result_data || {};
+    const sportConfig = SPORT_STATS[approval.game?.sport ?? ''] || SPORT_STATS.Football;
+    const gameResult = approval.result?.resultData || {};
 
     const handleApprove = async () => {
         try {
-            await approveStats.mutateAsync({
-                gameId: approval.game_id,
-                userId: userId,
-                approved: true,
-            });
+            await reviewStats.mutateAsync({ gameId: approval.gameId, approved: true });
             onApproved?.();
         } catch (error) {
             console.error('Failed to approve stats:', error);
@@ -54,30 +28,24 @@ const StatsApprovalCard: React.FC<StatsApprovalCardProps> = ({ approval, userId,
 
     const handleReject = async () => {
         try {
-            await approveStats.mutateAsync({
-                gameId: approval.game_id,
-                userId: userId,
-                approved: false,
-            });
+            await reviewStats.mutateAsync({ gameId: approval.gameId, approved: false });
             onApproved?.();
         } catch (error) {
             console.error('Failed to reject stats:', error);
         }
     };
 
-    if (!approval.games) return null;
+    if (!approval.game) return null;
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            className="bg-white border-2 border-black/5 rounded-[28px] overflow-hidden shadow-sm hover:shadow-lg transition-all"
+        <div
+            className="animate-in fade-in slide-in-from-bottom-5 [animation-duration:400ms] bg-white border-2 border-black/5 rounded-[28px] overflow-hidden shadow-sm hover:shadow-lg transition-all"
         >
             {/* Header */}
             <div className="relative h-24 sm:h-32">
                 <Image
-                    src={approval.games.image_url || 'https://images.unsplash.com/photo-1574629810360-7efbbe195018'}
-                    alt={approval.games.title}
+                    src={approval.game.imageUrl || 'https://images.unsplash.com/photo-1574629810360-7efbbe195018'}
+                    alt={approval.game.title}
                     fill
                     className="object-cover"
                 />
@@ -87,7 +55,7 @@ const StatsApprovalCard: React.FC<StatsApprovalCardProps> = ({ approval, userId,
                         Pending Approval
                     </span>
                     <h4 className="text-white font-black italic uppercase tracking-tighter text-lg mt-1 truncate">
-                        {approval.games.title}
+                        {approval.game.title}
                     </h4>
                 </div>
             </div>
@@ -117,10 +85,10 @@ const StatsApprovalCard: React.FC<StatsApprovalCardProps> = ({ approval, userId,
                 </div>
 
                 {/* Attendance */}
-                <div className={`flex items-center gap-2 p-3 rounded-xl ${approval.showed_up ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>
-                    <span className="text-lg">{approval.showed_up ? '✓' : '✗'}</span>
+                <div className={`flex items-center gap-2 p-3 rounded-xl ${approval.showedUp ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>
+                    <span className="text-lg">{approval.showedUp ? '✓' : '✗'}</span>
                     <span className="text-sm font-bold">
-                        {approval.showed_up ? 'Marked as Present' : 'Marked as No-Show'}
+                        {approval.showedUp ? 'Marked as Present' : 'Marked as No-Show'}
                     </span>
                 </div>
 
@@ -128,21 +96,21 @@ const StatsApprovalCard: React.FC<StatsApprovalCardProps> = ({ approval, userId,
                 <div className="flex gap-3 pt-2">
                     <button
                         onClick={handleReject}
-                        disabled={approveStats.isPending}
+                        disabled={reviewStats.isPending}
                         className="flex-1 py-3 bg-gray-100 text-black rounded-full font-black uppercase text-[10px] tracking-widest hover:bg-gray-200 transition-all disabled:opacity-50"
                     >
                         Dispute
                     </button>
                     <button
                         onClick={handleApprove}
-                        disabled={approveStats.isPending}
+                        disabled={reviewStats.isPending}
                         className="flex-1 py-3 bg-[#C6FF00] text-black rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all disabled:opacity-50"
                     >
-                        {approveStats.isPending ? 'Approving...' : 'Approve'}
+                        {reviewStats.isPending ? 'Approving...' : 'Approve'}
                     </button>
                 </div>
             </div>
-        </motion.div>
+        </div>
     );
 };
 

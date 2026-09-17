@@ -3,7 +3,7 @@
 import React, { useRef, useState } from 'react';
 import Image from 'next/image';
 import { ICONS } from '@/constants';
-import { motion, AnimatePresence } from 'framer-motion';
+import { m, AnimatePresence } from 'framer-motion';
 
 interface ImageUploadProps {
     currentImage?: string;

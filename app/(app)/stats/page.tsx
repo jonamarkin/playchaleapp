@@ -1,46 +1,15 @@
-'use client';
+import { myProfileQuery } from '@/features/players/queries';
+import { requireProfile } from '@/lib/auth/guards';
+import { serverApi } from '@/lib/api/server';
+import { Prefetch } from '@/lib/query/prefetch';
+import StatsView from './stats-view';
 
-import React, { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { motion } from 'framer-motion';
-import ProfileDashboard from '@/components/ProfileDashboard';
-import { usePlayChale } from '@/providers/PlayChaleProvider';
-import { useProfile } from '@/hooks/useData';
-
-export default function StatsPage() {
-  const router = useRouter();
-  const { openModal, hasProfile, user, isLoading: authLoading } = usePlayChale();
-  const { data: profile, isLoading } = useProfile(user?.id);
-
-  // Protect this route
-  useEffect(() => {
-    if (!authLoading && !hasProfile && !user) {
-      router.push('/onboarding');
-    }
-  }, [authLoading, hasProfile, user, router]);
-
-  if (!profile || isLoading) {
-    return (
-      <div className="min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-gray-400">Loading your profile...</div>
-      </div>
-    );
-  }
+export default async function StatsPage() {
+  await requireProfile('/stats');
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      exit={{ opacity: 0, y: -20 }}
-    >
-      <ProfileDashboard
-        player={profile}
-        isOwner={true}
-        onEditStats={() => openModal('stats', profile)}
-        onEditProfile={() => openModal('edit-profile', profile)}
-        onShareProfile={() => openModal('share-profile', profile)}
-        onViewMatch={(match) => router.push(`/game/${match.slug || match.id}`)}
-      />
-    </motion.div>
+    <Prefetch queries={(qc) => [qc.prefetchQuery(myProfileQuery(serverApi))]}>
+      <StatsView />
+    </Prefetch>
   );
 }
