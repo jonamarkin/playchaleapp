@@ -5,7 +5,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ICONS } from '@/constants';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
-import { createClient } from '@/lib/supabase/client';
+import { useAuthStore } from '@/lib/mock/auth';
 
 interface OnboardingData {
   name: string;
@@ -21,7 +21,7 @@ interface OnboardingProps {
 }
 
 const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
-  const supabase = createClient();
+  const signUp = useAuthStore((state) => state.signUp);
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
   const [data, setData] = useState<{
@@ -69,34 +69,15 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
     setIsLoading(true);
 
     try {
-      const { data: authData, error } = await supabase.auth.signUp({
-        email: data.email,
-        password: data.password,
-        options: {
-          data: {
-            full_name: data.name,
-          }
-        }
+      // Mock auth: creates (or resumes) a local account for this email
+      signUp(data.email);
+      onComplete({
+        name: data.name,
+        sports: data.sports,
+        level: data.level,
+        location: data.location,
+        email: data.email
       });
-
-      if (error) throw error;
-
-      // Ensure user is signed in before proceeding
-      if (authData.user) {
-        onComplete({
-          name: data.name,
-          sports: data.sports,
-          level: data.level,
-          location: data.location,
-          email: data.email
-        });
-      } else {
-        // Handle "Check your email" case if email confirmation is on
-        // In a real app, you'd show a UI step for "Verify Email"
-        alert('Please check your email to confirm your account!');
-        setIsLoading(false);
-      }
-
     } catch (error: any) {
       console.error('Signup error:', error);
       alert(error.message || 'Failed to sign up');
@@ -104,51 +85,19 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
     }
   };
 
-  // ... existing code ...
-
-  const handleSocialAuth = async (provider: 'google' | 'github') => {
+  const handleSocialAuth = (provider: 'google' | 'github') => {
+    // Mock auth: social sign-up creates a local account with a placeholder email
     setIsLoading(true);
-    // Save draft state before redirecting
-    localStorage.setItem('playchale_onboarding_temp', JSON.stringify(data));
-    try {
-      const { error } = await supabase.auth.signInWithOAuth({
-        provider: provider,
-        options: {
-          redirectTo: `${window.location.origin}/auth/callback`,
-        }
-      });
-      if (error) throw error;
-    } catch (error: any) {
-      console.error('Social auth error:', error);
-      setIsLoading(false);
-    }
+    const email = data.email || `${data.name.replace(/\s+/g, '.').toLowerCase() || 'athlete'}.${Date.now()}@${provider}.mock`;
+    signUp(email);
+    onComplete({
+      name: data.name,
+      sports: data.sports,
+      level: data.level,
+      location: data.location,
+      email
+    });
   };
-
-  // Resume onboarding after OAuth redirect
-  React.useEffect(() => {
-    const checkResume = async () => {
-      const saved = localStorage.getItem('playchale_onboarding_temp');
-      if (saved) {
-        const { data: { user } } = await supabase.auth.getUser();
-        if (user) {
-          setIsLoading(true);
-          try {
-            const parsed = JSON.parse(saved);
-            // Restore state slightly for UI context if needed, or just submit
-            setData(parsed);
-            // Trigger completion logic
-            onComplete(parsed);
-            localStorage.removeItem('playchale_onboarding_temp');
-          } catch (e) {
-            console.error('Failed to parse saved onboarding data', e);
-            localStorage.removeItem('playchale_onboarding_temp');
-            setIsLoading(false);
-          }
-        }
-      }
-    };
-    checkResume();
-  }, []);
 
   // Total steps is now 6 (Sport, Level, Location, Name, Report, Auth)
   const TOTAL_STEPS = 6;

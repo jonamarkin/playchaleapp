@@ -8,14 +8,14 @@ import { usePlayChale } from '@/providers/PlayChaleProvider';
 
 export default function MessagesPage() {
   const router = useRouter();
-  const { messages, archivedIds, setArchivedIds, games, hasProfile } = usePlayChale();
+  const { messages, archivedIds, setArchivedIds, games, hasProfile, isLoading } = usePlayChale();
 
   // Protect this route
   useEffect(() => {
-    if (!hasProfile) {
+    if (!isLoading && !hasProfile) {
       router.push('/onboarding');
     }
-  }, [hasProfile, router]);
+  }, [isLoading, hasProfile, router]);
 
   if (!hasProfile) {
     return (

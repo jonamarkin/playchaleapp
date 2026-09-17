@@ -11,9 +11,10 @@ import { useEffect } from 'react';
 import { useProfile, useMyGames, usePlayers } from '@/hooks/useData';
 
 export default function HomePage() {
-  const { games, handleNavigate, user } = usePlayChale();
+  const { games, handleNavigate, user, isLoading: authLoading } = usePlayChale();
   const router = useRouter();
-  const { data: profile, isLoading } = useProfile(user?.id);
+  const { data: profile, isLoading: profileLoading } = useProfile(user?.id);
+  const isLoading = authLoading || profileLoading;
   const { data: myGamesData } = useMyGames(user?.id);
   const { data: players } = usePlayers();
 

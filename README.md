@@ -27,6 +27,7 @@
 - **Language:** TypeScript
 - **Styling:** Tailwind CSS
 - **Animations:** Framer Motion
+- **Data:** TanStack Query + Zustand, backed by an in-browser mock backend (`lib/mock/`) until the real API is ready
 - **Package Manager:** pnpm
 
 ---
@@ -42,8 +43,8 @@
 
 ```bash
 # Clone the repository
-git clone https://github.com/jonamarkin/playchale.git
-cd playchale
+git clone https://github.com/jonamarkin/playchaleapp.git
+cd playchaleapp
 
 # Install dependencies
 pnpm install
@@ -53,6 +54,15 @@ pnpm dev
 ```
 
 Open [http://localhost:3000](http://localhost:3000) to view the app.
+
+### Mock data
+
+There is no backend yet. All data comes from `lib/mock/`:
+
+- **Sign in** with any email and password. Unknown emails sign in as the demo player (Marcus J., `demo@playchale.app`), who hosts a game so host-only flows can be tested.
+- **Onboarding** creates a new local account and profile.
+- Changes (created games, joins, results) are saved to `localStorage` under `playchale_mock_db_v1`. Clear that key, or call `resetMockDb()` from `lib/mock/db.ts`, to start from the seed data again.
+- Seed data is built from `constants.tsx` in `lib/mock/seed.ts`.
 
 ---
 

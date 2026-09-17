@@ -1,55 +1,48 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { usePlayChale } from '@/providers/PlayChaleProvider';
 import GameDetailView from '@/components/GameDetailView';
 import PostGameModal from '@/components/PostGameModal';
-import { Game, MatchRecord } from '@/types';
 import { ICONS } from '@/constants';
-import { useJoinGame, useProfile } from '@/hooks/useData';
+import { useGame, useJoinGame, useProfile } from '@/hooks/useData';
 
 interface GameClientPageProps {
-    id: string;
-    initialGame?: Game | null;
+    slug: string;
 }
 
-export default function GameClientPage({ id, initialGame }: GameClientPageProps) {
+export default function GameClientPage({ slug }: GameClientPageProps) {
     const router = useRouter();
-    const { games, activeModal, user, triggerToast } = usePlayChale();
+    const { user, triggerToast } = usePlayChale();
     const { mutate: joinGame } = useJoinGame();
     const { data: profile } = useProfile(user?.id);
 
-    const [viewType, setViewType] = useState<'join' | 'manage' | 'report' | null>(null);
-    const [data, setData] = useState<Game | MatchRecord | null>(initialGame || null);
+    const { data, isLoading } = useGame(slug);
     const [showPostGameModal, setShowPostGameModal] = useState(false);
 
-    const isHost = user && data && 'organizer_id' in data && data.organizer_id === user.id;
-    const isGameComplete = data && 'completed_at' in data && data.completed_at;
+    const isHost = !!user && !!data && data.organizer_id === user.id;
+    const isGameComplete = !!data?.completed_at;
+    const viewType = isHost ? 'manage' : 'join';
 
-    useEffect(() => {
-        if (!id) return;
+    if (!isLoading && !data) {
+        return (
+            <div className="min-h-screen bg-black flex items-center justify-center text-white">
+                <div className="flex flex-col items-center gap-4 text-center px-6">
+                    <p className="font-black italic uppercase tracking-tighter text-3xl">Game Not Found</p>
+                    <p className="font-black uppercase tracking-widest text-xs opacity-50">This game does not exist or has been removed.</p>
+                    <button
+                        onClick={() => router.push('/discover')}
+                        className="mt-4 bg-[#C6FF00] text-black px-6 py-3 rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all"
+                    >
+                        Discover Games
+                    </button>
+                </div>
+            </div>
+        );
+    }
 
-        // If we have initialGame, we might still want to check user status for viewType
-        // But for simplicity, if initialGame is provided, we use it.
-        // We still need to determine viewType based on user.
-
-        const gameToUse = games.find(g => g.id === id) || initialGame;
-
-        if (gameToUse) {
-            const isOrganizer = user && gameToUse.organizer_id === user.id;
-            setViewType(isOrganizer ? 'manage' : 'join');
-            setData(gameToUse);
-            return;
-        }
-
-        // Search in history logic...
-        // For now, if not found and no initialGame, maybe we are still loading games array?
-        if (!initialGame && !games.length) return; // Wait for games
-
-    }, [id, games, user, initialGame]);
-
-    if (!data || !viewType) {
+    if (!data) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center text-white">
                 <div className="animate-pulse flex flex-col items-center gap-4">
@@ -118,8 +111,13 @@ export default function GameClientPage({ id, initialGame }: GameClientPageProps)
                 currentUser={profile ?? undefined}
                 onJoin={() => {
                     if (user && data.id) {
-                        joinGame({ gameId: data.id, userId: user.id });
-                        triggerToast("JOIN REQUEST SENT!");
+                        joinGame(
+                            { gameId: data.id, userId: user.id },
+                            {
+                                onSuccess: () => triggerToast("JOIN REQUEST SENT!"),
+                                onError: (error) => triggerToast(error.message.toUpperCase()),
+                            }
+                        );
                     } else {
                         router.push('/login');
                     }
@@ -128,15 +126,14 @@ export default function GameClientPage({ id, initialGame }: GameClientPageProps)
             />
 
             {/* Post-Game Modal */}
-            {showPostGameModal && user && 'id' in data && (
+            {showPostGameModal && user && (
                 <PostGameModal
-                    game={data as Game}
+                    game={data}
                     userId={user.id}
                     onClose={() => setShowPostGameModal(false)}
                     onComplete={() => {
                         setShowPostGameModal(false);
                         triggerToast("GAME RESULTS SUBMITTED FOR APPROVAL!");
-                        router.refresh();
                     }}
                 />
             )}

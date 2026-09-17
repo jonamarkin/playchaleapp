@@ -1,4 +1,9 @@
 
+export interface AuthUser {
+  id: string;
+  email: string;
+}
+
 export interface Game {
   id: string;
   slug?: string;

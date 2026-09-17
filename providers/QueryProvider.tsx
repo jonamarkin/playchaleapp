@@ -7,7 +7,7 @@ export function QueryProvider({ children }: { children: React.ReactNode }) {
     const [queryClient] = useState(() => new QueryClient({
         defaultOptions: {
             queries: {
-                // With Supabase handling real-time via subscriptions, we can be less aggressive with polling
+                // Mock data only changes through our own mutations, which invalidate the relevant queries
                 staleTime: 60 * 1000, // 1 minute
             },
         },

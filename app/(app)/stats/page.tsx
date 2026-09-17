@@ -9,15 +9,15 @@ import { useProfile } from '@/hooks/useData';
 
 export default function StatsPage() {
   const router = useRouter();
-  const { openModal, hasProfile, user } = usePlayChale();
+  const { openModal, hasProfile, user, isLoading: authLoading } = usePlayChale();
   const { data: profile, isLoading } = useProfile(user?.id);
 
   // Protect this route
   useEffect(() => {
-    if (!hasProfile && !user) {
+    if (!authLoading && !hasProfile && !user) {
       router.push('/onboarding');
     }
-  }, [hasProfile, user, router]);
+  }, [authLoading, hasProfile, user, router]);
 
   if (!profile || isLoading) {
     return (
