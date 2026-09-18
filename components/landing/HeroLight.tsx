@@ -6,161 +6,120 @@ import Link from 'next/link';
 import { ICONS } from '@/constants';
 import { useSession } from '@/features/auth/session';
 
-interface HeroProps {
-  onOpenDiscover: () => void;
-}
-
-const Hero: React.FC<HeroProps> = ({ onOpenDiscover }) => {
+/** Light, card-styled hero in the look of the core-advantage section */
+const HeroLight: React.FC = () => {
   const { user } = useSession();
 
   return (
-    <section className="relative min-h-[90vh] md:min-h-screen bg-black text-white overflow-hidden rounded-b-[60px] md:rounded-b-[100px] z-10 flex flex-col justify-center">
+    <section className="relative bg-[#FDFDFB] overflow-x-clip px-4 md:px-12 pb-8 md:pb-12">
+      {/* Ambient lime glow, no blur filter */}
+      <div className="absolute -top-40 -right-40 w-[700px] h-[700px] bg-[radial-gradient(closest-side,rgba(198,255,0,0.18),transparent)] rounded-full pointer-events-none" />
+
       {/* Navbar */}
-      <nav className="absolute top-0 left-0 right-0 p-6 md:p-10 flex justify-between items-center z-50">
+      <nav className="relative z-20 max-w-7xl mx-auto py-6 md:py-8 flex justify-between items-center">
         <div className="flex items-center gap-3">
           <ICONS.Logo priority />
+          <span className="font-black text-xl tracking-tighter text-black hidden sm:block">PlayChale</span>
         </div>
         {!user ? (
           <Link
             href="/login"
-            className="block text-[10px] font-black uppercase tracking-[0.2em] hover:text-[#C6FF00] transition-colors"
+            className="text-[10px] font-black uppercase tracking-[0.2em] text-black/50 hover:text-black transition-colors"
           >
             Member Sign In
           </Link>
         ) : (
           <Link
             href="/home"
-            className="block text-[10px] font-black uppercase tracking-[0.2em] text-[#C6FF00] hover:text-white transition-colors"
+            className="bg-black text-[#C6FF00] px-5 py-2.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] hover:scale-105 transition-transform"
           >
             Go to Dashboard
           </Link>
         )}
       </nav>
 
-      {/* Background Layer */}
-      <div className="absolute inset-0 z-0">
-        <div className="w-full h-full opacity-50 animate-in fade-in zoom-in-110 [animation-duration:2500ms] ease-out">
-          <Image
-            src="https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?auto=format&fit=crop&q=80&w=2560"
-            alt="Sports Action"
-            fill
-            priority
-            sizes="100vw"
-            className="object-cover"
-          />
-        </div>
-        <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent"></div>
-      </div>
-
-      {/* Live Activity Ticker (Top Floating) */}
-      <div className="absolute top-24 left-0 right-0 z-20 pointer-events-none hidden md:block overflow-hidden">
-        <div className="flex animate-marquee whitespace-nowrap gap-12 text-[10px] font-black uppercase tracking-[0.3em] text-white/40">
-          {[1, 2, 3].map(i => (
-            <React.Fragment key={i}>
-              <span className="flex items-center gap-3"><span className="w-1.5 h-1.5 rounded-full bg-[#C6FF00]"></span> Marcus J. scored 3 goals in 5v5</span>
-              <span className="flex items-center gap-3"><span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span> Elena R. climbed to Rank #12 in Basketball</span>
-              <span className="flex items-center gap-3"><span className="w-1.5 h-1.5 rounded-full bg-[#C6FF00]"></span> 15 games scheduled for this evening</span>
-            </React.Fragment>
-          ))}
-        </div>
-      </div>
-
-      <div className="relative z-10 w-full px-6 md:px-12 pb-24 md:pb-36 pt-24 md:pt-16">
-        <div className="max-w-7xl mx-auto grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
-          <div className="lg:col-span-8 text-white space-y-12">
-            <div className="space-y-6 animate-in fade-in slide-in-from-bottom-10 [animation-duration:600ms] [animation-delay:400ms] fill-mode-both">
-              <div className="inline-flex items-center gap-3 bg-[#C6FF00] text-black px-4 py-2 rounded-full font-black text-[10px] uppercase tracking-[0.3em] shadow-[0_0_30px_rgba(198,255,0,0.3)]">
-                <span className="w-2 h-2 rounded-full bg-black animate-ping"></span>
-                ACTIVE IN YOUR CITY
-              </div>
-              <h1 className="text-6xl sm:text-6xl md:text-8xl lg:text-[10rem] font-black leading-[0.85] tracking-tighter italic">
-                <span className="whitespace-nowrap">Step Out,</span> <br /> <span className="text-[#C6FF00] whitespace-nowrap">PlayChale.</span>
-              </h1>
+      <div className="relative z-10 max-w-7xl mx-auto pt-6 md:pt-10">
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 lg:gap-16 items-center">
+          {/* Headline */}
+          <div className="lg:col-span-7 space-y-8 md:space-y-10">
+            <div className="animate-in fade-in slide-in-from-left-5 [animation-duration:500ms] inline-flex items-center gap-3 bg-black text-[#C6FF00] px-5 py-2 rounded-full font-black text-[10px] uppercase tracking-[0.4em]">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#C6FF00] animate-pulse"></span>
+              Active in your city
             </div>
 
-            <p className="text-xl md:text-3xl text-white/80 max-w-2xl leading-tight font-bold tracking-tight animate-in fade-in slide-in-from-bottom-5 [animation-duration:600ms] [animation-delay:600ms] fill-mode-both">
-              Don't just watch. Compete. Find games, build your legacy, and own the city.
+            <h1 className="animate-in fade-in slide-in-from-bottom-10 [animation-duration:600ms] [animation-delay:100ms] fill-mode-both text-5xl sm:text-6xl md:text-7xl lg:text-[5.25rem] xl:text-[6rem] font-black tracking-tighter italic leading-[0.9] uppercase text-black">
+              Step Out, <br />
+              <span className="text-[#C6FF00] bg-black px-3 md:px-4 mt-2 inline-block transform -rotate-1 shadow-2xl">PlayChale.</span>
+            </h1>
+
+            <p className="animate-in fade-in slide-in-from-bottom-5 [animation-duration:600ms] [animation-delay:250ms] fill-mode-both text-lg md:text-2xl text-black/40 font-bold max-w-xl tracking-tight leading-tight">
+              Don&apos;t just watch. Compete. Find games, build your legacy, and own the city.
             </p>
 
-            <div className="flex flex-col sm:flex-row items-center gap-8 animate-in fade-in slide-in-from-bottom-5 [animation-duration:600ms] [animation-delay:800ms] fill-mode-both">
-              <button
-                onClick={onOpenDiscover}
-                className="w-full sm:w-auto bg-[#C6FF00] text-black px-8 py-4 md:px-12 md:py-6 rounded-full font-black uppercase tracking-widest text-[11px] flex items-center justify-center gap-4 hover:scale-[1.05] hover:shadow-[0_0_40px_rgba(198,255,0,0.4)] transition-all group"
+            <div className="animate-in fade-in slide-in-from-bottom-5 [animation-duration:600ms] [animation-delay:400ms] fill-mode-both flex flex-col sm:flex-row items-stretch sm:items-center gap-6">
+              <Link
+                href="/discover"
+                className="touch-target bg-black text-white px-8 py-5 md:px-10 md:py-6 rounded-full font-black uppercase tracking-widest text-[11px] flex items-center justify-center gap-4 hover:bg-[#C6FF00] hover:text-black transition-all group shadow-xl"
               >
                 Discover Games
-                <div className="bg-black text-white rounded-full p-1 group-hover:rotate-45 transition-transform">
+                <div className="bg-[#C6FF00] text-black group-hover:bg-black group-hover:text-[#C6FF00] rounded-full p-1 transition-all group-hover:rotate-45">
                   <ICONS.ChevronRight />
                 </div>
-              </button>
+              </Link>
 
-              <div className="flex items-center gap-5">
+              <div className="flex items-center gap-4 justify-center sm:justify-start">
                 <div className="flex -space-x-3">
-                  {[1, 2, 3].map(i => (
+                  {[11, 12, 13].map((i) => (
                     <Image
                       key={i}
-                      className="w-10 h-10 rounded-full border-4 border-black"
-                      src={`https://i.pravatar.cc/100?u=${i + 10}`}
-                      alt="user"
+                      className="w-10 h-10 rounded-full border-4 border-[#FDFDFB] object-cover"
+                      src={`https://i.pravatar.cc/100?u=${i}`}
+                      alt=""
                       width={40}
                       height={40}
                     />
                   ))}
                 </div>
                 <div className="text-left">
-                  <p className="text-[11px] font-black uppercase tracking-widest text-white">482 Players Active</p>
-                  <p className="text-[9px] font-black uppercase tracking-widest text-[#C6FF00]">Live in your vicinity</p>
+                  <p className="text-[11px] font-black uppercase tracking-widest text-black">482 Players Active</p>
+                  <p className="text-[9px] font-black uppercase tracking-widest text-black/30">Live in your vicinity</p>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="lg:col-span-4 hidden lg:flex flex-col gap-6 animate-in fade-in slide-in-from-right-5 [animation-duration:600ms] [animation-delay:1200ms] fill-mode-both">
-            <div className="glass rounded-[48px] p-8 border border-white/10 space-y-6 shadow-2xl relative overflow-hidden group">
-              <div className="absolute top-0 right-0 p-6 opacity-10 rotate-12 group-hover:rotate-45 transition-transform duration-[2s]"><ICONS.Logo /></div>
+          {/* Feature image */}
+          <div className="lg:col-span-5 animate-in fade-in zoom-in-95 [animation-duration:700ms] [animation-delay:200ms] fill-mode-both">
+            <div className="relative aspect-[4/3] sm:aspect-[16/10] lg:aspect-[4/5] rounded-[40px] md:rounded-[56px] overflow-hidden shadow-2xl border-4 border-white group">
+              <Image
+                src="https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?auto=format&fit=crop&q=80&w=1600"
+                alt="Players in a floodlit night match"
+                fill
+                priority
+                sizes="(max-width: 1024px) 100vw, 40vw"
+                className="object-cover transition-transform duration-[2s] group-hover:scale-105"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/10 to-transparent" />
 
-              <div className="flex justify-between items-center">
-                <h4 className="text-[10px] font-black uppercase tracking-widest text-[#C6FF00]">Happening Nearby</h4>
-                <ICONS.MapPin />
+              <div className="absolute top-6 left-6">
+                <span className="inline-flex items-center gap-2 bg-[#C6FF00] text-black px-4 py-2 rounded-full text-[9px] font-black uppercase tracking-[0.3em]">
+                  <span className="w-1.5 h-1.5 rounded-full bg-black animate-pulse"></span>
+                  Live tonight
+                </span>
               </div>
 
-              <div className="space-y-4">
-                {[
-                  { sport: 'Football', label: 'Dusk Kickoff', time: '19:00', spots: '3 Open', price: '$5' },
-                  { sport: 'Basketball', label: 'Full Court 5s', time: '20:30', spots: '6 Open', price: 'Free' }
-                ].map((item, i) => (
-                  <div key={i} className="bg-white/5 p-5 rounded-[24px] border border-white/5 hover:bg-white/10 transition-all cursor-pointer group/item">
-                    <div className="flex justify-between items-center mb-2">
-                      <span className="text-[9px] font-black text-white/60 uppercase tracking-widest">{item.sport}</span>
-                      <span className="text-[9px] font-black text-[#C6FF00] uppercase tracking-widest bg-[#C6FF00]/10 px-2 py-0.5 rounded">{item.spots}</span>
-                    </div>
-                    <h5 className="text-lg font-black italic uppercase text-white group-hover/item:text-[#C6FF00] transition-colors">{item.label}</h5>
-                    <div className="mt-3 flex items-center justify-between">
-                      <div className="flex items-center gap-2 text-[10px] font-black uppercase text-white/50 tracking-widest">
-                        <ICONS.Clock /> {item.time} Tonight
-                      </div>
-                      <span className="text-sm font-black italic text-white">{item.price}</span>
-                    </div>
-                  </div>
-                ))}
+              <div className="absolute bottom-6 left-6 right-6 text-white">
+                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-[#C6FF00] mb-1">This week</p>
+                <p className="text-3xl md:text-4xl font-black italic tracking-tighter uppercase leading-none">
+                  342 matches <br /> played
+                </p>
               </div>
-
-              <button onClick={onOpenDiscover} className="w-full py-3 rounded-full border border-white/10 text-[10px] font-black uppercase tracking-widest text-white/50 hover:text-white hover:bg-white/5 transition-all">Browse All Games</button>
             </div>
           </div>
         </div>
       </div>
-
-      <style>{`
-        @keyframes marquee {
-          0% { transform: translateX(100%); }
-          100% { transform: translateX(-100%); }
-        }
-        .animate-marquee {
-          animation: marquee 30s linear infinite;
-        }
-      `}</style>
     </section>
   );
 };
 
-export default Hero;
+export default HeroLight;

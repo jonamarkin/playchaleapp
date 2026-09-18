@@ -6,6 +6,7 @@ import Link from 'next/link';
 import { ICONS } from '@/constants';
 import { m, AnimatePresence } from 'framer-motion';
 import { Game, PlayerProfile, JoinRequest, Participant, MatchRecord } from '@/types';
+import SportIcon from '@/components/SportIcon';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
@@ -22,14 +23,6 @@ interface GameDetailProps {
     onClose?: () => void; // Optional, maybe for back navigation
 }
 
-const SPORT_ICONS: Record<string, React.ReactNode> = {
-    'Football': <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="m6.7 6.7 10.6 10.6" /><path d="m17.3 6.7-10.6 10.6" /></svg>,
-    'Basketball': <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M12 2a14.5 14.5 0 0 0 0 20" /><path d="M2 12h20" /><path d="M12 2a14.5 14.5 0 0 1 0 20" /></svg>,
-    'Tennis': <ICONS.TennisBall className="scale-75" />,
-    'Volleyball': <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10" /><path d="M2.5 10.5 8 16l4-4" /><path d="M12 12l4 4 5.5-5.5" /></svg>,
-    'Swimming': <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M2 12h20" /><path d="M2 16h20" /><path d="M2 8h20" /></svg>,
-    'Athletics': <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 16l2-1 2.5-3.5-1.5-3 2-2 3 1 2 2 3-1" /><path d="M11 11.5L14 16l-1 4" /><path d="M11 11.5L9 16l2 4" /></svg>
-};
 
 const GameDetailView: React.FC<GameDetailProps> = ({
     type, data, currentUser, onJoin, onUpdate, onManageRequest, onRemoveParticipant, onShare
@@ -205,7 +198,7 @@ const GameDetailView: React.FC<GameDetailProps> = ({
 
                             {/* Float Badge */}
                             <div className="absolute top-8 left-8 bg-black/30 backdrop-blur-xl border border-white/10 px-6 py-3 rounded-full flex items-center gap-3">
-                                <div className="text-[#C6FF00]">{SPORT_ICONS[game.sport] || '⚽'}</div>
+                                <div className="text-[#C6FF00]"><SportIcon sport={game.sport} size={18} /></div>
                                 <span className="text-white text-[10px] font-black uppercase tracking-widest">{game.sport}</span>
                             </div>
 

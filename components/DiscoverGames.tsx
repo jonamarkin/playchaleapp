@@ -174,7 +174,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
   }, [games, filter, search, priceFilter, skillFilter, selectedDay]);
 
   return (
-    <section className={`px-4 md:px-12 ${isFullPage ? 'pt-28 md:pt-36 pb-32 min-h-screen bg-white relative' : 'py-24 md:py-32 bg-transparent'}`}>
+    <section className={`px-4 md:px-12 ${isFullPage ? 'pt-28 md:pt-36 pb-32 min-h-screen bg-white relative' : 'pt-12 md:pt-16 pb-24 md:pb-32 bg-transparent'}`}>
       {isFullPage && (
         <div className="absolute top-8 right-8 z-50">
           {user ? (
