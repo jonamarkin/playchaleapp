@@ -125,7 +125,7 @@ const PostGameModal: React.FC<PostGameModalProps> = ({ game, userId, onClose, on
                     <button onClick={onClose} className="absolute top-4 right-4 p-2 hover:bg-white/10 rounded-full">
                         <ICONS.X />
                     </button>
-                    <p className="text-[9px] font-black uppercase tracking-widest text-[#C6FF00] mb-2">Post-Game Report</p>
+                    <p className="text-[9px] font-black uppercase tracking-widest text-lime-500 mb-2">Post-Game Report</p>
                     <h2 className="text-2xl font-black italic uppercase tracking-tighter">{game.title}</h2>
                     <p className="text-white/60 text-sm mt-1">{game.sport} • {game.date}</p>
 
@@ -133,8 +133,8 @@ const PostGameModal: React.FC<PostGameModalProps> = ({ game, userId, onClose, on
                     <div className="flex gap-2 mt-6">
                         {steps.map((s, i) => (
                             <div key={s.key} className="flex-1">
-                                <div className={`h-1 rounded-full ${i <= currentStepIndex ? 'bg-[#C6FF00]' : 'bg-white/20'}`} />
-                                <p className={`text-[8px] font-black uppercase tracking-widest mt-2 ${i === currentStepIndex ? 'text-[#C6FF00]' : 'text-white/40'}`}>
+                                <div className={`h-1 rounded-full ${i <= currentStepIndex ? 'bg-lime-500' : 'bg-white/20'}`} />
+                                <p className={`text-[8px] font-black uppercase tracking-widest mt-2 ${i === currentStepIndex ? 'text-lime-500' : 'text-white/40'}`}>
                                     {s.label}
                                 </p>
                             </div>
@@ -210,7 +210,7 @@ const PostGameModal: React.FC<PostGameModalProps> = ({ game, userId, onClose, on
                                                 min="0"
                                                 value={gameResult[field.key] || 0}
                                                 onChange={(e) => setGameResult(prev => ({ ...prev, [field.key]: parseInt(e.target.value) || 0 }))}
-                                                className="w-full text-center text-4xl font-black p-4 bg-gray-50 rounded-2xl border-2 border-black/10 focus:border-[#C6FF00] focus:outline-none"
+                                                className="w-full text-center text-4xl font-black p-4 bg-gray-50 rounded-2xl border-2 border-black/10 focus:border-lime-500 focus:outline-none"
                                             />
                                         </div>
                                     ))}
@@ -256,7 +256,7 @@ const PostGameModal: React.FC<PostGameModalProps> = ({ game, userId, onClose, on
                                                                 min="0"
                                                                 value={(player.stats[stat.key] as number) || 0}
                                                                 onChange={(e) => updatePlayerStat(player.id, stat.key, parseInt(e.target.value) || 0)}
-                                                                className="w-full text-center text-lg font-bold p-2 bg-white rounded-xl border border-black/10 focus:border-[#C6FF00] focus:outline-none"
+                                                                className="w-full text-center text-lg font-bold p-2 bg-white rounded-xl border border-black/10 focus:border-lime-500 focus:outline-none"
                                                             />
                                                         ) : (
                                                             <Switch
@@ -325,7 +325,7 @@ const PostGameModal: React.FC<PostGameModalProps> = ({ game, userId, onClose, on
                     {step !== 'review' ? (
                         <button
                             onClick={() => setStep(steps[currentStepIndex + 1].key)}
-                            className="flex-1 py-4 bg-black text-[#C6FF00] rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all"
+                            className="flex-1 py-4 bg-black text-lime-500 rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all"
                         >
                             Continue
                         </button>
@@ -333,7 +333,7 @@ const PostGameModal: React.FC<PostGameModalProps> = ({ game, userId, onClose, on
                         <button
                             onClick={handleSubmit}
                             disabled={submitResults.isPending || submitStats.isPending}
-                            className="flex-1 py-4 bg-[#C6FF00] text-black rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all disabled:opacity-50"
+                            className="flex-1 py-4 bg-lime-500 text-black rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all disabled:opacity-50"
                         >
                             {submitResults.isPending || submitStats.isPending ? 'Submitting...' : 'Submit for Approval'}
                         </button>

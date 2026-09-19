@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ICONS } from '@/constants';
 import { m, AnimatePresence } from 'framer-motion';
-import { Game, PlayerProfile, JoinRequest, Participant, MatchRecord } from '@/types';
+import { Game, PlayerProfile, Participant, MatchRecord } from '@/types';
 import SportIcon from '@/components/SportIcon';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,7 +17,6 @@ interface GameDetailProps {
     currentUser?: PlayerProfile;
     onJoin?: (id: string) => void;
     onUpdate?: (id: string, updates: Partial<Game>) => void;
-    onManageRequest?: (gameId: string, requestId: string, accept: boolean) => void;
     onRemoveParticipant?: (gameId: string, playerId: string) => void;
     onShare?: (item: any) => void;
     onClose?: () => void; // Optional, maybe for back navigation
@@ -25,7 +24,7 @@ interface GameDetailProps {
 
 
 const GameDetailView: React.FC<GameDetailProps> = ({
-    type, data, currentUser, onJoin, onUpdate, onManageRequest, onRemoveParticipant, onShare
+    type, data, currentUser, onJoin, onUpdate, onRemoveParticipant, onShare
 }) => {
     const [loading, setLoading] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -71,11 +70,11 @@ const GameDetailView: React.FC<GameDetailProps> = ({
             <div className="flex flex-col md:flex-row md:items-end justify-between gap-6">
                 <div className="space-y-4">
                     <div className="flex items-center gap-3">
-                        <span className="bg-[#C6FF00] text-black px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em]">
+                        <span className="bg-lime-500 text-black px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-[0.2em]">
                             {type === 'report' ? 'Match Report' : (type === 'manage' ? 'Organizer Mode' : 'Upcoming Match')}
                         </span>
                         {game?.status && (
-                            <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${game.status === 'upcoming' ? 'border-[#C6FF00] text-[#C6FF00]' : 'border-white/20 text-white/40'}`}>
+                            <span className={`px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest border ${game.status === 'upcoming' ? 'border-lime-500 text-lime-500' : 'border-white/20 text-white/40'}`}>
                                 {game.status}
                             </span>
                         )}
@@ -109,7 +108,7 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                         <div className="absolute inset-0 bg-gradient-to-t from-black via-black/40 to-transparent" />
                         <div className="absolute bottom-0 left-0 w-full p-8 md:p-12 flex flex-col md:flex-row justify-between items-end gap-8">
                             <div className="space-y-4">
-                                <p className="text-[#C6FF00] font-black uppercase tracking-[0.3em] text-[10px]">Final Score</p>
+                                <p className="text-lime-500 font-black uppercase tracking-[0.3em] text-[10px]">Final Score</p>
                                 <div className="flex items-center gap-6">
                                     <span className="text-5xl sm:text-7xl md:text-9xl font-black italic text-white leading-none tracking-tighter">{match.score}</span>
                                 </div>
@@ -125,14 +124,14 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                         <div className="space-y-12">
                             {/* MVP Card */}
                             <div className="space-y-6">
-                                <h3 className="text-xl font-black italic uppercase text-[#C6FF00] tracking-tight">Match MVP</h3>
-                                <div className="bg-gradient-to-br from-[#C6FF00] to-[#a3d600] p-1 rounded-[40px] shadow-2xl shadow-lime-500/10">
+                                <h3 className="text-xl font-black italic uppercase text-lime-500 tracking-tight">Match MVP</h3>
+                                <div className="bg-gradient-to-br from-lime-500 to-lime-600 p-1 rounded-[40px] shadow-2xl shadow-lime-500/10">
                                     <div className="bg-black/90 p-8 rounded-[36px] flex items-center gap-8 relative overflow-hidden">
-                                        <div className="absolute top-0 right-0 w-32 h-32 bg-[#C6FF00]/10 blur-[50px] rounded-full pointer-events-none" />
-                                        {match.mvp?.avatar && <Image src={match.mvp.avatar} alt={match.mvp.name} width={80} height={80} className="w-20 h-20 rounded-full border-4 border-[#C6FF00] object-cover" />}
+                                        <div className="absolute top-0 right-0 w-32 h-32 bg-lime-500/10 blur-[50px] rounded-full pointer-events-none" />
+                                        {match.mvp?.avatar && <Image src={match.mvp.avatar} alt={match.mvp.name} width={80} height={80} className="w-20 h-20 rounded-full border-4 border-lime-500 object-cover" />}
                                         <div>
                                             <p className="text-white text-2xl font-black italic uppercase tracking-tighter leading-none mb-2">{match.mvp?.name}</p>
-                                            <p className="text-[#C6FF00] text-[10px] font-black uppercase tracking-widest">{match.mvp?.contribution}</p>
+                                            <p className="text-lime-500 text-[10px] font-black uppercase tracking-widest">{match.mvp?.contribution}</p>
                                         </div>
                                     </div>
                                 </div>
@@ -153,7 +152,7 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                                                     initial={{ width: 0 }}
                                                     animate={{ width: '70%' }}
                                                     transition={{ duration: 1, delay: 0.5 }}
-                                                    className="h-full bg-[#C6FF00]"
+                                                    className="h-full bg-lime-500"
                                                 />
                                             </div>
                                         </div>
@@ -169,7 +168,7 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                                 {match.participants?.map((p) => (
                                     <Link href={`/profile/${p.slug || p.id}`} key={p.id} className="group flex items-center justify-between bg-white/5 border border-white/5 hover:bg-white/10 p-4 rounded-3xl transition-all cursor-pointer">
                                         <div className="flex items-center gap-4">
-                                            <Image src={p.avatar} alt={p.name} width={48} height={48} className="w-12 h-12 rounded-full object-cover border-2 border-white/10 group-hover:border-[#C6FF00] transition-colors" />
+                                            <Image src={p.avatar} alt={p.name} width={48} height={48} className="w-12 h-12 rounded-full object-cover border-2 border-white/10 group-hover:border-lime-500 transition-colors" />
                                             <div className="min-w-0">
                                                 <p className="text-white font-black italic uppercase text-sm truncate">{p.name}</p>
                                                 <p className="text-white/30 text-[9px] font-black uppercase tracking-widest">{p.role}</p>
@@ -198,12 +197,12 @@ const GameDetailView: React.FC<GameDetailProps> = ({
 
                             {/* Float Badge */}
                             <div className="absolute top-8 left-8 bg-black/30 backdrop-blur-xl border border-white/10 px-6 py-3 rounded-full flex items-center gap-3">
-                                <div className="text-[#C6FF00]"><SportIcon sport={game.sport} size={18} /></div>
+                                <div className="text-lime-500"><SportIcon sport={game.sport} size={18} /></div>
                                 <span className="text-white text-[10px] font-black uppercase tracking-widest">{game.sport}</span>
                             </div>
 
                             <div className="absolute bottom-8 left-8">
-                                <p className="text-[#C6FF00] font-black uppercase tracking-[0.2em] text-[10px] mb-2">Location</p>
+                                <p className="text-lime-500 font-black uppercase tracking-[0.2em] text-[10px] mb-2">Location</p>
                                 <p className="text-3xl font-black italic uppercase text-white leading-none">{game.location}</p>
                             </div>
                         </div>
@@ -221,7 +220,7 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                                         <Input value={editForm.location} onChange={e => setEditForm({ ...editForm, location: e.target.value })} className="bg-black/50 border-white/10 rounded-full h-12" />
                                     </div>
                                 </div>
-                                <Button type="submit" disabled={loading} className="w-full bg-[#C6FF00] text-black h-12 rounded-full font-black uppercase tracking-widest text-[10px] hover:bg-lime-400">
+                                <Button type="submit" disabled={loading} className="w-full bg-lime-500 text-black h-12 rounded-full font-black uppercase tracking-widest text-[10px] hover:bg-lime-400">
                                     {loading ? 'Saving...' : 'Save Changes'}
                                 </Button>
                             </form>
@@ -234,7 +233,7 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                             </div>
                             <div className="bg-white/5 border border-white/5 p-6 rounded-[32px] space-y-2">
                                 <p className="text-white/30 text-[9px] font-black uppercase tracking-widest">Entry Fee</p>
-                                <p className="text-xl font-black text-[#C6FF00] italic">{game.price}</p>
+                                <p className="text-xl font-black text-lime-500 italic">{game.price}</p>
                             </div>
                         </div>
 
@@ -247,7 +246,7 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                         {/* Organizer Card */}
                         <div className="bg-white/5 border border-white/10 p-1 rounded-[32px]">
                             <div className="bg-black p-6 rounded-[28px] flex items-center gap-4">
-                                <div className="w-12 h-12 rounded-full bg-[#C6FF00] flex items-center justify-center font-black italic text-lg">
+                                <div className="w-12 h-12 rounded-full bg-lime-500 flex items-center justify-center font-black italic text-lg">
                                     {game.organizer.charAt(0)}
                                 </div>
                                 <div>
@@ -261,7 +260,7 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                         <div className="bg-white/5 border border-white/10 rounded-[40px] p-8 min-h-[400px] flex flex-col">
                             <div className="flex justify-between items-center mb-6">
                                 <h3 className="text-lg font-black italic uppercase text-white">Squad</h3>
-                                <span className="text-[#C6FF00] font-black text-sm">{game.participants?.length || 0} / {game.spotsTotal}</span>
+                                <span className="text-lime-500 font-black text-sm">{game.participants?.length || 0} / {game.spotsTotal}</span>
                             </div>
 
                             <div className="flex-1 space-y-4 overflow-y-auto max-h-[400px] pr-2 custom-scrollbar">
@@ -290,37 +289,12 @@ const GameDetailView: React.FC<GameDetailProps> = ({
 
                             {type === 'join' && (
                                 <div className="pt-8 mt-4 border-t border-white/10">
-                                    <Button onClick={handleJoin} disabled={loading} className="w-full py-7 rounded-full bg-[#C6FF00] text-black font-black uppercase tracking-widest hover:bg-lime-400 hover:scale-[1.02] shadow-xl text-xs">
+                                    <Button onClick={handleJoin} disabled={loading} className="w-full py-7 rounded-full bg-lime-500 text-black font-black uppercase tracking-widest hover:bg-lime-400 hover:scale-[1.02] shadow-xl text-xs">
                                         {loading ? 'Joining...' : 'Join Squad'}
                                     </Button>
                                 </div>
                             )}
                         </div>
-
-                        {/* Join Requests (Organizer Only) */}
-                        {type === 'manage' && game.requests && game.requests.length > 0 && (
-                            <div className="bg-[#C6FF00]/10 border border-[#C6FF00]/20 rounded-[40px] p-8">
-                                <h3 className="text-[#C6FF00] font-black italic uppercase mb-6">Pending Requests</h3>
-                                <div className="space-y-4">
-                                    {game.requests.map(req => (
-                                        <div key={req.id} className="bg-black p-4 rounded-2xl flex items-center justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <Image src={req.avatar} alt={req.name} width={32} height={32} className="w-8 h-8 rounded-full object-cover" />
-                                                <span className="text-white font-bold text-sm">{req.name}</span>
-                                            </div>
-                                            <div className="flex gap-2">
-                                                <button onClick={() => onManageRequest?.(game.id, req.id, true)} className="w-8 h-8 bg-[#C6FF00] rounded-full flex items-center justify-center text-black">
-                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>
-                                                </button>
-                                                <button onClick={() => onManageRequest?.(game.id, req.id, false)} className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-white">
-                                                    <ICONS.X />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
 
                     </div>
                 </div>

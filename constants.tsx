@@ -1,7 +1,7 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { Game, PlayerProfile, Program, Testimonial } from './types';
+import { Game, PlayerProfile } from './types';
 
 export const COLORS = {
   lime: '#C6FF00',
@@ -30,9 +30,6 @@ export const GAMES: Game[] = [
       { id: 'p3', name: 'Alex K.', avatar: 'https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?auto=format&fit=crop&q=80&w=200', role: 'Host' },
       { id: 'p4', name: 'Sarah L.', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200' }
     ],
-    requests: [
-      { id: 'req1', userId: 'p2', name: 'Elena R.', avatar: 'https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?auto=format&fit=crop&q=80&w=200', timestamp: '10m ago' }
-    ]
   },
   {
     id: 'g2',
@@ -183,7 +180,7 @@ export const TOP_PLAYERS: PlayerProfile[] = [
         date: 'Oct 19',
         sport: 'Football',
         title: 'Weekly Challenge',
-        imageUrl: 'https://images.unsplash.com/photo-1522778119026-d647f0565c6a?auto=format&fit=crop&q=80&w=400',
+        imageUrl: 'https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?auto=format&fit=crop&q=80&w=400',
         location: 'Central Field',
         organizer: 'Alex K.',
         matchStats: { possession: '48%', shots: 8, accuracy: '70%', intensity: 'Medium' },
@@ -310,7 +307,7 @@ export const TOP_PLAYERS: PlayerProfile[] = [
         date: 'Oct 12',
         sport: 'Basketball',
         title: '3v3 Elite',
-        imageUrl: 'https://images.unsplash.com/photo-1504450759520-6139970175cc?auto=format&fit=crop&q=80&w=400',
+        imageUrl: 'https://images.unsplash.com/photo-1519861531473-9200262188bf?auto=format&fit=crop&q=80&w=400',
         location: 'Westside Park',
         organizer: 'Elena R.',
         matchStats: { points: 12, rebounds: 5, assists: 2 },
@@ -393,39 +390,7 @@ export const TOP_PLAYERS: PlayerProfile[] = [
   }
 ];
 
-export const PROGRAMS: Program[] = [
-  {
-    id: 'pr1',
-    title: 'Elite Striker',
-    description: 'Master the art of finishing with pro-level drills and positioning analysis.',
-    imageUrl: 'https://images.unsplash.com/photo-1431324155629-1a6deb1dec8d?auto=format&fit=crop&q=80&w=800',
-    ageRange: '16-21',
-    category: 'Football',
-    accentColor: '#C6FF00'
-  },
-  {
-    id: 'pr2',
-    title: 'Hoop Mastery',
-    description: 'Elevate your handles and shooting consistency in high-intensity sessions.',
-    imageUrl: 'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&q=80&w=800',
-    ageRange: '14+',
-    category: 'Basketball',
-    accentColor: '#F5F5F0'
-  }
-];
 
-export const TESTIMONIALS: Testimonial[] = [
-  {
-    id: 't1',
-    content: "PlayChale changed the game for me. I found a consistent team and my stats have never been better.",
-    author: "David 'Speedy' K.",
-    trainer: "Coach Sam",
-    trainerRole: "Lead Technical Coach",
-    statValue: "15%",
-    statLabel: "Increase in shooting accuracy",
-    imageUrl: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?auto=format&fit=crop&q=80&w=800"
-  }
-];
 
 export const ICONS = {
   Clock: () => (
@@ -474,14 +439,14 @@ export const DEFAULT_SPORT_IMAGES: Record<string, string[]> = {
   'Football': [
     'https://images.unsplash.com/photo-1574629810360-7efbbe195018?auto=format&fit=crop&q=80&w=1200',
     'https://images.unsplash.com/photo-1518091043644-c1d4457512c6?auto=format&fit=crop&q=80&w=1200',
-    'https://images.unsplash.com/photo-1552318965-56d8d4a044aa?auto=format&fit=crop&q=80&w=1200',
+    'https://images.unsplash.com/photo-1517927033932-b3d18e61fb3a?auto=format&fit=crop&q=80&w=1200',
     'https://images.unsplash.com/photo-1624880357913-a8539238245b?auto=format&fit=crop&q=80&w=1200'
   ],
   'Basketball': [
     'https://images.unsplash.com/photo-1546519638-68e109498ffc?auto=format&fit=crop&q=80&w=1200',
-    'https://images.unsplash.com/photo-1504450759520-6139970175cc?auto=format&fit=crop&q=80&w=1200',
+    'https://images.unsplash.com/photo-1519861531473-9200262188bf?auto=format&fit=crop&q=80&w=1200',
     'https://images.unsplash.com/photo-1518063319789-7217e6706b04?auto=format&fit=crop&q=80&w=1200',
-    'https://images.unsplash.com/photo-1628779238951-bd5c9e99c4dd?auto=format&fit=crop&q=80&w=1200'
+    'https://images.unsplash.com/photo-1574623452334-1e0ac2b3ccb4?auto=format&fit=crop&q=80&w=1200'
   ],
   'Tennis': [
     'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&q=80&w=1200',
@@ -489,16 +454,16 @@ export const DEFAULT_SPORT_IMAGES: Record<string, string[]> = {
     'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&q=80&w=1200'
   ],
   'Padel': [
-    'https://images.unsplash.com/photo-1626245228616-c340df4d101c?auto=format&fit=crop&q=80&w=1200',
-    'https://images.unsplash.com/photo-1626245228108-9993338575a7?auto=format&fit=crop&q=80&w=1200'
+    'https://images.unsplash.com/photo-1554068865-24cecd4e34b8?auto=format&fit=crop&q=80&w=1200',
+    'https://images.unsplash.com/photo-1595435934249-5df7ed86e1c0?auto=format&fit=crop&q=80&w=1200'
   ],
   'Volleyball': [
     'https://images.unsplash.com/photo-1612872087720-bb876e2e67d1?auto=format&fit=crop&q=80&w=1200',
     'https://images.unsplash.com/photo-1592656094267-764a45160876?auto=format&fit=crop&q=80&w=1200'
   ],
   'Badminton': [
-    'https://images.unsplash.com/photo-1626224583764-847890e045b5?auto=format&fit=crop&q=80&w=1200',
-    'https://images.unsplash.com/photo-1613918110539-7c9d74775d7f?auto=format&fit=crop&q=80&w=1200'
+    'https://images.unsplash.com/photo-1521537634581-0dced2fee2ef?auto=format&fit=crop&q=80&w=1200',
+    'https://images.unsplash.com/photo-1599391398131-cd12dfc6c24e?auto=format&fit=crop&q=80&w=1200'
   ]
 };
 

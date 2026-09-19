@@ -1,7 +1,8 @@
 import { create } from 'zustand';
 
 // Types adapted from PlayChaleProvider
-export type ModalType = 'join' | 'create' | 'profile' | 'stats' | 'match-detail' | 'edit-profile' | 'share-profile' | 'contact-organizer' | 'challenge' | 'manage-game' | null;
+/** Only the join sheet lives on the global modal bus; everything else is a route or a local component. */
+export type ModalType = 'join' | null;
 
 interface PendingAction {
     type: 'modal' | 'view';

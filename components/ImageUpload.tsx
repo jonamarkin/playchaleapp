@@ -28,7 +28,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ currentImage, onImageSelected
 
     return (
         <div className={`relative group cursor-pointer ${className}`} onClick={() => fileInputRef.current?.click()}>
-            <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white/10 group-hover:border-[#C6FF00] transition-colors shadow-2xl">
+            <div className="relative w-32 h-32 md:w-40 md:h-40 rounded-full overflow-hidden border-4 border-white/10 group-hover:border-lime-500 transition-colors shadow-2xl">
                 <Image
                     src={currentDisplayImage}
                     alt="Profile Avatar"
@@ -52,7 +52,7 @@ const ImageUpload: React.FC<ImageUploadProps> = ({ currentImage, onImageSelected
                 className="hidden"
             />
 
-            <div className="absolute -bottom-2 -right-2 bg-[#C6FF00] text-black p-2 rounded-full shadow-lg border-4 border-black">
+            <div className="absolute -bottom-2 -right-2 bg-lime-500 text-black p-2 rounded-full shadow-lg border-4 border-black">
                 <ICONS.Plus className="w-4 h-4" />
             </div>
         </div>

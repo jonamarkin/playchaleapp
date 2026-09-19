@@ -99,7 +99,7 @@ export function useGatedModal() {
     const setPendingAction = useUIStore((state) => state.setPendingAction);
 
     return useCallback(
-        (type: ModalType, item?: unknown, gated = type === 'create' || type === 'challenge') => {
+        (type: ModalType, item?: unknown, gated = false) => {
             if (gated && !hasProfile) {
                 setPendingAction({ type: 'modal', modalType: type, item });
                 router.push('/onboarding');

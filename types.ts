@@ -23,16 +23,8 @@ export interface Game {
   visibility: 'public' | 'private';
   completedAt?: string;
   participants?: Participant[];
-  requests?: JoinRequest[];
 }
 
-export interface JoinRequest {
-  id: string;
-  userId: string;
-  name: string;
-  avatar: string;
-  timestamp: string;
-}
 
 export interface Participant {
   id: string;
@@ -44,28 +36,7 @@ export interface Participant {
   contribution?: string;
 }
 
-export interface Message {
-  id: string;
-  gameId: string;
-  senderId: string;
-  senderName: string;
-  senderAvatar: string;
-  recipientId?: string;
-  content: string;
-  timestamp: string;
-  isRead: boolean;
-  type?: 'inquiry' | 'challenge';
-  challengeDetails?: Challenge;
-}
 
-export interface Challenge {
-  id: string;
-  sport: string;
-  type: '1v1' | '2v2' | 'Team';
-  status: 'pending' | 'accepted' | 'declined';
-  message: string;
-  location?: string;
-}
 
 export interface PlayerProfile {
   id: string;
@@ -150,23 +121,4 @@ export interface MatchRecord {
   };
 }
 
-export interface Program {
-  id: string;
-  title: string;
-  description: string;
-  imageUrl: string;
-  ageRange: string;
-  category: string;
-  accentColor: string;
-}
 
-export interface Testimonial {
-  id: string;
-  content: string;
-  author: string;
-  trainer: string;
-  trainerRole: string;
-  statValue: string;
-  statLabel: string;
-  imageUrl: string;
-}

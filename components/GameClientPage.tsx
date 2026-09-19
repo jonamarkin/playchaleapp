@@ -32,7 +32,7 @@ export default function GameClientPage({ slug }: GameClientPageProps) {
         return (
             <div className="min-h-screen bg-black flex items-center justify-center text-white">
                 <div className="animate-pulse flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 bg-[#C6FF00] rounded-full animate-bounce"></div>
+                    <div className="w-12 h-12 bg-lime-500 rounded-full animate-bounce"></div>
                     <p className="font-black uppercase tracking-widest text-xs opacity-50">Loading Arena...</p>
                 </div>
             </div>
@@ -66,7 +66,7 @@ export default function GameClientPage({ slug }: GameClientPageProps) {
     return (
         <div className="min-h-screen bg-black pt-20 relative">
             {/* Background Ambient */}
-            <div className="fixed top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-[#C6FF00]/5 to-transparent pointer-events-none" />
+            <div className="fixed top-0 left-0 w-full h-[50vh] bg-gradient-to-b from-lime-500/5 to-transparent pointer-events-none" />
 
             <button
                 onClick={() => router.back()}
@@ -79,7 +79,7 @@ export default function GameClientPage({ slug }: GameClientPageProps) {
             {isHost && !isGameComplete && (
                 <button
                     onClick={() => setShowPostGameModal(true)}
-                    className="fixed bottom-6 right-6 z-50 bg-[#C6FF00] text-black px-6 py-4 rounded-full font-black uppercase text-[10px] tracking-widest shadow-2xl hover:scale-105 transition-all flex items-center gap-2"
+                    className="fixed bottom-6 right-6 z-50 bg-lime-500 text-black px-6 py-4 rounded-full font-black uppercase text-[10px] tracking-widest shadow-2xl hover:scale-105 transition-all flex items-center gap-2"
                 >
                     <span>📊</span> Complete Game
                 </button>

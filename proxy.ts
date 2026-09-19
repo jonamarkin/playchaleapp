@@ -4,7 +4,7 @@ import { SESSION_COOKIE } from '@/lib/api/config';
 // Cheap first line of defence: redirect before rendering when there is no session cookie at all.
 // Pages still verify the session itself (lib/auth/guards.ts), since a cookie can be stale.
 
-const PRIVATE_PREFIXES = ['/home', '/stats', '/messages', '/mygames'];
+const PRIVATE_PREFIXES = ['/home', '/stats', '/mygames', '/games/new'];
 
 export function proxy(request: NextRequest) {
     const { pathname, search } = request.nextUrl;
@@ -20,5 +20,5 @@ export function proxy(request: NextRequest) {
 }
 
 export const config = {
-    matcher: ['/home/:path*', '/stats/:path*', '/messages/:path*', '/mygames/:path*'],
+    matcher: ['/home/:path*', '/stats/:path*', '/mygames/:path*', '/games/new'],
 };

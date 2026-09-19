@@ -25,14 +25,14 @@ const Footer: React.FC = () => {
             </div>
 
             <div className="space-y-4">
-              <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#C6FF00]">Elite Access</h4>
+              <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-lime-500">Elite Access</h4>
               <div className="relative max-w-md">
                 <input
                   type="email"
                   placeholder="Enter your email for match alerts..."
-                  className="w-full bg-white/5 border border-white/10 rounded-full px-8 py-5 text-sm font-bold outline-none focus:border-[#C6FF00] transition-all"
+                  className="w-full bg-white/5 border border-white/10 rounded-full px-8 py-5 text-sm font-bold outline-none focus:border-lime-500 transition-all"
                 />
-                <button className="absolute right-2 top-2 bottom-2 bg-[#C6FF00] text-black px-6 rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 active:scale-95 transition-all">
+                <button className="absolute right-2 top-2 bottom-2 bg-lime-500 text-black px-6 rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 active:scale-95 transition-all">
                   Join
                 </button>
               </div>
@@ -52,7 +52,7 @@ const Footer: React.FC = () => {
                   { label: 'Pitch Partners', path: '/discover' }
                 ].map(item => (
                   <li key={item.label}>
-                    <Link href={item.path} className="text-sm font-black italic uppercase tracking-tight hover:text-[#C6FF00] transition-colors text-left">{item.label}</Link>
+                    <Link href={item.path} className="text-sm font-black italic uppercase tracking-tight hover:text-lime-500 transition-colors text-left">{item.label}</Link>
                   </li>
                 ))}
               </ul>
@@ -68,7 +68,7 @@ const Footer: React.FC = () => {
                   { label: 'Guidelines', path: '/home' }
                 ].map(item => (
                   <li key={item.label}>
-                    <Link href={item.path} className="text-sm font-black italic uppercase tracking-tight hover:text-[#C6FF00] transition-colors text-left">{item.label}</Link>
+                    <Link href={item.path} className="text-sm font-black italic uppercase tracking-tight hover:text-lime-500 transition-colors text-left">{item.label}</Link>
                   </li>
                 ))}
               </ul>
@@ -78,7 +78,7 @@ const Footer: React.FC = () => {
               <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/20">Follow Us</h4>
               <div className="flex gap-4">
                 {['IG', 'X', 'DS'].map(social => (
-                  <button key={social} className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center font-black text-xs hover:bg-[#C6FF00] hover:text-black transition-all">
+                  <button key={social} className="w-12 h-12 rounded-2xl bg-white/5 border border-white/10 flex items-center justify-center font-black text-xs hover:bg-lime-500 hover:text-black transition-all">
                     {social}
                   </button>
                 ))}
@@ -104,9 +104,9 @@ const Footer: React.FC = () => {
           </div>
 
           <div className="flex items-center gap-3 bg-white/5 px-5 py-2.5 rounded-full border border-white/10">
-            <span className="w-1.5 h-1.5 rounded-full bg-[#C6FF00] animate-pulse"></span>
+            <span className="w-1.5 h-1.5 rounded-full bg-lime-500 animate-pulse"></span>
             <span className="text-[9px] font-black uppercase tracking-widest text-white/40">
-              12,482 Players Active in 42 Cities
+              Built in Accra for players in Ghana
             </span>
           </div>
 

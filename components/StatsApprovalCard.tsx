@@ -51,7 +51,7 @@ const StatsApprovalCard: React.FC<StatsApprovalCardProps> = ({ approval, onAppro
                 />
                 <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                 <div className="absolute bottom-3 left-4 right-4">
-                    <span className="bg-[#C6FF00] text-black px-2.5 py-1 rounded-full text-[8px] font-black uppercase tracking-widest">
+                    <span className="bg-lime-500 text-black px-2.5 py-1 rounded-full text-[8px] font-black uppercase tracking-widest">
                         Pending Approval
                     </span>
                     <h4 className="text-white font-black italic uppercase tracking-tighter text-lg mt-1 truncate">
@@ -104,7 +104,7 @@ const StatsApprovalCard: React.FC<StatsApprovalCardProps> = ({ approval, onAppro
                     <button
                         onClick={handleApprove}
                         disabled={reviewStats.isPending}
-                        className="flex-1 py-3 bg-[#C6FF00] text-black rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all disabled:opacity-50"
+                        className="flex-1 py-3 bg-lime-500 text-black rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all disabled:opacity-50"
                     >
                         {reviewStats.isPending ? 'Approving...' : 'Approve'}
                     </button>

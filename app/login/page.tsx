@@ -102,7 +102,7 @@ export default function LoginPage() {
                                 required
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
-                                className="bg-white/5 border-white/10 h-12 rounded-full px-6 focus:border-[#C6FF00] placeholder:text-white/20"
+                                className="bg-white/5 border-white/10 h-12 rounded-full px-6 focus:border-lime-500 placeholder:text-white/20"
                             />
                         </div>
                         <div className="space-y-2">
@@ -112,7 +112,7 @@ export default function LoginPage() {
                                 required
                                 value={password}
                                 onChange={(e) => setPassword(e.target.value)}
-                                className="bg-white/5 border-white/10 h-12 rounded-full px-6 focus:border-[#C6FF00] placeholder:text-white/20"
+                                className="bg-white/5 border-white/10 h-12 rounded-full px-6 focus:border-lime-500 placeholder:text-white/20"
                             />
                         </div>
 
@@ -125,7 +125,7 @@ export default function LoginPage() {
                         <Button
                             type="submit"
                             disabled={isLoading}
-                            className="w-full h-12 bg-[#C6FF00] hover:bg-[#b0ff00] text-black rounded-full font-black uppercase tracking-widest text-xs shadow-[0_0_20px_rgba(198,255,0,0.2)]"
+                            className="w-full h-12 bg-lime-500 hover:bg-lime-400 text-black rounded-full font-black uppercase tracking-widest text-xs shadow-[0_0_20px_rgba(198,255,0,0.2)]"
                         >
                             {isLoading ? 'Signing In...' : 'Access Account'}
                         </Button>
@@ -133,7 +133,7 @@ export default function LoginPage() {
                 </div>
 
                 <div className="text-center">
-                    <Link href="/onboarding" className="text-white/40 hover:text-[#C6FF00] text-xs font-bold uppercase tracking-widest transition-colors">
+                    <Link href="/onboarding" className="text-white/40 hover:text-lime-500 text-xs font-bold uppercase tracking-widest transition-colors">
                         New Athlete? <span className="text-white border-b border-white/20 pb-0.5">Start Draft</span>
                     </Link>
                 </div>

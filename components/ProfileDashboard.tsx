@@ -17,14 +17,14 @@ import {
 interface DashboardProps {
   player: PlayerProfile;
   isOwner?: boolean;
-  onEditStats: () => void;
-  onEditProfile: () => void;
+  /** Shown on the owner's own profile: below lg this is the only way out, since the header drawer is desktop-only. */
+  onSignOut?: () => void;
   onShareProfile: () => void;
   onViewMatch: (match: any) => void;
 }
 
 const ProfileDashboard: React.FC<DashboardProps> = ({
-  player, isOwner = false, onEditStats, onEditProfile, onShareProfile, onViewMatch
+  player, isOwner = false, onShareProfile, onViewMatch, onSignOut
 }) => {
   const uploadAvatar = useAvatarUploader();
   const [activeSport, setActiveSport] = React.useState(player.mainSport);
@@ -34,7 +34,7 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
 
   const metrics = [
     { label: 'Matches', value: activeStats.gamesPlayed, color: 'text-white' },
-    { label: 'Win Rate', value: activeStats.winRate, color: 'text-[#C6FF00]' },
+    { label: 'Win Rate', value: activeStats.winRate, color: 'text-lime-500' },
     { label: 'Reliability', value: activeStats.reliability, color: 'text-white' },
     { label: 'MVPs', value: activeStats.mvps, color: 'text-white' }
   ];
@@ -95,7 +95,7 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
 
   return (
     <section className="min-h-screen bg-black pt-24 md:pt-32 pb-20 md:pb-32 px-4 md:px-12 text-white overflow-hidden relative">
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-1/2 bg-gradient-to-t from-[#C6FF00]/5 to-transparent pointer-events-none"></div>
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-1/2 bg-gradient-to-t from-lime-500/5 to-transparent pointer-events-none"></div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         <div className="flex flex-col lg:flex-row gap-8 md:gap-16 items-start">
@@ -114,37 +114,28 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
                   ) : (
                     <Image src={player.avatar} alt={player.name} width={160} height={160} className="w-40 h-40 rounded-full object-cover border-[6px] border-white/5 shadow-2xl" />
                   )}
-                  <div className="absolute -bottom-1 -right-1 bg-[#C6FF00] text-black w-12 h-12 rounded-full flex items-center justify-center font-black text-lg shadow-2xl uppercase italic">PRO</div>
+                  <div className="absolute -bottom-1 -right-1 bg-lime-500 text-black w-12 h-12 rounded-full flex items-center justify-center font-black text-lg shadow-2xl uppercase italic">PRO</div>
                 </div>
                 <div>
                   <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">{player.name}</h2>
-                  <p className="text-[#C6FF00] font-black uppercase tracking-[0.3em] text-[8px] mt-2">{player.mainSport} Specialist</p>
+                  <p className="text-lime-500 font-black uppercase tracking-[0.3em] text-[8px] mt-2">{player.mainSport} Specialist</p>
                 </div>
               </div>
 
               <div className="grid grid-cols-1 gap-4 pt-4">
-                {isOwner && (
-                  <button
-                    onClick={onEditProfile}
-                    className="w-full bg-white/10 text-white py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:bg-white/20 transition-all border border-white/5 flex items-center justify-center gap-3 min-h-[64px]"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
-                    Edit Profile
-                  </button>
-                )}
                 <button
                   onClick={onShareProfile}
-                  className="w-full bg-[#C6FF00] text-black py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-105 transition-all flex items-center justify-center gap-3 min-h-[64px] shadow-xl shadow-lime-500/10"
+                  className="w-full bg-lime-500 text-black py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-105 transition-all flex items-center justify-center gap-3 min-h-[64px] shadow-xl shadow-lime-500/10"
                 >
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /><polyline points="16 6 12 2 8 6" /><line x1="12" y1="2" x2="12" y2="15" /></svg>
                   Share Pro Card
                 </button>
-                {isOwner && (
+                {isOwner && onSignOut && (
                   <button
-                    onClick={onEditStats}
-                    className="w-full bg-white/5 text-white/60 py-4 rounded-full font-black uppercase tracking-widest text-[9px] hover:bg-white/10 transition-all flex items-center justify-center gap-2"
+                    onClick={onSignOut}
+                    className="w-full py-4 rounded-full font-black uppercase tracking-widest text-eyebrow text-red-400 hover:text-red-300 hover:bg-white/5 transition-all flex items-center justify-center gap-2 touch-target"
                   >
-                    Update Season Stats
+                    Log Out
                   </button>
                 )}
               </div>
@@ -160,7 +151,7 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
                   {/* Sport Selector */}
                   <div className="w-full md:w-auto">
                     <Select value={activeSport} onValueChange={setActiveSport}>
-                      <SelectTrigger className="w-full md:w-[180px] bg-white/5 border-white/10 text-white rounded-full h-12 px-6 font-black uppercase tracking-widest text-[10px] hover:bg-white/10 transition-all focus:ring-[#C6FF00]">
+                      <SelectTrigger className="w-full md:w-[180px] bg-white/5 border-white/10 text-white rounded-full h-12 px-6 font-black uppercase tracking-widest text-[10px] hover:bg-white/10 transition-all focus:ring-lime-500">
                         <SelectValue placeholder="Select Sport" />
                       </SelectTrigger>
                       <SelectContent className="bg-black border border-white/10 text-white rounded-xl">
@@ -168,7 +159,7 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
                           <SelectItem
                             key={sport}
                             value={sport}
-                            className="font-black uppercase tracking-widest text-[10px] focus:bg-[#C6FF00] focus:text-black py-3 cursor-pointer"
+                            className="font-black uppercase tracking-widest text-[10px] focus:bg-lime-500 focus:text-black py-3 cursor-pointer"
                           >
                             {sport}
                           </SelectItem>
@@ -190,11 +181,11 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
 
               {/* Sport Specific Highlights */}
               <div className="space-y-8">
-                <h4 className="text-2xl font-black italic tracking-tight uppercase border-l-4 border-[#C6FF00] pl-4">{activeSport} Highlights</h4>
+                <h4 className="text-2xl font-black italic tracking-tight uppercase border-l-4 border-lime-500 pl-4">{activeSport} Highlights</h4>
                 <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
                   {getSportSpecificHighlights().map((h) => (
-                    <div key={h.label} className="bg-white/5 rounded-[32px] p-8 border border-white/5 hover:border-[#C6FF00]/30 transition-all">
-                      <span className="block text-4xl font-black text-[#C6FF00] italic mb-1">{h.value}</span>
+                    <div key={h.label} className="bg-white/5 rounded-[32px] p-8 border border-white/5 hover:border-lime-500/30 transition-all">
+                      <span className="block text-4xl font-black text-lime-500 italic mb-1">{h.value}</span>
                       <span className="text-[10px] font-black uppercase tracking-widest text-white/30">{h.label}</span>
                     </div>
                   ))}
@@ -204,7 +195,7 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
               <div className="space-y-8">
                 <div className="flex justify-between items-center">
                   <h4 className="text-2xl font-black italic tracking-tight uppercase">Recent Match Activity</h4>
-                  <button className="text-[#C6FF00] font-black uppercase tracking-widest text-[9px] border-b border-[#C6FF00] pb-1">View Full Log</button>
+                  <button className="text-lime-500 font-black uppercase tracking-widest text-[9px] border-b border-lime-500 pb-1">View Full Log</button>
                 </div>
                 <div className="space-y-4">
                   {(player.matchHistory || [])
@@ -212,11 +203,11 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
                     .map((match, i) => (
                       <div key={i} onClick={() => onViewMatch(match)} className="bg-white/5 hover:bg-white/10 transition-all rounded-[32px] p-8 border border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 cursor-pointer group">
                         <div className="flex items-center gap-6">
-                          <div className="w-16 h-16 bg-black border border-white/10 rounded-full flex items-center justify-center font-black text-xs text-[#C6FF00] italic uppercase">{match.date}</div>
+                          <div className="w-16 h-16 bg-black border border-white/10 rounded-full flex items-center justify-center font-black text-xs text-lime-500 italic uppercase">{match.date}</div>
                           <div>
                             <h5 className="text-xl font-black tracking-tight mb-1">{match.title}</h5>
-                            <span className={`text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${match.result === 'Win' || match.result === 'W' ? 'text-[#C6FF00]' : 'text-red-500'}`}>
-                              <span className={`w-2 h-2 rounded-full ${match.result === 'Win' || match.result === 'W' ? 'bg-[#C6FF00]' : 'bg-red-500'}`}></span>
+                            <span className={`text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${match.result === 'Win' || match.result === 'W' ? 'text-lime-500' : 'text-red-500'}`}>
+                              <span className={`w-2 h-2 rounded-full ${match.result === 'Win' || match.result === 'W' ? 'bg-lime-500' : 'bg-red-500'}`}></span>
                               {match.result}
                             </span>
                           </div>
@@ -230,7 +221,7 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
                             <span className="block text-3xl font-black text-white italic">{match.rating}</span>
                             <span className="text-[10px] font-black uppercase opacity-30 tracking-widest">Rating</span>
                           </div>
-                          <div className="p-3 rounded-full bg-white/5 group-hover:bg-[#C6FF00] group-hover:text-black transition-all">
+                          <div className="p-3 rounded-full bg-white/5 group-hover:bg-lime-500 group-hover:text-black transition-all">
                             <ICONS.ChevronRight />
                           </div>
                         </div>

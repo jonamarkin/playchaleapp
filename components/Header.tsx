@@ -6,12 +6,11 @@ import { usePathname } from 'next/navigation';
 import { ICONS } from '@/constants';
 import { m, AnimatePresence } from 'framer-motion';
 import { useSession } from '@/features/auth/session';
-import { useLogout, useGatedModal } from '@/features/auth/hooks';
+import { useLogout } from '@/features/auth/hooks';
 
 const Header: React.FC = () => {
   const { user } = useSession();
   const logout = useLogout();
-  const openModal = useGatedModal();
   const pathname = usePathname();
   const activeView = pathname.split('/')[1] || 'landing';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -34,8 +33,7 @@ const Header: React.FC = () => {
     { label: 'Home', id: 'home' },
     { label: 'Discover', id: 'discover' },
     { label: 'Community', id: 'community' },
-    { label: 'My Stats', id: 'stats' },
-    { label: 'Inbox', id: 'messages' }
+    { label: 'My Stats', id: 'stats' }
   ];
 
   // Logic to determine if we should use the dark theme (white text, transparent bg)
@@ -69,7 +67,7 @@ const Header: React.FC = () => {
               <Link
                 key={item.id}
                 href={`/${item.id}`}
-                className={`px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all ${isActive(item.id) ? (headerTheme === 'light' ? 'bg-black text-white' : 'bg-[#C6FF00] text-black shadow-lg shadow-lime-500/20') : (headerTheme === 'light' ? 'text-black/70 hover:text-black hover:bg-black/5' : 'text-white/80 hover:text-white hover:bg-white/10')}`}
+                className={`px-5 py-1.5 rounded-full text-[10px] font-black uppercase tracking-[0.2em] transition-all ${isActive(item.id) ? (headerTheme === 'light' ? 'bg-black text-white' : 'bg-lime-500 text-black shadow-lg shadow-lime-500/20') : (headerTheme === 'light' ? 'text-black/70 hover:text-black hover:bg-black/5' : 'text-white/80 hover:text-white hover:bg-white/10')}`}
               >
                 {item.label}
               </Link>
@@ -78,19 +76,21 @@ const Header: React.FC = () => {
         </div>
 
         <div className="animate-in fade-in slide-in-from-right-5 duration-500 flex items-center gap-2 md:gap-3">
-          <button
-            onClick={() => openModal('create')}
-            className={`transition-all duration-300 px-3 sm:px-5 md:px-7 py-2 md:py-2.5 rounded-full flex items-center gap-2 md:gap-3 group shadow-lg ${headerTheme === 'light' ? 'bg-black text-white hover:bg-[#C6FF00] hover:text-black' : 'bg-[#C6FF00] text-black hover:bg-white'}`}
+          <Link
+            href="/games/new"
+            className={`transition-all duration-300 px-3 sm:px-5 md:px-7 py-2 md:py-2.5 rounded-full flex items-center gap-2 md:gap-3 group shadow-lg ${headerTheme === 'light' ? 'bg-black text-white hover:bg-lime-500 hover:text-black' : 'bg-lime-500 text-black hover:bg-white'}`}
           >
             <span className="hidden sm:block text-[10px] md:text-xs font-black uppercase tracking-widest">Create Game</span>
             <div className={`rounded-full p-1 transition-transform group-hover:translate-x-1 ${headerTheme === 'light' ? 'bg-white/10' : 'bg-black/10'}`}>
               <ICONS.Plus />
             </div>
-          </button>
+          </Link>
 
           <button
+            aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
+            aria-expanded={isMenuOpen}
             onClick={() => setIsMenuOpen(!isMenuOpen)}
-            className={`backdrop-blur-md w-10 h-10 md:w-11 md:h-11 flex items-center justify-center rounded-full shadow-sm transition-all border active:scale-90 ${headerTheme === 'light' ? 'bg-white/90 border-gray-100 text-black' : 'bg-white/10 border-white/20 text-white'}`}
+            className={`hidden lg:flex backdrop-blur-md w-10 h-10 md:w-11 md:h-11 items-center justify-center rounded-full shadow-sm transition-all border active:scale-90 ${headerTheme === 'light' ? 'bg-white/90 border-gray-100 text-black' : 'bg-white/10 border-white/20 text-white'}`}
           >
             {isMenuOpen ? <ICONS.X /> : <ICONS.Menu />}
           </button>
@@ -120,7 +120,7 @@ const Header: React.FC = () => {
                   key={item.id}
                   href={`/${item.id}`}
                   onClick={() => setIsMenuOpen(false)}
-                  className="block text-5xl md:text-7xl font-black italic tracking-tighter hover:text-[#C6FF00] transition-all text-left group"
+                  className="block text-5xl md:text-7xl font-black italic tracking-tighter hover:text-lime-500 transition-all text-left group"
                 >
                   <span className="text-xs not-italic opacity-30 mr-6">0{idx + 1}</span>
                   {item.label}

@@ -2,8 +2,73 @@
 @tailwind components;
 @tailwind utilities;
 
+/* ==========================================================================
+   Design tokens — the single source of truth for colour, radius, elevation,
+   depth and motion. Values are HSL channels (not hex) so Tailwind's opacity
+   modifiers work: bg-lime-500/20 → hsl(var(--lime-500) / 0.2).
+   Consumed by tailwind.config.ts. See /styleguide for the rendered set.
+   ========================================================================== */
 :root {
-  /* Brand Constants */
+  /* Brand: lime. 500 is the brand value #C6FF00. */
+  --lime-50: 74 100% 96%;
+  --lime-100: 74 100% 90%;
+  --lime-200: 74 100% 80%;
+  --lime-300: 74 100% 68%;
+  --lime-400: 74 100% 58%;
+  --lime-500: 73 100% 50%;
+  --lime-600: 73 95% 42%;
+  --lime-700: 73 90% 33%;
+  --lime-800: 73 85% 25%;
+  --lime-900: 73 80% 18%;
+  --lime-950: 73 80% 10%;
+
+  /* Neutrals: ink. 900 is the brand dark #111111. */
+  --ink-50: 0 0% 98%;
+  --ink-100: 0 0% 96%;
+  --ink-200: 0 0% 90%;
+  --ink-300: 0 0% 80%;
+  --ink-400: 0 0% 64%;
+  --ink-500: 0 0% 45%;
+  --ink-600: 0 0% 32%;
+  --ink-700: 0 0% 22%;
+  --ink-800: 0 0% 13%;
+  --ink-900: 0 0% 7%;
+  --ink-950: 0 0% 4%;
+
+  /* Surfaces */
+  --surface-app: 60 20% 99%;      /* cream #FDFDFB — page background */
+  --surface-panel: 0 0% 100%;     /* white — raised panels and cards */
+  --surface-sunken: 60 20% 95%;   /* beige #F5F5F0 — inset wells */
+  --surface-inverse: 0 0% 7%;     /* ink-900 — dark sections */
+
+  /* Radii: five steps, named by role rather than size */
+  --r-chip: 12px;
+  --r-field: 20px;
+  --r-card: 28px;
+  --r-card-lg: 40px;
+  --r-card-xl: 56px;
+
+  /* Elevation */
+  --e-1: 0 1px 2px hsl(var(--ink-900) / 0.04), 0 2px 8px hsl(var(--ink-900) / 0.04);
+  --e-2: 0 4px 12px hsl(var(--ink-900) / 0.06), 0 12px 32px hsl(var(--ink-900) / 0.08);
+  --e-3: 0 12px 32px hsl(var(--ink-900) / 0.12), 0 40px 80px hsl(var(--ink-900) / 0.16);
+  --e-lime: 0 0 32px hsl(var(--lime-500) / 0.35);
+
+  /* Depth: one ladder, so no more hand-picked z-[210] */
+  --z-sticky: 100;
+  --z-header: 200;
+  --z-overlay: 300;
+  --z-modal: 400;
+  --z-toast: 500;
+  --z-tooltip: 600;
+
+  /* Motion */
+  --dur-fast: 120ms;
+  --dur: 240ms;
+  --dur-slow: 480ms;
+  --ease-out: cubic-bezier(0.16, 1, 0.3, 1);
+
+  /* Legacy aliases — kept until the last raw-hex call sites are migrated */
   --color-lime: #c6ff00;
   --color-dark: #111111;
   --color-beige: #f5f5f0;
@@ -38,33 +103,60 @@
   /* Rounded corners */
 }
 
-.dark {
-  --background: 0 0% 7%;
-  /* Matches Dark */
-  --foreground: 0 0% 99%;
-  /* Matches Cream */
-  --card: 0 0% 7%;
-  --card-foreground: 0 0% 99%;
-  --popover: 0 0% 7%;
-  --popover-foreground: 0 0% 99%;
-  --primary: 74 100% 50%;
-  /* Lime */
-  --primary-foreground: 0 0% 7%;
-  --secondary: 0 0% 15%;
-  --secondary-foreground: 0 0% 98%;
-  --muted: 0 0% 15%;
-  --muted-foreground: 0 0% 64%;
-  --accent: 0 0% 15%;
-  --accent-foreground: 0 0% 98%;
-  --destructive: 0 63% 31%;
-  --destructive-foreground: 0 0% 98%;
-  --border: 0 0% 15%;
-  --input: 0 0% 15%;
-  --ring: 74 100% 50%;
+/* --------------------------------------------------------------------------
+   Surface polarity. PlayChale mixes light and dark sections freely, so a
+   component cannot assume which one it sits on. Instead of `dark:` variants,
+   a <Surface> sets these for its subtree and every primitive reads them.
+   Contrast is checked against the surface: muted ≈ 6:1, subtle ≈ 4.7:1.
+   -------------------------------------------------------------------------- */
+:root,
+[data-polarity='light'] {
+  --surface: var(--surface-app);
+  --fg: var(--ink-900);
+  --fg-muted: 0 0% 38%;
+  --fg-subtle: 0 0% 45%;
+  --line: 0 0% 88%;
+  --ring-color: var(--ink-900);
+  /* Lime is unreadable as text on cream (~1.5:1); accents on light surfaces use the dark end of the ramp. */
+  --brand-fg: var(--lime-700);
+}
+
+[data-polarity='dark'] {
+  --surface: var(--surface-inverse);
+  --fg: 0 0% 98%;
+  --fg-muted: 0 0% 72%;
+  --fg-subtle: 0 0% 62%;
+  --line: 0 0% 22%;
+  --ring-color: var(--lime-500);
+  --brand-fg: var(--lime-500);
 }
 
 html {
   scroll-behavior: smooth;
+}
+
+/* One focus ring for the whole app, coloured per polarity: a lime ring is
+   invisible on cream, an ink ring is invisible on black. */
+:where(a, button, [role='button'], input, select, textarea, summary, [tabindex]):focus-visible {
+  outline: 2px solid hsl(var(--ring-color));
+  outline-offset: 2px;
+}
+
+/* Framer Motion honours this via MotionConfig; CSS animations need it spelled out. */
+@media (prefers-reduced-motion: reduce) {
+
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+
+  html {
+    scroll-behavior: auto;
+  }
 }
 
 body {
