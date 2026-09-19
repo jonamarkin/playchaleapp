@@ -3,12 +3,14 @@ import 'server-only';
 import { cookies } from 'next/headers';
 import { cache } from 'react';
 import { createApi, toQueryString, type Transport } from './client';
-import { API_BASE_URL, SESSION_COOKIE, USE_MOCK_API } from './config';
+import { API_ORIGIN, SESSION_COOKIE, USE_MOCK_API } from './config';
 
 /**
  * API client for Server Components, route handlers and server actions.
- * Forwards the visitor's session cookie. With the mock API it calls the mock
- * router in-process instead of making an HTTP request to itself.
+ *
+ * Forwards the visitor's session cookie. With the mock it calls the mock router in-process;
+ * with API_ORIGIN set it goes straight to the backend rather than back through this app's
+ * own /api route, which would be a pointless extra hop during rendering.
  */
 
 const serverTransport: Transport = async (request) => {
@@ -24,16 +26,18 @@ const serverTransport: Transport = async (request) => {
             query: new URLSearchParams(search),
             body: request.body,
             sessionToken,
+            idempotencyKey: request.idempotencyKey,
         });
         // Clone so server-rendered data can't mutate the store
         return { status: response.status, body: response.body === undefined ? undefined : structuredClone(response.body) };
     }
 
-    const response = await fetch(`${API_BASE_URL}${request.path}${toQueryString(request.query)}`, {
+    const response = await fetch(`${API_ORIGIN}${request.path}${toQueryString(request.query)}`, {
         method: request.method,
         headers: {
             ...(sessionToken ? { Cookie: `${SESSION_COOKIE}=${sessionToken}` } : {}),
             ...(request.body === undefined ? {} : { 'Content-Type': 'application/json' }),
+            ...(request.idempotencyKey ? { 'Idempotency-Key': request.idempotencyKey } : {}),
         },
         body: request.body === undefined ? undefined : JSON.stringify(request.body),
         cache: 'no-store',

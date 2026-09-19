@@ -4,19 +4,25 @@ import React from 'react';
 import Image from 'next/image';
 import { ICONS } from '@/constants';
 import { m } from 'framer-motion';
-import { PlayerProfile, Game } from '@/types';
+import { Player, Game, MyGames } from '@/types';
 import GameCard from '@/components/GameCard';
+import { useSportName } from '@/features/sports/hooks';
+import { formatGameWhen, primaryStats, reliability, winRate } from '@/lib/format';
 
 interface AppDashboardProps {
-  player: PlayerProfile;
+  player: Player;
   upcomingGames: Game[];
-  myGames?: { hostedGames: Game[], joinedGames: Game[] };
-  risingStars?: PlayerProfile[];
+  myGames?: MyGames;
+  risingStars?: Player[];
   onViewMatch: (game: Game) => void;
-  onNavigate: (view: any) => void;
+  onNavigate: (view: string) => void;
 }
 
 const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGames, risingStars, onViewMatch, onNavigate }) => {
+  const sportName = useSportName();
+  // Career numbers are derived from approved results, so a new player legitimately has none
+  const record = primaryStats(player.careerStats, player.mainSport);
+
   return (
     <section className="pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20 px-4 sm:px-6 md:px-12 min-h-screen bg-surface-app">
       <div className="max-w-7xl mx-auto space-y-8 sm:space-y-10 md:space-y-16">
@@ -41,7 +47,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
             <div className="absolute top-0 right-0 p-4 sm:p-6 opacity-5 rotate-12"><ICONS.Logo /></div>
             <div className="text-right">
               <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">Games played</p>
-              <p className="text-2xl sm:text-3xl md:text-4xl font-black italic text-lime-500">{player.stats.gamesPlayed}</p>
+              <p className="text-2xl sm:text-3xl md:text-4xl font-black italic text-lime-500">{record?.gamesPlayed ?? 0}</p>
             </div>
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-lime-500 text-black flex items-center justify-center font-black shadow-xl">
               <ICONS.UpArrow />
@@ -69,8 +75,8 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
                 <span className="bg-lime-500 text-black px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-full text-[8px] sm:text-[9px] md:text-[10px] font-black uppercase tracking-widest mb-3 sm:mb-4 md:mb-6 inline-block w-fit shadow-lg">Spotlight Match Today</span>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-black text-white italic uppercase tracking-tighter mb-3 sm:mb-4 md:mb-6 leading-none">{upcomingGames[0].title}</h2>
                 <div className="flex flex-wrap items-center gap-4 sm:gap-6 md:gap-8 text-white/70 font-black uppercase tracking-widest text-[8px] sm:text-[9px] md:text-[10px]">
-                  <div className="flex items-center gap-2 sm:gap-3"><ICONS.Clock /> {upcomingGames[0].time}</div>
-                  <div className="flex items-center gap-2 sm:gap-3"><ICONS.MapPin /> {upcomingGames[0].location.split('•')[0]}</div>
+                  <div className="flex items-center gap-2 sm:gap-3"><ICONS.Clock /> {formatGameWhen(upcomingGames[0].startsAt, upcomingGames[0].timezone)}</div>
+                  <div className="flex items-center gap-2 sm:gap-3"><ICONS.MapPin /> {upcomingGames[0].locationText.split('•')[0]}</div>
                 </div>
               </div>
             </div>
@@ -78,9 +84,9 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
             {/* Quick Actions & Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
               {[
-                { label: 'Win Rate', value: player.stats.winRate, icon: <div className="scale-50 sm:scale-75"><ICONS.Logo /></div>, bg: "bg-white", textColor: "text-black", labelColor: "text-black/30", iconColor: "text-black/10" },
-                { label: 'Season MVPs', value: player.stats.mvps, icon: <ICONS.UpArrow />, bg: "bg-black", textColor: "text-lime-500", labelColor: "text-white/40", iconColor: "text-lime-500/30" },
-                { label: 'Match Reliability', value: player.stats.reliability, icon: <ICONS.Clock />, bg: "bg-white", textColor: "text-black", labelColor: "text-black/30", iconColor: "text-black/10" }
+                { label: 'Win Rate', value: winRate(record ?? { wins: 0, losses: 0, draws: 0 }) ?? '—', icon: <div className="scale-50 sm:scale-75"><ICONS.Logo /></div>, bg: "bg-white", textColor: "text-black", labelColor: "text-black/30", iconColor: "text-black/10" },
+                { label: 'MVPs', value: record?.mvps ?? 0, icon: <ICONS.UpArrow />, bg: "bg-black", textColor: "text-lime-500", labelColor: "text-white/40", iconColor: "text-lime-500/30" },
+                { label: 'Match Reliability', value: reliability(record ?? { gamesPlayed: 0, noShows: 0 }) ?? '—', icon: <ICONS.Clock />, bg: "bg-white", textColor: "text-black", labelColor: "text-black/30", iconColor: "text-black/10" }
               ].map((stat, i) => (
                 <m.div
                   key={i}
@@ -116,20 +122,20 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
             <div className="bg-black text-white rounded-[40px] sm:rounded-[48px] md:rounded-[60px] p-6 sm:p-8 md:p-10 space-y-6 sm:space-y-8 md:space-y-10 shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 right-0 p-6 sm:p-8 md:p-10 opacity-10 pointer-events-none"><ICONS.Logo /></div>
               <div className="flex items-center gap-5 sm:gap-6 md:gap-8 relative z-10">
-                <Image src={player.avatar} alt={player.name} width={96} height={96} className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full border-3 sm:border-4 border-lime-500 shadow-2xl" />
+                <Image src={player.avatarUrl} alt={player.name} width={96} height={96} className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full border-3 sm:border-4 border-lime-500 shadow-2xl" />
                 <div className="min-w-0">
                   <h4 className="text-lg sm:text-xl md:text-2xl font-black italic uppercase tracking-tighter leading-none truncate">{player.name}</h4>
-                  <p className="text-[9px] sm:text-[10px] md:text-[11px] font-black uppercase tracking-widest text-lime-500 mt-1 sm:mt-2">{player.mainSport} Elite</p>
+                  <p className="text-[9px] sm:text-[10px] md:text-[11px] font-black uppercase tracking-widest text-lime-500 mt-1 sm:mt-2">@{player.handle}</p>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3 sm:gap-4 py-5 sm:py-6 md:py-8 border-y border-white/10">
                 <div>
-                  <span className="block text-xl sm:text-2xl font-black italic">{player.stats.gamesPlayed}</span>
+                  <span className="block text-xl sm:text-2xl font-black italic">{record?.gamesPlayed ?? 0}</span>
                   <span className="text-[8px] sm:text-[9px] font-black uppercase text-white/30 tracking-widest">Matches</span>
                 </div>
                 <div>
-                  <span className="block text-xl sm:text-2xl font-black italic">{player.stats.rating}</span>
-                  <span className="text-[8px] sm:text-[9px] font-black uppercase text-white/30 tracking-widest">Season Rtg</span>
+                  <span className="block text-xl sm:text-2xl font-black italic">{winRate(record ?? { wins: 0, losses: 0, draws: 0 }) ?? '—'}</span>
+                  <span className="text-[8px] sm:text-[9px] font-black uppercase text-white/30 tracking-widest">Win rate</span>
                 </div>
               </div>
               <div className="space-y-3 sm:space-y-4 pt-2">
@@ -147,18 +153,18 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
                 </div>
                 <div className="grid grid-cols-2 gap-3 sm:gap-4">
                   <div className="bg-gray-50 rounded-[20px] p-4 text-center">
-                    <span className="block text-2xl sm:text-3xl font-black italic">{myGames.hostedGames.length}</span>
+                    <span className="block text-2xl sm:text-3xl font-black italic">{myGames.hosted.length}</span>
                     <span className="text-[8px] sm:text-[9px] font-black uppercase text-black/30 tracking-widest">Hosted</span>
                   </div>
                   <div className="bg-gray-50 rounded-[20px] p-4 text-center">
-                    <span className="block text-2xl sm:text-3xl font-black italic">{myGames.joinedGames.length}</span>
+                    <span className="block text-2xl sm:text-3xl font-black italic">{myGames.joined.length}</span>
                     <span className="text-[8px] sm:text-[9px] font-black uppercase text-black/30 tracking-widest">Joined</span>
                   </div>
                 </div>
-                {myGames.hostedGames.filter(g => g.visibility === 'private').length > 0 && (
+                {myGames.hosted.filter(g => g.visibility === 'private').length > 0 && (
                   <div className="flex items-center gap-2 text-[9px] font-bold text-black/40">
                     <span className="bg-black text-lime-500 px-2 py-0.5 rounded-full text-[7px] font-black uppercase">Private</span>
-                    <span>{myGames.hostedGames.filter(g => g.visibility === 'private').length} private game(s)</span>
+                    <span>{myGames.hosted.filter(g => g.visibility === 'private').length} private game(s)</span>
                   </div>
                 )}
                 <button
@@ -179,13 +185,13 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
                     <div
                       key={star.id}
                       className="flex items-center justify-between group cursor-pointer gap-3 hover:bg-black/5 rounded-xl p-2 -mx-2 transition-colors"
-                      onClick={() => onNavigate(`/profile/${star.slug || star.id}`)}
+                      onClick={() => onNavigate(`/profile/${star.handle}`)}
                     >
                       <div className="flex items-center gap-3 sm:gap-4 md:gap-5 min-w-0">
                         <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-xl sm:rounded-2xl bg-black text-lime-500 flex items-center justify-center font-black text-[10px] sm:text-xs italic shrink-0">#{i + 1}</div>
-                        {star.avatar ? (
+                        {star.avatarUrl ? (
                           <Image
-                            src={star.avatar}
+                            src={star.avatarUrl}
                             alt={star.name}
                             width={44}
                             height={44}
@@ -198,7 +204,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
                         )}
                         <div className="min-w-0">
                           <p className="font-black italic text-sm sm:text-base uppercase tracking-tight group-hover:text-black transition-colors truncate">{star.name}</p>
-                          <p className="text-[8px] sm:text-[9px] font-black uppercase text-black/30 tracking-widest">{star.mainSport}</p>
+                          <p className="text-[8px] sm:text-[9px] font-black uppercase text-black/30 tracking-widest">{sportName(star.mainSport)}</p>
                         </div>
                       </div>
                       <div className="text-black/30 group-hover:text-black transition-colors shrink-0">

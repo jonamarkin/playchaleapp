@@ -1,11 +1,20 @@
 import { createApi, toQueryString, type Transport } from './client';
 import { API_BASE_URL } from './config';
 
-const fetchTransport: Transport = async ({ method, path, query, body }) => {
+/**
+ * Browser transport. Always same-origin (`/api`), so the session cookie is first-party and
+ * writes carry no CORS preflight.
+ */
+const fetchTransport: Transport = async ({ method, path, query, body, idempotencyKey }) => {
+    const headers: Record<string, string> = {};
+    if (body !== undefined) headers['Content-Type'] = 'application/json';
+    // Lets a write retried on a flaky connection land once, not twice
+    if (idempotencyKey) headers['Idempotency-Key'] = idempotencyKey;
+
     const response = await fetch(`${API_BASE_URL}${path}${toQueryString(query)}`, {
         method,
         credentials: 'include',
-        headers: body === undefined ? undefined : { 'Content-Type': 'application/json' },
+        headers,
         body: body === undefined ? undefined : JSON.stringify(body),
     });
     const text = await response.text();

@@ -7,6 +7,8 @@ import { m } from 'framer-motion';
 import { Game } from '@/types';
 import { ICONS } from '@/constants';
 import { Eyebrow } from '@/components/ui/typography';
+import { useSportName } from '@/features/sports/hooks';
+import { formatGameWhen, formatMoney } from '@/lib/format';
 import { cn } from '@/lib/utils';
 
 /**
@@ -30,7 +32,10 @@ interface GameCardProps {
 const gameHref = (game: Game) => `/game/${game.slug || game.id}`;
 
 const GameCard: React.FC<GameCardProps> = ({ game, variant = 'feature', priority = false, isHost = false, className }) => {
-  const isFull = game.spotsTaken >= game.spotsTotal;
+  const sportName = useSportName();
+  const isFull = game.confirmedCount >= game.capacity;
+  const when = formatGameWhen(game.startsAt, game.timezone);
+  const roster = game.participants?.filter((p) => p.status === 'confirmed').map((p) => p.player) ?? game.participantPreview ?? [];
 
   if (variant === 'row') {
     return (
@@ -50,7 +55,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, variant = 'feature', priority
         />
         <div className="min-w-0 flex-1">
           <div className="mb-1 flex flex-wrap items-center gap-2">
-            <Eyebrow>{game.sport}</Eyebrow>
+            <Eyebrow>{sportName(game.sport)}</Eyebrow>
             {game.visibility === 'private' && (
               <span className="rounded-pill bg-ink-900 px-2 py-0.5 text-eyebrow font-black uppercase text-lime-500">Private</span>
             )}
@@ -60,8 +65,8 @@ const GameCard: React.FC<GameCardProps> = ({ game, variant = 'feature', priority
           </div>
           <h4 className="truncate text-body-lg font-black italic uppercase tracking-tighter text-fg">{game.title}</h4>
           <div className="mt-1 flex items-center gap-4 text-eyebrow font-bold text-fg-muted">
-            <span className="flex items-center gap-1"><ICONS.Clock /> {game.date} • {game.time}</span>
-            <span>{game.spotsTaken}/{game.spotsTotal}</span>
+            <span className="flex items-center gap-1"><ICONS.Clock /> {when}</span>
+            <span>{game.confirmedCount}/{game.capacity}</span>
           </div>
         </div>
         <span className="shrink-0 rounded-pill bg-fg/5 p-3 transition-all group-hover:bg-lime-500 group-hover:text-ink-900">
@@ -71,7 +76,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, variant = 'feature', priority
     );
   }
 
-  const fillPercentage = (game.spotsTaken / game.spotsTotal) * 100;
+  const fillPercentage = (game.confirmedCount / game.capacity) * 100;
 
   return (
     <Link
@@ -97,18 +102,18 @@ const GameCard: React.FC<GameCardProps> = ({ game, variant = 'feature', priority
         <div className="absolute inset-x-6 top-6 flex items-start justify-between">
           <div className="flex flex-col gap-2">
             <span className="glass rounded-pill px-4 py-2 text-eyebrow font-black uppercase text-white backdrop-blur-md">
-              {game.sport}
+              {sportName(game.sport)}
             </span>
             <span className={cn(
               'rounded-pill px-4 py-2 text-eyebrow font-black uppercase shadow-e1',
               isFull ? 'bg-red-500 text-white' : 'bg-lime-500 text-ink-900'
             )}>
-              {isFull ? 'Squad full' : `${game.spotsTotal - game.spotsTaken} open`}
+              {isFull ? 'Squad full' : `${game.capacity - game.confirmedCount} open`}
             </span>
           </div>
           <div className="flex min-w-[70px] flex-col items-center rounded-field border border-white/20 bg-white/95 px-5 py-2.5 shadow-e2">
             <span className="mb-1 text-eyebrow font-black uppercase leading-none text-ink-900/40">Price</span>
-            <span className="text-body-sm font-black leading-none text-ink-900">{game.price}</span>
+            <span className="text-body-sm font-black leading-none text-ink-900">{formatMoney(game.fee)}</span>
           </div>
         </div>
       </div>
@@ -123,11 +128,11 @@ const GameCard: React.FC<GameCardProps> = ({ game, variant = 'feature', priority
           <div className="space-y-3">
             <div className="flex items-center gap-4 text-eyebrow font-black uppercase text-fg-muted transition-colors group-hover:text-white/40">
               <span className="flex h-5 w-5 shrink-0 items-center justify-center"><ICONS.MapPin /></span>
-              <span className="truncate">{game.location}</span>
+              <span className="truncate">{game.locationText}</span>
             </div>
             <div className="flex items-center gap-4 text-eyebrow font-black uppercase text-fg-muted transition-colors group-hover:text-white/40">
               <span className="flex h-5 w-5 shrink-0 items-center justify-center"><ICONS.Clock /></span>
-              <span>{game.date} • {game.time}</span>
+              <span>{when}</span>
             </div>
           </div>
         </div>
@@ -138,7 +143,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, variant = 'feature', priority
             <div className="flex items-end justify-between px-1">
               <Eyebrow className="transition-colors group-hover:text-white/20">Squad recruitment</Eyebrow>
               <span className="text-body-sm font-black italic text-fg transition-colors group-hover:text-white">
-                {game.spotsTaken} <span className="mx-1 text-eyebrow font-black opacity-30">/</span> {game.spotsTotal}
+                {game.confirmedCount} <span className="mx-1 text-eyebrow font-black opacity-30">/</span> {game.capacity}
               </span>
             </div>
             <div className="h-3 w-full overflow-hidden rounded-pill bg-ink-100 transition-colors group-hover:bg-white/5">
@@ -153,12 +158,12 @@ const GameCard: React.FC<GameCardProps> = ({ game, variant = 'feature', priority
           {/* Action Row - Integrated Button Design */}
           <div className="-mr-6 flex items-center justify-between border-t border-line pt-8 transition-colors group-hover:border-white/10">
             <div className="flex shrink-0 -space-x-4">
-              {game.participants?.slice(0, 3).map((p) => (
-                <Image key={p.id} src={p.avatar} alt="" width={48} height={48} className="h-12 w-12 rounded-pill border-[4px] border-white object-cover shadow-e1 transition-colors group-hover:border-ink-900" />
+              {roster.slice(0, 3).map((p) => (
+                <Image key={p.id} src={p.avatarUrl} alt="" width={48} height={48} className="h-12 w-12 rounded-pill border-[4px] border-white object-cover shadow-e1 transition-colors group-hover:border-ink-900" />
               ))}
-              {game.participants && game.participants.length > 3 && (
+              {game.confirmedCount > 3 && (
                 <span className="flex h-12 w-12 items-center justify-center rounded-pill border-[4px] border-white bg-ink-100 text-eyebrow font-black text-ink-900 transition-all group-hover:border-ink-900 group-hover:bg-white/10 group-hover:text-white">
-                  +{game.participants.length - 3}
+                  +{game.confirmedCount - 3}
                 </span>
               )}
             </div>

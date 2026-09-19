@@ -8,7 +8,7 @@ import GameDetailView from '@/components/GameDetailView';
 import PostGameModal from '@/components/PostGameModal';
 import { ICONS } from '@/constants';
 import { useGame, useJoinGame } from '@/features/games/hooks';
-import { useMyProfile } from '@/features/players/hooks';
+import { useSportName } from '@/features/sports/hooks';
 
 interface GameClientPageProps {
     slug: string;
@@ -18,15 +18,14 @@ export default function GameClientPage({ slug }: GameClientPageProps) {
     const router = useRouter();
     const { user, hasProfile } = useSession();
     const triggerToast = useUIStore((state) => state.triggerToast);
-    const { mutate: joinGame } = useJoinGame();
-    const { data: profile } = useMyProfile(hasProfile);
+    const { mutate: joinGame, isPending: joining } = useJoinGame();
+    const sportName = useSportName();
 
     const { data } = useGame(slug);
     const [showPostGameModal, setShowPostGameModal] = useState(false);
 
-    const isHost = !!user && !!data && data.organizerId === user.id;
-    const isGameComplete = !!data?.completedAt;
-    const viewType = isHost ? 'manage' : 'join';
+    const isHost = !!data?.viewer?.canManage;
+    const isGameComplete = data?.status === 'completed';
 
     if (!data) {
         return (
@@ -42,7 +41,7 @@ export default function GameClientPage({ slug }: GameClientPageProps) {
     const handleShare = async () => {
         const shareData = {
             title: `Join my game: ${data.title}`,
-            text: `Play ${data.sport} at ${data.location}. Join me on PlayChale!`,
+            text: `Play ${sportName(data.sport)} at ${data.locationText}. Join me on PlayChale!`,
             url: window.location.href,
         };
 
@@ -92,22 +91,26 @@ export default function GameClientPage({ slug }: GameClientPageProps) {
             )}
 
             <GameDetailView
-                type={viewType}
-                data={data}
-                currentUser={profile ?? undefined}
+                game={data}
+                joining={joining}
                 onJoin={() => {
                     if (!user) {
                         router.push(`/login?next=${encodeURIComponent(`/game/${slug}`)}`);
                     } else if (!hasProfile) {
                         router.push(`/onboarding?next=${encodeURIComponent(`/game/${slug}`)}`);
                     } else {
-                        joinGame(
-                            data.id,
-                            {
-                                onSuccess: () => triggerToast("JOIN REQUEST SENT!"),
-                                onError: (error) => triggerToast(error.message.toUpperCase()),
-                            }
-                        );
+                        joinGame(data.id, {
+                            // The server decides between confirmed, waitlisted and requested
+                            onSuccess: (updated) => {
+                                const status = updated.viewer?.participation?.status;
+                                triggerToast(
+                                    status === 'requested' ? 'REQUEST SENT — THE HOST WILL CONFIRM'
+                                        : status === 'waitlisted' ? "YOU'RE ON THE WAITLIST"
+                                            : `YOU'RE IN — ${updated.title.toUpperCase()}`
+                                );
+                            },
+                            onError: (error) => triggerToast(error.message.toUpperCase()),
+                        });
                     }
                 }}
                 onShare={handleShare}
@@ -117,7 +120,6 @@ export default function GameClientPage({ slug }: GameClientPageProps) {
             {showPostGameModal && user && (
                 <PostGameModal
                     game={data}
-                    userId={user.id}
                     onClose={() => setShowPostGameModal(false)}
                     onComplete={() => {
                         setShowPostGameModal(false);

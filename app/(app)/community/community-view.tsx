@@ -14,7 +14,7 @@ export default function CommunityView() {
     <div className="animate-in fade-in slide-in-from-bottom-5 duration-300">
       <TopPlayers
         players={players}
-        onOpenPlayer={(player) => router.push(`/profile/${player.slug || player.id}`)}
+        onOpenPlayer={(player) => router.push(`/profile/${player.handle}`)}
         isFullPage
       />
 

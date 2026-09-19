@@ -7,6 +7,7 @@ export const playerKeys = {
     all: ['players'] as const,
     list: () => [...playerKeys.all, 'list'] as const,
     detail: (idOrSlug: string) => [...playerKeys.all, 'detail', idOrSlug] as const,
+    matches: (idOrSlug: string) => [...playerKeys.all, 'matches', idOrSlug] as const,
     me: () => ['me', 'profile'] as const,
 };
 
@@ -28,4 +29,13 @@ export const myProfileQuery = (client: Api) =>
     queryOptions({
         queryKey: playerKeys.me(),
         queryFn: () => client.me.profile(),
+    });
+
+/** A player's own record of games, newest first. Only approved lines count towards totals. */
+export const playerMatchesQuery = (client: Api, idOrSlug: string) =>
+    infiniteQueryOptions({
+        queryKey: playerKeys.matches(idOrSlug),
+        queryFn: ({ pageParam }) => client.players.matches(idOrSlug, { cursor: pageParam }),
+        initialPageParam: undefined as string | undefined,
+        getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     });

@@ -13,8 +13,8 @@ export default function MyGamesView() {
     const { data, isLoading, error } = useMyGames();
     const [activeTab, setActiveTab] = useState<'hosted' | 'joined'>('hosted');
 
-    const hostedGames = data?.hostedGames || [];
-    const joinedGames = data?.joinedGames || [];
+    const hostedGames = data?.hosted ?? [];
+    const joinedGames = data?.joined ?? [];
 
     return (
         <section className="pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20 px-4 sm:px-6 md:px-12 min-h-screen bg-surface-app">

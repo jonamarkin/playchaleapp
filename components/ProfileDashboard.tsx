@@ -2,233 +2,206 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { ICONS } from '@/constants';
-import { PlayerProfile, MatchRecord } from '@/types';
+import Link from 'next/link';
+import { Share2 } from 'lucide-react';
+import type { CareerStats, MatchRecord, Player } from '@/types';
 import ImageUpload from './ImageUpload';
-import { useAvatarUploader } from '@/features/players/hooks';
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
+import SportIcon from './SportIcon';
+import { Button } from '@/components/ui/button';
+import { Eyebrow, Text } from '@/components/ui/typography';
+import { useAvatarUploader, usePlayerMatches } from '@/features/players/hooks';
+import { useSports } from '@/features/sports/hooks';
+import { formatGameDate, reliability, winRate } from '@/lib/format';
+import { cn } from '@/lib/utils';
 
+/**
+ * The player profile — the page people share, and the reason the stats have to be trustworthy.
+ *
+ * Everything under "Performance" is derived server-side from results each player approved;
+ * nothing on this page can be typed in by its owner. Self-rated attributes are shown, but
+ * kept visually apart from the record so the two are never read as the same kind of claim.
+ */
 interface DashboardProps {
-  player: PlayerProfile;
+  player: Player;
   isOwner?: boolean;
   /** Shown on the owner's own profile: below lg this is the only way out, since the header drawer is desktop-only. */
   onSignOut?: () => void;
   onShareProfile: () => void;
-  onViewMatch: (match: any) => void;
 }
 
-const ProfileDashboard: React.FC<DashboardProps> = ({
-  player, isOwner = false, onShareProfile, onViewMatch, onSignOut
-}) => {
+const ATTRIBUTE_LABELS: Record<string, string> = {
+  pace: 'Pace',
+  shooting: 'Shooting',
+  passing: 'Passing',
+  dribbling: 'Dribbling',
+  defending: 'Defending',
+  physical: 'Physical',
+};
+
+const ProfileDashboard: React.FC<DashboardProps> = ({ player, isOwner = false, onShareProfile, onSignOut }) => {
   const uploadAvatar = useAvatarUploader();
-  const [activeSport, setActiveSport] = React.useState(player.mainSport);
+  const { data: sports = [] } = useSports();
+  const { data: matches = [] } = usePlayerMatches(player.handle);
 
-  // Derive stats based on active sport, fallback to main stats if missing
-  const activeStats = player.sportStats?.[activeSport] || player.stats;
+  // Sports the player has a record in, main sport first
+  const recorded = React.useMemo(() => {
+    const ordered = [...player.careerStats];
+    ordered.sort((a, b) => (a.sport === player.mainSport ? -1 : b.sport === player.mainSport ? 1 : b.gamesPlayed - a.gamesPlayed));
+    return ordered;
+  }, [player.careerStats, player.mainSport]);
 
-  const metrics = [
-    { label: 'Matches', value: activeStats.gamesPlayed, color: 'text-white' },
-    { label: 'Win Rate', value: activeStats.winRate, color: 'text-lime-500' },
-    { label: 'Reliability', value: activeStats.reliability, color: 'text-white' },
-    { label: 'MVPs', value: activeStats.mvps, color: 'text-white' }
-  ];
+  const [activeSport, setActiveSport] = React.useState(recorded[0]?.sport ?? player.mainSport);
+  const stats = recorded.find((s) => s.sport === activeSport) ?? null;
+  const sport = sports.find((s) => s.code === activeSport);
+  const sportLabel = sport?.name ?? activeSport;
 
-
-  const getSportSpecificHighlights = () => {
-    const s = activeStats;
-    if (activeSport === 'Football') {
-      return [
-        { label: 'Goals', value: s.goals || 0 },
-        { label: 'Assists', value: s.assists || 0 },
-        { label: 'Clean Sheets', value: s.cleanSheets || 0 }
-      ];
-    }
-    if (activeSport === 'Basketball') {
-      return [
-        { label: 'Total Points', value: s.points || 0 },
-        { label: 'Rebounds', value: s.rebounds || 0 },
-        { label: 'Steals', value: s.steals || 0 }
-      ];
-    }
-    if (activeSport === 'Tennis') {
-      return [
-        { label: 'Sets Won', value: s.setsWon || 0 },
-        { label: 'Aces', value: s.aces || 0 },
-        { label: 'Win Streak', value: s.winStreak || 0 }
-      ];
-    }
-    if (activeSport === 'Volleyball') {
-      return [
-        { label: 'Aces', value: s.aces || 0 },
-        { label: 'Blocks', value: s.blocks || 0 },
-        { label: 'Digs', value: s.digs || 0 }
-      ];
-    }
-    if (activeSport === 'Swimming') {
-      return [
-        { label: 'Laps Swum', value: s.lapsSwum || 0 },
-        { label: 'Meet Wins', value: s.meetWins || 0 },
-        { label: 'Podiums', value: s.podiums || 0 }
-      ];
-    }
-    if (activeSport === 'Athletics') {
-      return [
-        { label: 'PB Count', value: s.personalBests || 0 },
-        { label: 'Meet Wins', value: s.meetWins || 0 },
-        { label: 'Podiums', value: s.podiums || 0 }
-      ];
-    }
-    return [];
-  };
-
-  // ... richMatchHistory is static mock data in this file. 
-  // Ideally it should filter by sport too, but the mock data is hardcoded in the component body (lines 53-103).
-  // For now, I will leave match history as is, or filter it? 
-  // The user request was "see stats for different sports". 
-  // Match history filtering is a nice to have. I'll focus on the stats cards first.
+  const attributes = Object.entries(player.attributes ?? {}).filter(([, value]) => typeof value === 'number');
+  const sportMatches = matches.filter((m) => m.game.sport === activeSport);
 
   return (
-    <section className="min-h-screen bg-black pt-24 md:pt-32 pb-20 md:pb-32 px-4 md:px-12 text-white overflow-hidden relative">
-      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-full h-1/2 bg-gradient-to-t from-lime-500/5 to-transparent pointer-events-none"></div>
+    <section className="relative min-h-screen overflow-hidden bg-ink-950 px-4 pb-20 pt-24 text-white md:px-12 md:pb-32 md:pt-32">
+      <div className="pointer-events-none absolute bottom-0 left-1/2 h-1/2 w-full -translate-x-1/2 bg-gradient-to-t from-lime-500/5 to-transparent" />
 
-      <div className="max-w-7xl mx-auto relative z-10">
-        <div className="flex flex-col lg:flex-row gap-8 md:gap-16 items-start">
+      <div className="relative z-10 mx-auto max-w-7xl">
+        <div className="flex flex-col items-start gap-8 lg:flex-row md:gap-16">
 
-          <div className="animate-in fade-in slide-in-from-bottom-5 [animation-duration:400ms] w-full lg:w-[380px] shrink-0">
-            <div className="bg-white/5 backdrop-blur-3xl rounded-[56px] p-8 md:p-10 border border-white/10 space-y-10 relative overflow-hidden shadow-2xl">
-              <div className="flex flex-col items-center text-center space-y-6">
-                <div className="relative">
-                  {isOwner ? (
-                    <ImageUpload
-                      currentImage={player.avatar}
-                      onImageSelected={async (file) => {
-                        await uploadAvatar(file);
-                      }}
-                    />
-                  ) : (
-                    <Image src={player.avatar} alt={player.name} width={160} height={160} className="w-40 h-40 rounded-full object-cover border-[6px] border-white/5 shadow-2xl" />
-                  )}
-                  <div className="absolute -bottom-1 -right-1 bg-lime-500 text-black w-12 h-12 rounded-full flex items-center justify-center font-black text-lg shadow-2xl uppercase italic">PRO</div>
+          <div className="animate-in fade-in slide-in-from-bottom-5 w-full shrink-0 [animation-duration:400ms] lg:w-[380px]">
+            <div className="relative space-y-10 overflow-hidden rounded-card-xl border border-white/10 bg-white/5 p-8 shadow-e3 backdrop-blur-3xl md:p-10">
+              <div className="flex flex-col items-center space-y-6 text-center">
+                {isOwner ? (
+                  <ImageUpload currentImage={player.avatarUrl} onImageSelected={async (file) => { await uploadAvatar(file); }} />
+                ) : (
+                  <Image
+                    src={player.avatarUrl}
+                    alt=""
+                    width={160}
+                    height={160}
+                    priority
+                    className="h-40 w-40 rounded-pill border-[6px] border-white/5 object-cover shadow-e3"
+                  />
+                )}
+                <div className="space-y-2">
+                  <h1 className="text-4xl font-black italic uppercase leading-none tracking-tighter">{player.name}</h1>
+                  <p className="text-body-sm font-bold text-white/40">@{player.handle}</p>
+                  <div className="flex items-center justify-center gap-2 text-brand">
+                    <SportIcon sport={player.mainSport} size={14} />
+                    <Eyebrow className="text-lime-500">
+                      {sports.find((s) => s.code === player.mainSport)?.name ?? player.mainSport}
+                      {player.locationText ? ` · ${player.locationText}` : ''}
+                    </Eyebrow>
+                  </div>
                 </div>
-                <div>
-                  <h2 className="text-4xl font-black italic tracking-tighter uppercase leading-none">{player.name}</h2>
-                  <p className="text-lime-500 font-black uppercase tracking-[0.3em] text-[8px] mt-2">{player.mainSport} Specialist</p>
-                </div>
+                {player.bio && <Text size="sm" className="text-white/60">{player.bio}</Text>}
               </div>
 
               <div className="grid grid-cols-1 gap-4 pt-4">
-                <button
-                  onClick={onShareProfile}
-                  className="w-full bg-lime-500 text-black py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-105 transition-all flex items-center justify-center gap-3 min-h-[64px] shadow-xl shadow-lime-500/10"
-                >
-                  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /><polyline points="16 6 12 2 8 6" /><line x1="12" y1="2" x2="12" y2="15" /></svg>
-                  Share Pro Card
-                </button>
+                <Button size="lg" full onClick={onShareProfile}>
+                  <Share2 className="h-4 w-4" aria-hidden="true" />
+                  Share profile
+                </Button>
                 {isOwner && onSignOut && (
-                  <button
-                    onClick={onSignOut}
-                    className="w-full py-4 rounded-full font-black uppercase tracking-widest text-eyebrow text-red-400 hover:text-red-300 hover:bg-white/5 transition-all flex items-center justify-center gap-2 touch-target"
-                  >
-                    Log Out
-                  </button>
+                  <Button variant="ghost" full onClick={onSignOut} className="text-red-400 hover:bg-white/5 hover:text-red-300">
+                    Log out
+                  </Button>
                 )}
               </div>
+
+              {attributes.length > 0 && (
+                <div className="space-y-4 border-t border-white/10 pt-8">
+                  <div>
+                    <Eyebrow>Playing style</Eyebrow>
+                    <Text size="sm" tone="subtle" className="text-white/30">Self-rated — not part of the record below.</Text>
+                  </div>
+                  <ul className="space-y-3">
+                    {attributes.map(([key, value]) => (
+                      <li key={key} className="space-y-1.5">
+                        <div className="flex justify-between">
+                          <Eyebrow>{ATTRIBUTE_LABELS[key] ?? key}</Eyebrow>
+                          <span className="text-eyebrow font-black text-white/60">{value}</span>
+                        </div>
+                        <div className="h-1.5 overflow-hidden rounded-pill bg-white/10">
+                          <div className="h-full rounded-pill bg-white/40" style={{ width: `${Math.min(100, Number(value))}%` }} />
+                        </div>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
             </div>
           </div>
 
-          <div className="flex-1 w-full">
-            <div className="animate-in fade-in slide-in-from-right-5 [animation-duration:400ms] space-y-16">
+          <div className="w-full flex-1">
+            <div className="animate-in fade-in slide-in-from-right-5 space-y-16 [animation-duration:400ms]">
               <div className="space-y-10">
-                <div className="flex flex-col md:flex-row md:items-center justify-between gap-6">
-                  <h3 className="text-4xl sm:text-6xl md:text-8xl font-black leading-none italic tracking-tighter uppercase">Performance.</h3>
+                <div className="flex flex-col justify-between gap-6 md:flex-row md:items-center">
+                  <h2 className="text-4xl font-black italic uppercase leading-none tracking-tighter sm:text-6xl md:text-8xl">Record.</h2>
 
-                  {/* Sport Selector */}
-                  <div className="w-full md:w-auto">
-                    <Select value={activeSport} onValueChange={setActiveSport}>
-                      <SelectTrigger className="w-full md:w-[180px] bg-white/5 border-white/10 text-white rounded-full h-12 px-6 font-black uppercase tracking-widest text-[10px] hover:bg-white/10 transition-all focus:ring-lime-500">
-                        <SelectValue placeholder="Select Sport" />
-                      </SelectTrigger>
-                      <SelectContent className="bg-black border border-white/10 text-white rounded-xl">
-                        {Object.keys(player.sportStats || {}).map(sport => (
-                          <SelectItem
-                            key={sport}
-                            value={sport}
-                            className="font-black uppercase tracking-widest text-[10px] focus:bg-lime-500 focus:text-black py-3 cursor-pointer"
-                          >
-                            {sport}
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
+                  {recorded.length > 1 && (
+                    <div className="flex flex-wrap gap-2" role="tablist" aria-label="Sport">
+                      {recorded.map((entry) => (
+                        <button
+                          key={entry.sport}
+                          role="tab"
+                          aria-selected={entry.sport === activeSport}
+                          onClick={() => setActiveSport(entry.sport)}
+                          className={cn(
+                            'rounded-pill px-5 py-2.5 text-eyebrow font-black uppercase tracking-widest transition-colors',
+                            entry.sport === activeSport ? 'bg-lime-500 text-ink-900' : 'bg-white/5 text-white/50 hover:bg-white/10'
+                          )}
+                        >
+                          {sports.find((s) => s.code === entry.sport)?.name ?? entry.sport}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+                </div>
+
+                {stats ? (
+                  <>
+                    <Provenance stats={stats} />
+                    <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:gap-6">
+                      <Metric label="Matches" value={stats.gamesPlayed} />
+                      <Metric label="Win rate" value={winRate(stats) ?? '—'} accent />
+                      <Metric label="Reliability" value={reliability(stats) ?? '—'} />
+                      <Metric label="MVPs" value={stats.mvps} />
+                    </div>
+                  </>
+                ) : (
+                  <div className="rounded-card-xl border border-white/10 bg-white/5 p-10 text-center">
+                    <Text weight="bold">No verified stats yet.</Text>
+                    <Text size="sm" tone="subtle" className="mt-2 text-white/40">
+                      {isOwner
+                        ? 'Play a game, then approve the report your host sends. Approved lines are the only ones that count.'
+                        : `${player.name} hasn't had a game report approved yet.`}
+                    </Text>
                   </div>
-                </div>
-
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 md:gap-6">
-                  {metrics.map((m) => (
-                    <div key={m.label} className="bg-white/5 rounded-[40px] p-8 md:p-10 border border-white/10 group hover:bg-white/10 transition-all">
-                      <span className={`text-5xl sm:text-6xl md:text-8xl font-black italic tracking-tighter block leading-none mb-4 ${m.color}`}>{m.value}</span>
-                      <span className="text-[10px] md:text-xs font-black uppercase tracking-[0.4em] text-white/40">{m.label}</span>
-                    </div>
-                  ))}
-                </div>
+                )}
               </div>
 
-              {/* Sport Specific Highlights */}
-              <div className="space-y-8">
-                <h4 className="text-2xl font-black italic tracking-tight uppercase border-l-4 border-lime-500 pl-4">{activeSport} Highlights</h4>
-                <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-                  {getSportSpecificHighlights().map((h) => (
-                    <div key={h.label} className="bg-white/5 rounded-[32px] p-8 border border-white/5 hover:border-lime-500/30 transition-all">
-                      <span className="block text-4xl font-black text-lime-500 italic mb-1">{h.value}</span>
-                      <span className="text-[10px] font-black uppercase tracking-widest text-white/30">{h.label}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-
-              <div className="space-y-8">
-                <div className="flex justify-between items-center">
-                  <h4 className="text-2xl font-black italic tracking-tight uppercase">Recent Match Activity</h4>
-                  <button className="text-lime-500 font-black uppercase tracking-widest text-[9px] border-b border-lime-500 pb-1">View Full Log</button>
-                </div>
-                <div className="space-y-4">
-                  {(player.matchHistory || [])
-                    .filter(m => m.sport === activeSport)
-                    .map((match, i) => (
-                      <div key={i} onClick={() => onViewMatch(match)} className="bg-white/5 hover:bg-white/10 transition-all rounded-[32px] p-8 border border-white/5 flex flex-col md:flex-row justify-between items-center gap-6 cursor-pointer group">
-                        <div className="flex items-center gap-6">
-                          <div className="w-16 h-16 bg-black border border-white/10 rounded-full flex items-center justify-center font-black text-xs text-lime-500 italic uppercase">{match.date}</div>
-                          <div>
-                            <h5 className="text-xl font-black tracking-tight mb-1">{match.title}</h5>
-                            <span className={`text-[10px] font-black uppercase tracking-widest flex items-center gap-2 ${match.result === 'Win' || match.result === 'W' ? 'text-lime-500' : 'text-red-500'}`}>
-                              <span className={`w-2 h-2 rounded-full ${match.result === 'Win' || match.result === 'W' ? 'bg-lime-500' : 'bg-red-500'}`}></span>
-                              {match.result}
-                            </span>
-                          </div>
-                        </div>
-                        <div className="flex gap-12 items-center">
-                          <div className="text-center">
-                            <span className="block text-3xl font-black text-white italic">{match.score.split(' ')[0]}</span>
-                            <span className="text-[10px] font-black uppercase opacity-30 tracking-widest">{match.sport === 'Basketball' ? 'Points' : 'Goals'}</span>
-                          </div>
-                          <div className="text-center">
-                            <span className="block text-3xl font-black text-white italic">{match.rating}</span>
-                            <span className="text-[10px] font-black uppercase opacity-30 tracking-widest">Rating</span>
-                          </div>
-                          <div className="p-3 rounded-full bg-white/5 group-hover:bg-lime-500 group-hover:text-black transition-all">
-                            <ICONS.ChevronRight />
-                          </div>
-                        </div>
+              {stats && sport && sport.statFields.length > 0 && (
+                <div className="space-y-8">
+                  <h3 className="border-l-4 border-lime-500 pl-4 text-2xl font-black uppercase italic tracking-tight">{sportLabel} totals</h3>
+                  <div className="grid grid-cols-2 gap-4 md:grid-cols-3">
+                    {sport.statFields.map((field) => (
+                      <div key={field.key} className="rounded-card border border-white/5 bg-white/5 p-8 transition-colors hover:border-lime-500/30">
+                        <span className="mb-1 block text-4xl font-black italic text-lime-500">{stats.counters[field.key] ?? 0}</span>
+                        <Eyebrow>{field.label}</Eyebrow>
                       </div>
                     ))}
-                  {(player.matchHistory || []).filter(m => m.sport === activeSport).length === 0 && (
-                    <div className="text-center py-12 text-white/30 italic">No matches recorded for {activeSport} yet.</div>
+                  </div>
+                </div>
+              )}
+
+              <div className="space-y-8">
+                <h3 className="text-2xl font-black uppercase italic tracking-tight">Recent matches</h3>
+                <div className="space-y-4">
+                  {sportMatches.map((match) => (
+                    <MatchRow key={match.game.id} match={match} />
+                  ))}
+                  {sportMatches.length === 0 && (
+                    <Text tone="subtle" className="py-12 text-center italic text-white/30">
+                      No {sportLabel} matches recorded yet.
+                    </Text>
                   )}
                 </div>
               </div>
@@ -239,5 +212,62 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
     </section>
   );
 };
+
+/** Says where the numbers came from — the difference between a stat and a claim. */
+function Provenance({ stats }: { stats: CareerStats }) {
+  return (
+    <Text size="sm" tone="subtle" className="text-white/40">
+      From {stats.gamesPlayed} approved {stats.gamesPlayed === 1 ? 'game' : 'games'}
+      {stats.lastGameAt ? ` · last played ${formatGameDate(stats.lastGameAt)}` : ''}
+      {stats.noShows > 0 ? ` · ${stats.noShows} no-${stats.noShows === 1 ? 'show' : 'shows'}` : ''}
+    </Text>
+  );
+}
+
+function Metric({ label, value, accent = false }: { label: string; value: React.ReactNode; accent?: boolean }) {
+  return (
+    <div className="group rounded-card-xl border border-white/10 bg-white/5 p-8 transition-all hover:bg-white/10 md:p-10">
+      <span className={cn('mb-4 block text-5xl font-black italic leading-none tracking-tighter sm:text-6xl md:text-8xl', accent ? 'text-lime-500' : 'text-white')}>
+        {value}
+      </span>
+      <Eyebrow>{label}</Eyebrow>
+    </div>
+  );
+}
+
+function MatchRow({ match }: { match: MatchRecord }) {
+  const { game, outcome, approval, wasMvp } = match;
+  const won = outcome === 'win';
+
+  return (
+    <Link
+      href={`/game/${game.slug || game.id}`}
+      className="group flex flex-col items-center justify-between gap-6 rounded-card border border-white/5 bg-white/5 p-8 transition-all hover:bg-white/10 md:flex-row"
+    >
+      <div className="flex min-w-0 items-center gap-6">
+        <div className="flex h-16 w-16 shrink-0 flex-col items-center justify-center rounded-pill border border-white/10 bg-ink-950 text-center text-eyebrow font-black italic uppercase text-lime-500">
+          {formatGameDate(game.startsAt, game.timezone).replace(/^\w+, /, '')}
+        </div>
+        <div className="min-w-0">
+          <h4 className="mb-1 truncate text-xl font-black tracking-tight">{game.title}</h4>
+          <div className="flex flex-wrap items-center gap-3">
+            {outcome && (
+              <span className={cn('flex items-center gap-2 text-eyebrow font-black uppercase tracking-widest', won ? 'text-lime-500' : outcome === 'draw' ? 'text-white/50' : 'text-red-500')}>
+                <span className={cn('h-2 w-2 rounded-pill', won ? 'bg-lime-500' : outcome === 'draw' ? 'bg-white/40' : 'bg-red-500')} />
+                {outcome}
+              </span>
+            )}
+            {wasMvp && <Eyebrow className="text-lime-500">MVP</Eyebrow>}
+            {approval !== 'approved' && (
+              <span className="rounded-pill bg-white/10 px-2 py-0.5 text-eyebrow font-black uppercase text-white/50">
+                {approval === 'pending' ? 'Awaiting your approval' : 'Disputed'}
+              </span>
+            )}
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+}
 
 export default ProfileDashboard;

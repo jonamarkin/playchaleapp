@@ -7,7 +7,7 @@ import type { Session } from '@/lib/api/types';
 
 export const sessionKey = ['session'] as const;
 
-const InitialSessionContext = createContext<Session>({ user: null, hasProfile: false });
+const InitialSessionContext = createContext<Session>({ user: null, playerId: null, hasProfile: false });
 
 /**
  * Seeds the session from the server render, so the first client render already
@@ -27,4 +27,14 @@ export function useSession(): Session {
         staleTime: Infinity,
     });
     return data;
+}
+
+/**
+ * The signed-in player's id, or null.
+ *
+ * Accounts and players are separate records — an account may later own a venue — so
+ * anything comparing against a host or participant must use this, not `user.id`.
+ */
+export function useViewerId(): string | null {
+    return useSession().playerId;
 }

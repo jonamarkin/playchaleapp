@@ -39,7 +39,7 @@ export default function LandingView({
       <div className="bg-black py-40">
         <TopPlayers
           players={players.slice(0, 2)}
-          onOpenPlayer={(player) => router.push(`/profile/${player.slug || player.id}`)}
+          onOpenPlayer={(player) => router.push(`/profile/${player.handle}`)}
           onViewAll={() => router.push('/community')}
         />
       </div>

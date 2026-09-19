@@ -12,7 +12,7 @@ export default function OnboardingPage() {
   const handleComplete = async ({ email, password, name, sports, level, location }: OnboardingData) => {
     await completeOnboarding({
       credentials: { email, password },
-      profile: { name, sports, level, location },
+      profile: { name, sports, skillLevel: level, locationText: location },
     });
   };
 

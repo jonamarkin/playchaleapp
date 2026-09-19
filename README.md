@@ -63,7 +63,7 @@ There is no backend yet. The app serves a mock implementation of the REST contra
 - **Onboarding** creates a new account and profile.
 - Data is shared by every browser using the dev server and saved to `.mock-db.json`. Delete that file and restart the server to reseed from `constants.tsx`.
 - `MOCK_API_LATENCY_MS` (default 150) simulates network latency for browser requests.
-- To use a real backend, set `NEXT_PUBLIC_API_URL`. The mock turns itself off.
+- To use a real backend, set `API_ORIGIN`. `/api` reverse-proxies to it and the mock turns itself off; the browser keeps talking to the same origin either way.
 
 ---
 

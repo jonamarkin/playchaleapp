@@ -4,8 +4,8 @@ import { useCallback } from 'react';
 import { useInfiniteQuery, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api/browser';
 import { useUIStore } from '@/hooks/useUIStore';
-import type { PlayerProfile } from '@/types';
-import { myProfileQuery, playerKeys, playerQuery, playersListQuery } from './queries';
+import type { Player } from '@/types';
+import { myProfileQuery, playerKeys, playerMatchesQuery, playerQuery, playersListQuery } from './queries';
 
 /** Paginated player directory; `data` is the flattened list */
 export function usePlayers() {
@@ -17,6 +17,13 @@ export function usePlayers() {
 
 export function usePlayer(idOrSlug: string) {
     return useQuery(playerQuery(api, idOrSlug));
+}
+
+export function usePlayerMatches(idOrSlug: string) {
+    return useInfiniteQuery({
+        ...playerMatchesQuery(api, idOrSlug),
+        select: (data) => data.pages.flatMap((page) => page.items),
+    });
 }
 
 export function useMyProfile(enabled = true) {
@@ -37,7 +44,7 @@ export function useUploadAvatar() {
     return useMutation({
         // TODO(backend): upload to object storage (presigned URL) and send the resulting URL
         mutationFn: async (file: File) => api.me.updateAvatar(await readAsDataUrl(file)),
-        onSuccess: (profile: PlayerProfile) => {
+        onSuccess: (profile: Player) => {
             queryClient.setQueryData(playerKeys.me(), profile);
             queryClient.invalidateQueries({ queryKey: playerKeys.all });
         },
@@ -54,7 +61,7 @@ export function useAvatarUploader() {
             try {
                 const profile = await mutateAsync(file);
                 triggerToast('Avatar updated!');
-                return profile.avatar;
+                return profile.avatarUrl;
             } catch (error) {
                 console.error('Error uploading avatar:', error);
                 triggerToast('Failed to upload avatar');
