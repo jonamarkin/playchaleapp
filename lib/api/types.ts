@@ -1,91 +1,56 @@
 /**
- * Request/response shapes of the PlayChale REST API.
- * Mirrors docs/api/openapi.yaml; keep both in sync until types are generated from the spec.
- * Domain entities (Game, PlayerProfile, ...) live in @/types.
+ * The API's shapes, aliased from the types generated out of docs/api/openapi.yaml
+ * (`pnpm gen:api` → lib/api/schema.ts).
+ *
+ * Nothing here is hand-written: a change to the spec becomes a compile error at the call
+ * sites, which is what keeps the mock, the frontend and the Go service describing the
+ * same API.
  */
+import type { components } from './schema';
 
-import type { AuthUser, Game, PlayerProfile } from '@/types';
+type Schemas = components['schemas'];
 
+// Core domain
+export type Money = Schemas['Money'];
+export type Sport = Schemas['Sport'];
+export type StatField = Schemas['StatField'];
+export type PlayerSummary = Schemas['PlayerSummary'];
+export type Player = Schemas['Player'];
+export type CareerStats = Schemas['CareerStats'];
+export type Game = Schemas['Game'];
+export type GameSummary = Schemas['GameSummary'];
+export type GameViewer = Schemas['GameViewer'];
+export type Participant = Schemas['Participant'];
+export type ParticipantStatus = Schemas['ParticipantStatus'];
+export type PaymentLine = Schemas['PaymentLine'];
+export type GameResult = Schemas['GameResult'];
+export type GameResults = Schemas['GameResults'];
+export type PlayerGameStat = Schemas['PlayerGameStat'];
+export type StatApproval = Schemas['StatApproval'];
+export type MatchRecord = Schemas['MatchRecord'];
+export type MvpVote = Schemas['MvpVote'];
+
+// Auth
+export type AuthUser = Schemas['AuthUser'];
+export type Session = Schemas['Session'];
+export type Credentials = Schemas['Credentials'];
+
+// Inputs
+export type ProfileInput = Schemas['ProfileInput'];
+export type GameInput = Schemas['GameInput'];
+export type GameUpdate = Schemas['GameUpdate'];
+export type ResultInput = Schemas['ResultInput'];
+export type PlayerStatInput = Schemas['PlayerStatInput'];
+
+export type ApiErrorBody = Schemas['Error'];
+
+/** A page of `T`, keyset-paginated. */
 export interface Page<T> {
     items: T[];
     nextCursor: string | null;
 }
 
-export interface Session {
-    user: AuthUser | null;
-    hasProfile: boolean;
-}
+export type MyGames = { hosted: Game[]; joined: Game[] };
 
-export interface Credentials {
-    email: string;
-    password: string;
-}
-
-export interface CreateProfileInput {
-    name: string;
-    sports: string[];
-    level?: string;
-    location: string;
-}
-
-export type CreateGameInput = Pick<
-    Game,
-    'title' | 'sport' | 'location' | 'date' | 'time' | 'spotsTotal' | 'skillLevel' | 'price' | 'visibility'
-> & { imageUrl?: string };
-
-export interface MyGames {
-    hostedGames: Game[];
-    joinedGames: Game[];
-}
-
-export interface GameResult {
-    gameId: string;
-    enteredBy: string;
-    resultData: Record<string, number>;
-    status: 'pending' | 'approved' | 'disputed';
-    approvalThreshold: number;
-    approvalsCount: number;
-    rejectionsCount: number;
-}
-
-export interface PlayerGameStat {
-    gameId: string;
-    userId: string;
-    stats: Record<string, number | boolean>;
-    showedUp: boolean;
-    /** null = awaiting the player's review */
-    approvedByPlayer: boolean | null;
-    approvedAt: string | null;
-}
-
-export interface MvpVote {
-    gameId: string;
-    voterId: string;
-    votedForId: string;
-}
-
-export interface GameResultsResponse {
-    result: GameResult | null;
-    playerStats: (PlayerGameStat & { player: Pick<PlayerProfile, 'id' | 'name' | 'avatar'> | null })[];
-    mvpVotes: MvpVote[];
-}
-
-export interface SubmitResultsInput {
-    resultData: Record<string, number>;
-    approvalThreshold: number;
-}
-
-export interface PlayerStatsInput {
-    userId: string;
-    stats: Record<string, number | boolean>;
-    showedUp: boolean;
-}
-
-export interface StatApproval extends PlayerGameStat {
-    game: Pick<Game, 'id' | 'slug' | 'title' | 'sport' | 'date' | 'time' | 'imageUrl'> | null;
-    result: Pick<GameResult, 'resultData' | 'status'> | null;
-}
-
-export interface ApiErrorBody {
-    error: { code: string; message: string };
-}
+export type SkillLevel = Schemas['SkillLevel'];
+export type PaymentStatus = NonNullable<PaymentLine['status']>;

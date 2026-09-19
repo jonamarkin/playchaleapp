@@ -2,43 +2,39 @@ import 'server-only';
 
 import fs from 'node:fs';
 import path from 'node:path';
-import { Game, PlayerProfile } from '@/types';
-import type { GameResult, PlayerGameStat, MvpVote } from '@/lib/api/types';
 import { createSeed } from './seed';
+import { recomputeCareerStats } from './stats';
 
 /**
  * In-memory store behind the mock API.
- * Kept on globalThis so dev hot reloads don't wipe it, and saved to
- * .mock-db.json so data survives server restarts. Delete that file to reseed.
+ *
+ * Kept on globalThis so dev hot reloads don't wipe it, and saved to .mock-db.json so data
+ * survives restarts. Delete that file to reseed.
  */
-
-export interface MockStore {
-    accounts: { id: string; email: string }[];
-    sessions: Record<string, string>; // token -> account id
-    profiles: PlayerProfile[];
-    games: Game[];
-    gameResults: GameResult[];
-    playerGameStats: PlayerGameStat[];
-    mvpVotes: MvpVote[];
-}
+export type MockStore = ReturnType<typeof createSeed>;
 
 const DB_FILE = path.join(process.cwd(), '.mock-db.json');
+const SCHEMA_VERSION = 2; // bumped with the contract rewrite, so stale files reseed
 
 const globalForStore = globalThis as unknown as { __playchaleMockStore?: MockStore };
-
-function freshStore(): MockStore {
-    return { ...createSeed(), sessions: {}, gameResults: [], playerGameStats: [], mvpVotes: [] };
-}
 
 function load(): MockStore {
     try {
         if (fs.existsSync(DB_FILE)) {
-            return JSON.parse(fs.readFileSync(DB_FILE, 'utf8')) as MockStore;
+            const parsed = JSON.parse(fs.readFileSync(DB_FILE, 'utf8')) as MockStore & { __v?: number };
+            if (parsed.__v === SCHEMA_VERSION) return parsed;
         }
     } catch {
-        // Corrupt or unreadable file: fall back to the seed
+        // Corrupt or unreadable: fall back to the seed
     }
-    return freshStore();
+    return seeded();
+}
+
+/** Career stats are derived, so the seed computes them the same way the API does. */
+function seeded(): MockStore {
+    const store = createSeed();
+    for (const player of store.players) recomputeCareerStats(store, player.id);
+    return store;
 }
 
 export function getStore(): MockStore {
@@ -50,8 +46,13 @@ export function getStore(): MockStore {
 
 export function saveStore() {
     try {
-        fs.writeFileSync(DB_FILE, JSON.stringify(getStore()));
+        fs.writeFileSync(DB_FILE, JSON.stringify({ ...getStore(), __v: SCHEMA_VERSION }));
     } catch {
         // Read-only filesystem (e.g. serverless preview): keep data in memory only
     }
+}
+
+export function resetStore() {
+    globalForStore.__playchaleMockStore = seeded();
+    saveStore();
 }

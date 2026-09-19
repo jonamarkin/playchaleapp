@@ -13,58 +13,51 @@ interface DiscoverProps {
   isFullPage?: boolean;
 }
 
+/** YYYY-MM-DD for an instant, in the zone the game is played in. */
+const dayKey = (startsAt: string, timeZone: string) =>
+  new Intl.DateTimeFormat('en-CA', { timeZone, year: 'numeric', month: '2-digit', day: '2-digit' }).format(new Date(startsAt));
+
 const CalendarView = ({ games, onSelectDate, selectedDate }: { games: Game[], onSelectDate: (d: string) => void, selectedDate: string | null }) => {
   const [currentMonth, setCurrentMonth] = useState(new Date());
 
-  const daysInMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + 1, 0).getDate();
-  const firstDayOfMonth = new Date(currentMonth.getFullYear(), currentMonth.getMonth(), 1).getDay();
+  const year = currentMonth.getFullYear();
+  const month = currentMonth.getMonth();
+  const daysInMonth = new Date(year, month + 1, 0).getDate();
+  const firstDayOfMonth = new Date(year, month, 1).getDay();
 
   const monthName = currentMonth.toLocaleString('default', { month: 'long' });
-  const monthShort = monthName.substring(0, 3);
   const days = Array.from({ length: daysInMonth }, (_, i) => i + 1);
   const blanks = Array.from({ length: firstDayOfMonth }, (_, i) => i);
 
-  // Helper to check if a game date matches a specific day in the current month
-  const gameMatchesDay = (gameDate: string, day: number): boolean => {
-    // Handle "Today" special case
-    if (gameDate === 'Today') {
-      const today = new Date();
-      return day === today.getDate() &&
-        currentMonth.getMonth() === today.getMonth() &&
-        currentMonth.getFullYear() === today.getFullYear();
+  // One pass over the games instead of a string match per day cell
+  const countsByDay = useMemo(() => {
+    const counts = new Map<string, number>();
+    for (const game of games) {
+      const key = dayKey(game.startsAt, game.timezone);
+      counts.set(key, (counts.get(key) ?? 0) + 1);
     }
-    // Handle format like "Tue, Jan 14"
-    const hasMonth = gameDate.includes(monthShort);
-    // Match the day number at end of string (after space) to avoid matching "14" in "2014"
-    const dayMatch = gameDate.match(/\s(\d{1,2})$/);
-    const hasDay = dayMatch ? parseInt(dayMatch[1]) === day : false;
-    return hasMonth && hasDay;
-  };
+    return counts;
+  }, [games]);
 
-  // Calculate games in current month
-  const gamesThisMonth = games.filter(g => {
-    if (g.date === 'Today') {
-      const today = new Date();
-      return currentMonth.getMonth() === today.getMonth() && currentMonth.getFullYear() === today.getFullYear();
-    }
-    return g.date.includes(monthShort);
-  }).length;
+  const keyFor = (day: number) => `${year}-${String(month + 1).padStart(2, '0')}-${String(day).padStart(2, '0')}`;
+  const gamesThisMonth = days.reduce((total, day) => total + (countsByDay.get(keyFor(day)) ?? 0), 0);
 
-  // Find next month with games (check up to 12 months ahead)
+  /** The next month that actually has a game, so an empty month offers somewhere to go. */
   const findNextMonthWithGames = () => {
-    const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
     for (let i = 1; i <= 12; i++) {
-      const checkDate = new Date(currentMonth.getFullYear(), currentMonth.getMonth() + i, 1);
-      const checkMonthShort = months[checkDate.getMonth()];
-      const gamesInMonth = games.filter(g => g.date.includes(checkMonthShort)).length;
-      if (gamesInMonth > 0) {
-        return { date: checkDate, monthName: checkDate.toLocaleString('default', { month: 'long' }), count: gamesInMonth };
+      const checkDate = new Date(year, month + i, 1);
+      const prefix = `${checkDate.getFullYear()}-${String(checkDate.getMonth() + 1).padStart(2, '0')}-`;
+      let count = 0;
+      for (const [key, value] of countsByDay) if (key.startsWith(prefix)) count += value;
+      if (count > 0) {
+        return { date: checkDate, monthName: checkDate.toLocaleString('default', { month: 'long' }), count };
       }
     }
     return null;
   };
 
   const nextMonthWithGames = gamesThisMonth === 0 ? findNextMonthWithGames() : null;
+  const todayKey = dayKey(new Date().toISOString(), Intl.DateTimeFormat().resolvedOptions().timeZone);
 
   return (
     <div className="bg-black text-white p-6 md:p-10 rounded-[48px] shadow-2xl">
@@ -85,14 +78,15 @@ const CalendarView = ({ games, onSelectDate, selectedDate }: { games: Game[], on
       <div className="grid grid-cols-7 gap-2 md:gap-3">
         {blanks.map(b => <div key={`b-${b}`} className="aspect-square"></div>)}
         {days.map(d => {
-          const gameCount = games.filter(g => gameMatchesDay(g.date, d)).length;
-          const isSelected = selectedDate === d.toString();
-          const isToday = d === new Date().getDate() && currentMonth.getMonth() === new Date().getMonth() && currentMonth.getFullYear() === new Date().getFullYear();
+          const key = keyFor(d);
+          const gameCount = countsByDay.get(key) ?? 0;
+          const isSelected = selectedDate === key;
+          const isToday = key === todayKey;
 
           return (
             <button
               key={d}
-              onClick={() => onSelectDate(isSelected ? "" : d.toString())}
+              onClick={() => onSelectDate(isSelected ? '' : key)}
               className={`aspect-square rounded-2xl md:rounded-[28px] flex flex-col items-center justify-center gap-1 transition-all relative border 
                 ${isSelected ? 'bg-lime-500 text-black border-lime-500 scale-105 shadow-lg shadow-lime-500/30' :
                   isToday ? 'bg-white/10 border-lime-500/50' :
@@ -142,8 +136,7 @@ const CalendarView = ({ games, onSelectDate, selectedDate }: { games: Game[], on
 
 import { useRouter } from 'next/navigation';
 import { useSession } from '@/features/auth/session';
-
-// ... existing code ...
+import { useSports } from '@/features/sports/hooks';
 
 const DiscoverGames: React.FC<DiscoverProps> = ({ games, isFullPage = false }) => {
   const router = useRouter();
@@ -155,18 +148,19 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, isFullPage = false }) =
   const [displayMode, setDisplayMode] = useState<'grid' | 'calendar'>('grid');
   const [selectedDay, setSelectedDay] = useState<string | null>(null);
 
-  const sports = ['All', 'Football', 'Basketball', 'Tennis', 'Padel'];
+  const { data: sports = [] } = useSports();
 
   const filteredGames = useMemo(() => {
+    const needle = search.trim().toLowerCase();
     return games.filter(g => {
       const matchesSport = filter === 'All' || g.sport === filter;
-      const matchesSearch = g.title.toLowerCase().includes(search.toLowerCase()) ||
-        g.location.toLowerCase().includes(search.toLowerCase());
-      const matchesPrice = priceFilter === 'All' ||
-        (priceFilter === 'Free' && g.price.toLowerCase() === 'free') ||
-        (priceFilter === 'Paid' && g.price.toLowerCase() !== 'free');
+      const matchesSearch = !needle ||
+        g.title.toLowerCase().includes(needle) ||
+        g.locationText.toLowerCase().includes(needle);
+      const free = g.fee.amountMinor === 0;
+      const matchesPrice = priceFilter === 'All' || (priceFilter === 'Free' ? free : !free);
       const matchesSkill = skillFilter === 'All Levels' || g.skillLevel === skillFilter;
-      const matchesDay = !selectedDay || g.date.includes(selectedDay);
+      const matchesDay = !selectedDay || dayKey(g.startsAt, g.timezone) === selectedDay;
 
       return matchesSport && matchesSearch && matchesPrice && matchesSkill && matchesDay;
     });
@@ -246,13 +240,13 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, isFullPage = false }) =
                         <SelectValue placeholder="All Sports" />
                       </SelectTrigger>
                       <SelectContent className="bg-white border-2 border-black/10 rounded-2xl shadow-xl z-[300]">
-                        {sports.map(s => (
+                        {[{ code: 'All', name: 'All Sports' }, ...sports].map(sport => (
                           <SelectItem
-                            key={s}
-                            value={s}
+                            key={sport.code}
+                            value={sport.code}
                             className="text-[10px] font-black uppercase tracking-widest cursor-pointer hover:bg-gray-100 focus:bg-lime-500 focus:text-black"
                           >
-                            {s}
+                            {sport.name}
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -296,7 +290,9 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, isFullPage = false }) =
             <div className="lg:col-span-5 space-y-5">
               <div className="flex justify-between items-center mb-2">
                 <h4 className="text-lg font-black italic uppercase tracking-tighter">
-                  {selectedDay ? `Games on Oct ${selectedDay}` : 'Available Games'}
+                  {selectedDay
+                    ? `Games on ${new Intl.DateTimeFormat('en-GH', { day: 'numeric', month: 'short' }).format(new Date(`${selectedDay}T12:00:00Z`))}`
+                    : 'Available Games'}
                 </h4>
                 <span className="bg-black text-lime-500 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">{filteredGames.length} Found</span>
               </div>

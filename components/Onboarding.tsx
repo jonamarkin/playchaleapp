@@ -3,13 +3,17 @@
 import React, { useState } from 'react';
 import { m, AnimatePresence } from 'framer-motion';
 import { ICONS } from '@/constants';
+import SportIcon from '@/components/SportIcon';
 import { Input } from '@/components/ui/input';
 import { Button } from '@/components/ui/button';
+import { useSports } from '@/features/sports/hooks';
+import type { SkillLevel } from '@/types';
 
 export interface OnboardingData {
   name: string;
+  /** Sport codes from the registry, not display names */
   sports: string[];
-  level: string;
+  level: SkillLevel;
   location: string;
   email: string;
   password: string;
@@ -24,32 +28,17 @@ interface OnboardingProps {
 const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
   const [step, setStep] = useState(1);
   const [isLoading, setIsLoading] = useState(false);
-  const [data, setData] = useState<{
-    name: string;
-    sports: string[];
-    level: string;
-    location: string;
-    email: string;
-    password: string;
-  }>({
+  const { data: sports = [] } = useSports();
+  const [data, setData] = useState<OnboardingData>({
     name: '',
     sports: [],
-    level: '',
+    level: 'All Levels',
     location: '',
     email: '',
     password: ''
   });
 
-  const SPORTS = [
-    { name: 'Football', icon: '⚽' },
-    { name: 'Basketball', icon: '🏀' },
-    { name: 'Tennis', icon: '🎾' },
-    { name: 'Volleyball', icon: '🏐' },
-    { name: 'Swimming', icon: '🏊' },
-    { name: 'Athletics', icon: '🏃' }
-  ];
-
-  const LEVELS = [
+  const LEVELS: { name: SkillLevel; label: string; intensity: string }[] = [
     { name: 'Beginner', label: 'Just starting out', intensity: 'Rookie' },
     { name: 'Intermediate', label: 'Weekend warrior', intensity: 'Semi-Pro' },
     { name: 'Competitive', label: 'Play to win', intensity: 'Pro' }
@@ -157,21 +146,24 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
 
                 <div className="flex flex-col items-center gap-8">
                   <div className="grid grid-cols-2 md:grid-cols-3 gap-3 md:gap-6 w-full max-w-4xl">
-                    {SPORTS.map(s => {
-                      const isSelected = data.sports.includes(s.name);
+                    {sports.map(sport => {
+                      const isSelected = data.sports.includes(sport.code);
                       return (
                         <button
-                          key={s.name}
+                          key={sport.code}
+                          aria-pressed={isSelected}
                           onClick={() => {
                             const newSports = isSelected
-                              ? data.sports.filter(sport => sport !== s.name)
-                              : [...data.sports, s.name];
+                              ? data.sports.filter(code => code !== sport.code)
+                              : [...data.sports, sport.code];
                             setData({ ...data, sports: newSports });
                           }}
                           className={`group border-2 p-6 md:p-10 rounded-[32px] md:rounded-[48px] hover:scale-105 transition-all duration-500 flex flex-col items-center gap-3 md:gap-6 ${isSelected ? 'bg-lime-500 border-lime-500 text-black scale-105' : 'bg-white/5 border-white/5 hover:bg-white/10 text-white'}`}
                         >
-                          <span className={`text-3xl md:text-5xl transition-transform ${isSelected ? 'scale-125' : 'group-hover:scale-125'}`}>{s.icon}</span>
-                          <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em]">{s.name}</span>
+                          <span className={`transition-transform ${isSelected ? 'scale-125' : 'group-hover:scale-125'}`}>
+                            <SportIcon sport={sport.code} size={40} />
+                          </span>
+                          <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em]">{sport.name}</span>
                         </button>
                       );
                     })}
@@ -306,7 +298,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 text-left w-full">
                   <div className="p-6 md:p-8 bg-black border border-white/10 rounded-[32px] md:rounded-[40px] shadow-2xl">
                     <p className="text-eyebrow font-black uppercase tracking-widest text-white/40 mb-2">Sports</p>
-                    <p className="text-2xl md:text-3xl font-black italic text-lime-500 leading-tight">{data.sports.join(', ')}</p>
+                    <p className="text-2xl md:text-3xl font-black italic text-lime-500 leading-tight">{data.sports.map(code => sports.find(s => s.code === code)?.name ?? code).join(', ')}</p>
                   </div>
                   <div className="p-6 md:p-8 bg-black border border-white/10 rounded-[32px] md:rounded-[40px] shadow-2xl">
                     <p className="text-eyebrow font-black uppercase tracking-widest text-white/40 mb-2">Level</p>

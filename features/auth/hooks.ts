@@ -4,7 +4,7 @@ import { useCallback } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api/browser';
-import type { CreateProfileInput, Credentials, Session } from '@/lib/api/types';
+import type { Credentials, ProfileInput, Session } from '@/lib/api/types';
 import { playerKeys } from '@/features/players/queries';
 import { useUIStore, type ModalType } from '@/hooks/useUIStore';
 import { sessionKey, useSession } from './session';
@@ -48,7 +48,7 @@ export function useLogout() {
     return useMutation({
         mutationFn: () => api.auth.logout(),
         onSuccess: () => {
-            applySession({ user: null, hasProfile: false });
+            applySession({ user: null, playerId: null, hasProfile: false });
             router.push('/discover');
         },
     });
@@ -63,7 +63,7 @@ export function useCompleteOnboarding() {
     const { triggerToast, pendingAction, setPendingAction, openModal } = useUIStore();
 
     return useMutation({
-        mutationFn: async ({ credentials, profile }: { credentials?: Credentials; profile: CreateProfileInput }) => {
+        mutationFn: async ({ credentials, profile }: { credentials?: Credentials; profile: ProfileInput }) => {
             if (!session.user) {
                 if (!credentials) throw new Error('Email and password are required');
                 await api.auth.signup(credentials);

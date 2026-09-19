@@ -1,20 +1,18 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import ProfileDashboard from '@/components/ProfileDashboard';
 import { useSession } from '@/features/auth/session';
 import { usePlayer } from '@/features/players/hooks';
 import { useUIStore } from '@/hooks/useUIStore';
 
 export default function ProfileView({ slug }: { slug: string }) {
-    const router = useRouter();
-    const { user } = useSession();
+    const { playerId } = useSession();
     const { data: player } = usePlayer(slug);
     const triggerToast = useUIStore((state) => state.triggerToast);
 
     if (!player) return null;
 
-    const isOwner = user?.id === player.id;
+    const isOwner = playerId === player.id;
 
     const handleShare = () => {
         navigator.clipboard.writeText(window.location.href);
@@ -27,7 +25,6 @@ export default function ProfileView({ slug }: { slug: string }) {
                 player={player}
                 isOwner={isOwner}
                 onShareProfile={handleShare}
-                onViewMatch={(match) => router.push(`/game/${match.slug || match.id}`)}
             />
         </div>
     );

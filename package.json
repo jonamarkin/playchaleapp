@@ -6,7 +6,10 @@
     "dev": "next dev",
     "build": "next build --webpack",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "gen:api": "openapi-typescript docs/api/openapi.yaml -o lib/api/schema.ts",
+    "lint:api": "redocly lint docs/api/openapi.yaml",
+    "test:contract": "node tests/contract/run.mjs"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.23",
@@ -32,12 +35,18 @@
     "zustand": "^5.0.10"
   },
   "devDependencies": {
+    "@redocly/cli": "^2.53.3",
+    "@types/js-yaml": "^4.0.9",
     "@types/node": "^22.14.0",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",
+    "ajv": "^8.20.0",
+    "ajv-formats": "^3.0.1",
     "autoprefixer": "^10.4.0",
     "eslint": "^8.57.0",
     "eslint-config-next": "^16.1.1",
+    "js-yaml": "^5.4.2",
+    "openapi-typescript": "^7.13.0",
     "postcss": "^8.4.0",
     "sharp": "^0.34.5",
     "tailwindcss": "^3.4.0",

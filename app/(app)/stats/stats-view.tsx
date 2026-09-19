@@ -1,20 +1,18 @@
 'use client';
 
-import { useRouter } from 'next/navigation';
 import ProfileDashboard from '@/components/ProfileDashboard';
 import { useMyProfile } from '@/features/players/hooks';
 import { useLogout } from '@/features/auth/hooks';
 import { useUIStore } from '@/hooks/useUIStore';
 
 export default function StatsView() {
-  const router = useRouter();
   const triggerToast = useUIStore((state) => state.triggerToast);
   const { data: profile } = useMyProfile();
   const logout = useLogout();
 
   if (!profile) return null;
 
-  const shareUrl = `${typeof window === 'undefined' ? '' : window.location.origin}/profile/${profile.slug || profile.id}`;
+  const shareUrl = `${typeof window === 'undefined' ? '' : window.location.origin}/profile/${profile.handle}`;
 
   async function share() {
     const data = { title: `${profile!.name} on PlayChale`, url: shareUrl };
@@ -37,7 +35,6 @@ export default function StatsView() {
         isOwner
         onShareProfile={share}
         onSignOut={() => logout.mutate()}
-        onViewMatch={(match) => router.push(`/game/${match.slug || match.id}`)}
       />
     </div>
   );

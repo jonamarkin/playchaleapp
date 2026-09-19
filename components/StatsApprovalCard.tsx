@@ -2,115 +2,100 @@
 
 import React from 'react';
 import Image from 'next/image';
-import { SPORT_STATS } from '@/constants';
+import { Check, X } from 'lucide-react';
+import { Button } from '@/components/ui/button';
+import { Eyebrow, Text } from '@/components/ui/typography';
 import { useReviewMyStats } from '@/features/stats/hooks';
+import { useSport } from '@/features/sports/hooks';
+import { formatGameDate } from '@/lib/format';
 import type { StatApproval } from '@/lib/api/types';
+import { cn } from '@/lib/utils';
 
+/**
+ * One line a host reported about you, waiting on your word.
+ *
+ * Nothing here reaches a career total until it is approved — this card is the whole
+ * reason the numbers on a profile mean anything.
+ */
 interface StatsApprovalCardProps {
     approval: StatApproval;
-    onApproved?: () => void;
+    onReviewed?: () => void;
 }
 
-const StatsApprovalCard: React.FC<StatsApprovalCardProps> = ({ approval, onApproved }) => {
+const StatsApprovalCard: React.FC<StatsApprovalCardProps> = ({ approval, onReviewed }) => {
     const reviewStats = useReviewMyStats();
-
-    const sportConfig = SPORT_STATS[approval.game?.sport ?? ''] || SPORT_STATS.Football;
-    const gameResult = approval.result?.resultData || {};
-
-    const handleApprove = async () => {
-        try {
-            await reviewStats.mutateAsync({ gameId: approval.gameId, approved: true });
-            onApproved?.();
-        } catch (error) {
-            console.error('Failed to approve stats:', error);
-        }
-    };
-
-    const handleReject = async () => {
-        try {
-            await reviewStats.mutateAsync({ gameId: approval.gameId, approved: false });
-            onApproved?.();
-        } catch (error) {
-            console.error('Failed to reject stats:', error);
-        }
-    };
+    const { sport } = useSport(approval.sport);
+    const resultData = approval.result?.resultData ?? {};
 
     if (!approval.game) return null;
+    const { game } = approval;
+
+    const review = (decision: 'approve' | 'reject') =>
+        reviewStats.mutate({ gameId: approval.gameId, decision }, { onSuccess: () => onReviewed?.() });
+
+    const score = sport?.resultFields.map((field) => resultData[field.key] ?? 0).join(' – ');
 
     return (
-        <div
-            className="animate-in fade-in slide-in-from-bottom-5 [animation-duration:400ms] bg-white border-2 border-black/5 rounded-[28px] overflow-hidden shadow-sm hover:shadow-lg transition-all"
-        >
-            {/* Header */}
+        <article className="animate-in fade-in slide-in-from-bottom-5 overflow-hidden rounded-card border-2 border-line bg-surface-panel shadow-e1 transition-all [animation-duration:400ms] hover:shadow-e2">
             <div className="relative h-24 sm:h-32">
-                <Image
-                    src={approval.game.imageUrl || 'https://images.unsplash.com/photo-1574629810360-7efbbe195018'}
-                    alt={approval.game.title}
-                    fill
-                    className="object-cover"
-                />
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
-                <div className="absolute bottom-3 left-4 right-4">
-                    <span className="bg-lime-500 text-black px-2.5 py-1 rounded-full text-[8px] font-black uppercase tracking-widest">
-                        Pending Approval
+                <Image src={game.imageUrl} alt="" fill sizes="(max-width: 640px) 100vw, 400px" className="object-cover" />
+                <div className="absolute inset-0 bg-gradient-to-t from-ink-950/80 to-transparent" />
+                <div className="absolute inset-x-4 bottom-3">
+                    <span className="rounded-pill bg-lime-500 px-2.5 py-1 text-eyebrow font-black uppercase tracking-widest text-ink-900">
+                        Your call
                     </span>
-                    <h4 className="text-white font-black italic uppercase tracking-tighter text-lg mt-1 truncate">
-                        {approval.game.title}
-                    </h4>
+                    <h3 className="mt-1 truncate text-lg font-black italic uppercase tracking-tighter text-white">{game.title}</h3>
+                    <Eyebrow className="text-white/60">{formatGameDate(game.startsAt, game.timezone)}</Eyebrow>
                 </div>
             </div>
 
-            {/* Content */}
-            <div className="p-5 space-y-4">
-                {/* Game Result */}
-                <div className="flex items-center justify-between pb-4 border-b border-black/5">
-                    <span className="text-xs font-black uppercase tracking-widest text-black/40">Final Score</span>
-                    <span className="text-xl font-black">
-                        {gameResult[sportConfig.gameResult[0]?.key] || 0} - {gameResult[sportConfig.gameResult[1]?.key] || 0}
-                    </span>
-                </div>
+            <div className="space-y-4 p-5">
+                {score && (
+                    <div className="flex items-center justify-between border-b border-line pb-4">
+                        <Eyebrow>Final score</Eyebrow>
+                        <span className="text-xl font-black">{score}</span>
+                    </div>
+                )}
 
-                {/* Your Stats */}
                 <div className="space-y-3">
-                    <span className="text-xs font-black uppercase tracking-widest text-black/40">Your Stats</span>
+                    <Eyebrow>What the host reported</Eyebrow>
                     <div className="grid grid-cols-3 gap-3">
-                        {sportConfig.playerStats.map(stat => (
-                            <div key={stat.key} className="bg-gray-50 rounded-xl p-3 text-center">
-                                <span className="text-2xl">{stat.icon}</span>
-                                <p className="text-lg font-black mt-1">{approval.stats[stat.key] || 0}</p>
-                                <p className="text-[8px] font-bold uppercase tracking-widest text-black/40">{stat.label}</p>
+                        {sport?.statFields.map((field) => (
+                            <div key={field.key} className="rounded-field bg-fg/5 p-3 text-center">
+                                <p className="text-lg font-black">
+                                    {typeof approval.stats[field.key] === 'boolean'
+                                        ? (approval.stats[field.key] ? 'Yes' : 'No')
+                                        : (approval.stats[field.key] ?? 0)}
+                                </p>
+                                <Eyebrow className="mt-1 block">{field.label}</Eyebrow>
                             </div>
                         ))}
                     </div>
                 </div>
 
-                {/* Attendance */}
-                <div className={`flex items-center gap-2 p-3 rounded-xl ${approval.showedUp ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'}`}>
-                    <span className="text-lg">{approval.showedUp ? '✓' : '✗'}</span>
-                    <span className="text-sm font-bold">
-                        {approval.showedUp ? 'Marked as Present' : 'Marked as No-Show'}
-                    </span>
+                <div
+                    className={cn(
+                        'flex items-center gap-2 rounded-field p-3',
+                        approval.showedUp ? 'bg-green-50 text-green-700' : 'bg-red-50 text-red-600'
+                    )}
+                >
+                    {approval.showedUp ? <Check className="h-4 w-4" /> : <X className="h-4 w-4" />}
+                    <Text size="sm" weight="bold" className="text-current">
+                        {approval.showedUp ? 'Marked present' : 'Marked as a no-show'}
+                        {approval.outcome ? ` · recorded as a ${approval.outcome}` : ''}
+                    </Text>
                 </div>
 
-                {/* Actions */}
                 <div className="flex gap-3 pt-2">
-                    <button
-                        onClick={handleReject}
-                        disabled={reviewStats.isPending}
-                        className="flex-1 py-3 bg-gray-100 text-black rounded-full font-black uppercase text-[10px] tracking-widest hover:bg-gray-200 transition-all disabled:opacity-50"
-                    >
+                    <Button variant="outline" full disabled={reviewStats.isPending} onClick={() => review('reject')}>
                         Dispute
-                    </button>
-                    <button
-                        onClick={handleApprove}
-                        disabled={reviewStats.isPending}
-                        className="flex-1 py-3 bg-lime-500 text-black rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all disabled:opacity-50"
-                    >
-                        {reviewStats.isPending ? 'Approving...' : 'Approve'}
-                    </button>
+                    </Button>
+                    <Button full loading={reviewStats.isPending} onClick={() => review('approve')}>
+                        Approve
+                    </Button>
                 </div>
             </div>
-        </div>
+        </article>
     );
 };
 

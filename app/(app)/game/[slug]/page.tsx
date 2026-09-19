@@ -6,6 +6,8 @@ import { ApiError } from '@/lib/api/client';
 import { serverApi } from '@/lib/api/server';
 import { Prefetch } from '@/lib/query/prefetch';
 import GameClientPage from '@/components/GameClientPage';
+import { sportName } from '@/features/sports/server';
+import { formatGameWhen } from '@/lib/format';
 
 type Props = {
     params: Promise<{ slug: string }>;
@@ -31,12 +33,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
         };
     }
 
+    const sport = await sportName(game.sport);
+    const when = formatGameWhen(game.startsAt, game.timezone);
+    const spotsLeft = Math.max(0, game.capacity - game.confirmedCount);
+
     return {
         title: `${game.title} | PlayChale`,
-        description: `Join ${game.organizer}'s ${game.sport} game at ${game.location} on ${game.date}.`,
+        description: `Join ${game.host.name}'s ${sport} game at ${game.locationText}, ${when}.`,
         openGraph: {
             title: `Join ${game.title}`,
-            description: `Play ${game.sport} at ${game.location}. ${game.spotsTotal - game.spotsTaken} spots left!`,
+            description: `${sport} at ${game.locationText}, ${when}. ${spotsLeft > 0 ? `${spotsLeft} spots left!` : 'Squad full.'}`,
             images: [{ url: game.imageUrl, width: 1200, height: 630, alt: game.title }],
             type: 'website',
         },

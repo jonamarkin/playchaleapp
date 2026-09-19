@@ -3,7 +3,7 @@
 import { queryOptions, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { api } from '@/lib/api/browser';
 import type { Api } from '@/lib/api/client';
-import type { PlayerStatsInput, SubmitResultsInput } from '@/lib/api/types';
+import type { PlayerStatInput, ResultInput } from '@/lib/api/types';
 
 export const statsKeys = {
     results: (gameId: string) => ['games', 'results', gameId] as const,
@@ -24,8 +24,8 @@ export function usePendingApprovals(enabled = true) {
 export function useSubmitGameResults() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: ({ gameId, input }: { gameId: string; input: SubmitResultsInput }) =>
-            api.games.submitResults(gameId, input),
+        mutationFn: ({ gameId, input }: { gameId: string; input: ResultInput }) =>
+            api.games.submitResult(gameId, input),
         onSuccess: (_, { gameId }) => queryClient.invalidateQueries({ queryKey: statsKeys.results(gameId) }),
     });
 }
@@ -33,7 +33,7 @@ export function useSubmitGameResults() {
 export function useSubmitPlayerStats() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: ({ gameId, stats }: { gameId: string; stats: PlayerStatsInput[] }) =>
+        mutationFn: ({ gameId, stats }: { gameId: string; stats: PlayerStatInput[] }) =>
             api.games.submitPlayerStats(gameId, stats),
         onSuccess: (_, { gameId }) => {
             queryClient.invalidateQueries({ queryKey: statsKeys.results(gameId) });
@@ -45,8 +45,8 @@ export function useSubmitPlayerStats() {
 export function useReviewMyStats() {
     const queryClient = useQueryClient();
     return useMutation({
-        mutationFn: ({ gameId, approved }: { gameId: string; approved: boolean }) =>
-            api.games.reviewMyStats(gameId, approved),
+        mutationFn: ({ gameId, decision, note }: { gameId: string; decision: 'approve' | 'reject'; note?: string }) =>
+            api.games.reviewMyStats(gameId, decision, note),
         onSuccess: (_, { gameId }) => {
             queryClient.invalidateQueries({ queryKey: statsKeys.results(gameId) });
             queryClient.invalidateQueries({ queryKey: statsKeys.approvals() });

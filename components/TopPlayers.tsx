@@ -4,13 +4,15 @@ import React, { useState, useMemo } from 'react';
 import Image from 'next/image';
 import { ICONS } from '@/constants';
 import { m, AnimatePresence } from 'framer-motion';
-import { PlayerProfile } from '@/types';
+import { Player } from '@/types';
+import { useSports } from '@/features/sports/hooks';
+import { primaryStats, winRate } from '@/lib/format';
 import { Input } from '@/components/ui/input';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 
 interface TopPlayersProps {
-  players: PlayerProfile[];
-  onOpenPlayer: (p: PlayerProfile) => void;
+  players: Player[];
+  onOpenPlayer: (p: Player) => void;
   isFullPage?: boolean;
   onViewAll?: () => void;
 }
@@ -20,28 +22,34 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
   const [activeSport, setActiveSport] = useState('All');
   const [activeLocation, setActiveLocation] = useState('All Locations');
 
-  const sports = ['All', 'Football', 'Basketball', 'Tennis', 'Padel'];
+  const { data: sportList = [] } = useSports();
+  const sports = useMemo(() => ['All', ...sportList.map((s) => s.code)], [sportList]);
+  const sportName = (code: string) => (code === 'All' ? 'All' : sportList.find((s) => s.code === code)?.name ?? code);
 
   // Extract unique locations dynamically
   const locations = useMemo(() => {
-    const locs = new Set(players.map(p => p.location).filter((l): l is string => !!l));
+    const locs = new Set(players.map(p => p.locationText).filter((l): l is string => !!l));
     return ['All Locations', ...Array.from(locs)];
   }, [players]);
 
   const filteredPlayers = useMemo(() => {
     return players.filter(p => {
-      const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase());
+      const matchesSearch = p.name.toLowerCase().includes(search.toLowerCase()) || p.handle.includes(search.toLowerCase());
       const matchesSport = activeSport === 'All' || p.mainSport === activeSport;
-      const matchesLocation = activeLocation === 'All Locations' || p.location === activeLocation;
+      const matchesLocation = activeLocation === 'All Locations' || p.locationText === activeLocation;
       return matchesSearch && matchesSport && matchesLocation;
     });
   }, [players, search, activeSport, activeLocation]);
 
-  const getPreviewStat = (player: PlayerProfile) => {
-    if (player.mainSport === 'Football') return { label: 'Goals', value: player.stats.goals || 0 };
-    if (player.mainSport === 'Basketball') return { label: 'Points', value: player.stats.points || 0 };
-    if (player.mainSport === 'Tennis' || player.mainSport === 'Padel') return { label: 'Sets Won', value: player.stats.setsWon || 0 };
-    return { label: 'Rating', value: player.stats.rating };
+  /**
+   * The headline number for a player: their main sport's first tracked stat, from the
+   * registry rather than a per-sport branch here.
+   */
+  const getPreviewStat = (player: Player) => {
+    const record = primaryStats(player.careerStats, player.mainSport);
+    const field = sportList.find((s) => s.code === (record?.sport ?? player.mainSport))?.statFields.find((f) => f.type === 'number');
+    if (!record || !field) return { label: 'Games', value: record?.gamesPlayed ?? 0 };
+    return { label: field.label, value: record.counters[field.key] ?? 0 };
   };
 
   return (
@@ -119,7 +127,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                     onClick={() => setActiveSport(sport)}
                     className={`px-5 sm:px-8 py-2 sm:py-3 rounded-full text-[9px] sm:text-[10px] font-black uppercase tracking-[0.2em] transition-all ${activeSport === sport ? 'bg-black text-white shadow-xl scale-105' : 'bg-gray-100 text-black/40 hover:bg-gray-200'}`}
                   >
-                    {sport}
+                    {sportName(sport)}
                   </button>
                 ))}
               </div>
@@ -190,7 +198,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                     <div className="relative shrink-0 self-center md:self-start">
                       <div className="relative">
                         <Image
-                          src={player.avatar}
+                          src={player.avatarUrl}
                           alt={player.name}
                           width={192}
                           height={192}
@@ -208,10 +216,10 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                       <div className="space-y-4 sm:space-y-5 mb-5 sm:mb-8 text-center md:text-left">
                         <div className="flex flex-wrap justify-center md:justify-start gap-2 items-center">
                           <span className="bg-lime-500 text-black text-[8px] sm:text-[9px] font-black uppercase tracking-widest px-3 sm:px-4 py-1.5 rounded-full shadow-lg">
-                            {player.mainSport}
+                            {sportName(player.mainSport)}
                           </span>
                           <span className={`text-[8px] sm:text-[9px] font-black uppercase tracking-widest transition-colors ${metaClasses}`}>
-                            Verified Legend
+                            @{player.handle}
                           </span>
                         </div>
                         <h3 className={`text-2xl sm:text-4xl md:text-5xl font-black tracking-tighter leading-[0.9] italic uppercase ${nameHoverClasses} transition-colors break-words line-clamp-2`}>
@@ -223,7 +231,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                       <div className={`grid grid-cols-3 gap-0 border-y py-4 sm:py-8 mb-5 sm:mb-8 transition-colors ${borderClasses}`}>
                         <div className="text-center px-1">
                           <p className={`text-lg sm:text-2xl md:text-3xl font-black italic tracking-tighter mb-1 transition-colors ${textClasses}`}>
-                            {player.stats.winRate}
+                            {winRate(primaryStats(player.careerStats, player.mainSport) ?? { wins: 0, losses: 0, draws: 0 }) ?? '—'}
                           </p>
                           <p className={`text-[7px] sm:text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] transition-colors ${metaClasses} truncate`}>Win Rate</p>
                         </div>
@@ -235,7 +243,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                         </div>
                         <div className="text-center px-1">
                           <p className={`text-lg sm:text-2xl md:text-3xl font-black italic tracking-tighter mb-1 transition-colors ${textClasses}`}>
-                            {player.stats.mvps}
+                            {primaryStats(player.careerStats, player.mainSport)?.mvps ?? 0}
                           </p>
                           <p className={`text-[7px] sm:text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] transition-colors ${metaClasses} truncate`}>MVPs</p>
                         </div>
