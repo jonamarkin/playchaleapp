@@ -9,6 +9,9 @@ import { getSession } from '@/lib/api/server';
 const inter = Inter({
   subsets: ['latin'],
   variable: '--font-inter',
+  // Without this only upright faces load and every `italic` in the app is a browser-
+  // synthesised slant rather than Inter's drawn italic.
+  style: ['normal', 'italic'],
 });
 
 export const metadata: Metadata = {
@@ -40,8 +43,7 @@ export const viewport: Viewport = {
   themeColor: '#C6FF00',
   width: 'device-width',
   initialScale: 1,
-  maximumScale: 1,
-  userScalable: false,
+  // Pinch zoom stays enabled: blocking it fails WCAG 1.4.4, and this app has a lot of small type.
 };
 
 export default async function RootLayout({
@@ -55,6 +57,12 @@ export default async function RootLayout({
     // data-scroll-behavior lets Next disable smooth scrolling during route changes
     <html lang="en" className={inter.variable} data-scroll-behavior="smooth">
       <body className="font-sans">
+        <a
+          href="#main"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-4 focus:left-4 focus:z-tooltip focus:rounded-pill focus:bg-ink-900 focus:px-6 focus:py-3 focus:text-eyebrow focus:font-black focus:uppercase focus:text-lime-500"
+        >
+          Skip to content
+        </a>
         <QueryProvider>
           <SessionProvider session={session}>
             <MotionProvider>{children}</MotionProvider>

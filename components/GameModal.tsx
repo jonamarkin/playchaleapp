@@ -50,13 +50,13 @@ const ProSelect = ({ value, onChange, options, label, iconMap }: { value: string
       <button
         type="button"
         onClick={() => setIsOpen(!isOpen)}
-        className="w-full bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-full px-6 py-4 text-white font-bold outline-none transition-all flex items-center justify-between group"
+        className="w-full bg-white/5 border-2 border-white/5 focus:border-lime-500 rounded-full px-6 py-4 text-white font-bold outline-none transition-all flex items-center justify-between group"
       >
         <div className="flex items-center gap-3">
-          {iconMap?.[value] && <span className="text-[#C6FF00]">{iconMap[value]}</span>}
+          {iconMap?.[value] && <span className="text-lime-500">{iconMap[value]}</span>}
           <span>{value}</span>
         </div>
-        <div className={`transition-transform duration-300 ${isOpen ? 'rotate-180 text-[#C6FF00]' : 'text-white/20'}`}>
+        <div className={`transition-transform duration-300 ${isOpen ? 'rotate-180 text-lime-500' : 'text-white/20'}`}>
           <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
         </div>
       </button>
@@ -77,11 +77,11 @@ const ProSelect = ({ value, onChange, options, label, iconMap }: { value: string
                     key={opt}
                     type="button"
                     onClick={() => { onChange(opt); setIsOpen(false); }}
-                    className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl transition-all group ${value === opt ? 'bg-[#C6FF00] text-black' : 'text-white/60 hover:bg-white/5 hover:text-white'}`}
+                    className={`w-full flex items-center justify-between px-5 py-4 rounded-2xl transition-all group ${value === opt ? 'bg-lime-500 text-black' : 'text-white/60 hover:bg-white/5 hover:text-white'}`}
                   >
                     <div className="flex items-center gap-4">
                       {iconMap?.[opt] && (
-                        <span className={`transition-colors ${value === opt ? 'text-black' : 'text-[#C6FF00]/40 group-hover:text-[#C6FF00]'}`}>
+                        <span className={`transition-colors ${value === opt ? 'text-black' : 'text-lime-500/40 group-hover:text-lime-500'}`}>
                           {iconMap[opt]}
                         </span>
                       )}
@@ -285,20 +285,20 @@ const GameModal: React.FC<ModalProps> = ({
       >
         <div className="absolute top-6 right-6 md:top-8 md:right-8 flex gap-2 md:gap-3 z-20">
           {history.length > 0 && (
-            <button onClick={goBack} className={`w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center transition-all ${isDarkTheme ? 'bg-white/10 text-white hover:bg-[#C6FF00] hover:text-black' : 'bg-gray-100 text-black hover:bg-black hover:text-white'}`}>
+            <button onClick={goBack} className={`w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center transition-all ${isDarkTheme ? 'bg-white/10 text-white hover:bg-lime-500 hover:text-black' : 'bg-gray-100 text-black hover:bg-black hover:text-white'}`}>
               <div className="rotate-180 scale-110 md:scale-125"><ICONS.ChevronRight /></div>
             </button>
           )}
-          <button onClick={onClose} className={`w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center transition-all ${isDarkTheme ? 'bg-white/10 text-white hover:bg-[#C6FF00] hover:text-black' : 'bg-gray-100 text-black hover:bg-black hover:text-white'}`}><ICONS.X /></button>
+          <button onClick={onClose} className={`w-10 h-10 md:w-11 md:h-11 rounded-full flex items-center justify-center transition-all ${isDarkTheme ? 'bg-white/10 text-white hover:bg-lime-500 hover:text-black' : 'bg-gray-100 text-black hover:bg-black hover:text-white'}`}><ICONS.X /></button>
         </div>
 
         {step === 2 ? (
           <m.div initial={{ opacity: 0, scale: 0.8 }} animate={{ opacity: 1, scale: 1 }} className="py-12 text-center space-y-6">
-            <div className="w-20 h-20 md:w-24 md:h-24 bg-[#C6FF00] rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-lime-500/20">
+            <div className="w-20 h-20 md:w-24 md:h-24 bg-lime-500 rounded-full flex items-center justify-center mx-auto mb-8 shadow-2xl shadow-lime-500/20">
               {/* Fix: removed invalid md:width and md:height props and use className instead */}
               <svg viewBox="0 0 24 24" fill="none" stroke="black" strokeWidth="4" strokeLinecap="round" strokeLinejoin="round" className="w-8 h-8 md:w-10 md:h-10"><polyline points="20 6 9 17 4 12" /></svg>
             </div>
-            <h2 className={`text-3xl md:text-4xl font-black tracking-tighter italic uppercase ${isDarkTheme ? 'text-[#C6FF00]' : 'text-black'}`}>
+            <h2 className={`text-3xl md:text-4xl font-black tracking-tighter italic uppercase ${isDarkTheme ? 'text-lime-500' : 'text-black'}`}>
               {type === 'challenge' ? 'CHALLENGE ISSUED!' : (type === 'create' ? 'MATCH PUBLISHED!' : (type === 'contact-organizer' ? 'MESSAGE SENT!' : 'SUCCESS!'))}
             </h2>
             <p className={`${isDarkTheme ? 'text-white/60' : 'text-black/60'} font-black uppercase tracking-[0.2em] text-[9px] md:text-[10px]`}>
@@ -309,7 +309,7 @@ const GameModal: React.FC<ModalProps> = ({
           <div className="space-y-6 md:space-y-8">
             <div className="space-y-2">
               <div className="flex items-center gap-3">
-                <span className={`text-[8px] md:text-[9px] font-black uppercase tracking-[0.4em] px-4 md:px-5 py-1.5 rounded-full inline-block ${isDarkTheme ? 'bg-[#C6FF00] text-black' : 'bg-black text-white'}`}>
+                <span className={`text-[8px] md:text-[9px] font-black uppercase tracking-[0.4em] px-4 md:px-5 py-1.5 rounded-full inline-block ${isDarkTheme ? 'bg-lime-500 text-black' : 'bg-black text-white'}`}>
                   {type?.toUpperCase().replace('-', ' ')}
                 </span>
                 {type === 'manage-game' && (
@@ -330,7 +330,7 @@ const GameModal: React.FC<ModalProps> = ({
                     <div className="absolute inset-0 bg-gradient-to-t from-black via-black/20 to-transparent" />
                     <div className="absolute bottom-8 left-8 right-8 flex justify-between items-end">
                       <div className="space-y-2">
-                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#C6FF00]">Match Final Result</p>
+                        <p className="text-[10px] font-black uppercase tracking-[0.3em] text-lime-500">Match Final Result</p>
                         <h3 className="text-5xl md:text-7xl font-black italic tracking-tighter leading-none">{completedMatch.score}</h3>
                       </div>
                       <div className="text-right">
@@ -344,13 +344,13 @@ const GameModal: React.FC<ModalProps> = ({
                     <div className="space-y-8">
                       <div className="space-y-4">
                         <h4 className="text-[10px] font-black uppercase tracking-[0.4em] text-white/30 px-2">Match MVP</h4>
-                        <div className="bg-[#C6FF00] p-6 rounded-[32px] flex items-center gap-6 shadow-2xl">
+                        <div className="bg-lime-500 p-6 rounded-[32px] flex items-center gap-6 shadow-2xl">
                           <img src={completedMatch.mvp?.avatar} className="w-16 h-16 rounded-full border-4 border-black/10" />
                           <div>
                             <p className="text-black font-black italic text-xl uppercase tracking-tighter leading-none mb-1">{completedMatch.mvp?.name}</p>
                             <p className="text-black/50 text-[10px] font-black uppercase tracking-widest">{completedMatch.mvp?.contribution}</p>
                           </div>
-                          <div className="ml-auto bg-black text-[#C6FF00] w-12 h-12 rounded-full flex items-center justify-center font-black text-xs italic">MVP</div>
+                          <div className="ml-auto bg-black text-lime-500 w-12 h-12 rounded-full flex items-center justify-center font-black text-xs italic">MVP</div>
                         </div>
                       </div>
 
@@ -364,7 +364,7 @@ const GameModal: React.FC<ModalProps> = ({
                                 <span className="text-sm font-black text-white">{val}</span>
                               </div>
                               <div className="h-1 bg-white/10 rounded-full overflow-hidden">
-                                <div className="h-full bg-[#C6FF00] w-2/3" />
+                                <div className="h-full bg-lime-500 w-2/3" />
                               </div>
                             </div>
                           ))}
@@ -381,7 +381,7 @@ const GameModal: React.FC<ModalProps> = ({
                               <img src={p.avatar} className="w-10 h-10 rounded-full border border-white/10" />
                               <div>
                                 <p className="text-xs font-black italic uppercase">{p.name}</p>
-                                <p className="text-[8px] font-black text-[#C6FF00] uppercase tracking-widest">{p.role}</p>
+                                <p className="text-[8px] font-black text-lime-500 uppercase tracking-widest">{p.role}</p>
                               </div>
                             </div>
                             <div className="text-right">
@@ -395,7 +395,7 @@ const GameModal: React.FC<ModalProps> = ({
                   </div>
 
                   <div className="pt-8 border-t border-white/10">
-                    <button onClick={onClose} className="w-full bg-white text-black py-5 rounded-full font-black uppercase tracking-widest text-[11px] hover:bg-[#C6FF00] transition-all">Close Report</button>
+                    <button onClick={onClose} className="w-full bg-white text-black py-5 rounded-full font-black uppercase tracking-widest text-[11px] hover:bg-lime-500 transition-all">Close Report</button>
                   </div>
                 </m.div>
               )}
@@ -410,21 +410,21 @@ const GameModal: React.FC<ModalProps> = ({
                         required
                         value={profileForm.name}
                         onChange={e => setProfileForm({ ...profileForm, name: e.target.value })}
-                        className="w-full h-auto bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-full px-6 py-4 text-white font-bold outline-none transition-all focus-visible:ring-0 placeholder:text-white/20"
+                        className="w-full h-auto bg-white/5 border-2 border-white/5 focus:border-lime-500 rounded-full px-6 py-4 text-white font-bold outline-none transition-all focus-visible:ring-0 placeholder:text-white/20"
                       />
                     </div>
 
                     <div className="space-y-2">
                       <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-4">Main Discipline</label>
                       <Select value={profileForm.mainSport} onValueChange={(v) => setProfileForm({ ...profileForm, mainSport: v })}>
-                        <SelectTrigger className="w-full bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-full px-6 py-4 h-auto text-white font-bold outline-none transition-all shadow-sm focus:ring-0">
+                        <SelectTrigger className="w-full bg-white/5 border-2 border-white/5 focus:border-lime-500 rounded-full px-6 py-4 h-auto text-white font-bold outline-none transition-all shadow-sm focus:ring-0">
                           <SelectValue placeholder="Select Sport" />
                         </SelectTrigger>
                         <SelectContent className="bg-zinc-900 border border-white/10 rounded-[20px] shadow-2xl overflow-hidden p-1 z-[250]">
                           {['Football', 'Basketball', 'Tennis', 'Padel', 'Badminton'].map(sport => (
                             <SelectItem key={sport} value={sport} className="focus:bg-white/10 focus:text-white rounded-xl py-3 px-4 font-bold cursor-pointer text-white/80">
                               <div className="flex items-center gap-3">
-                                <span className="text-[#C6FF00]">{SPORT_ICONS[sport]}</span>
+                                <span className="text-lime-500">{SPORT_ICONS[sport]}</span>
                                 <span>{sport}</span>
                               </div>
                             </SelectItem>
@@ -445,7 +445,7 @@ const GameModal: React.FC<ModalProps> = ({
                       />
                     </div>
                   </div>
-                  <Button type="submit" disabled={loading} className="w-full h-auto bg-[#C6FF00] text-black py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] transition-all flex items-center justify-center gap-4 shadow-2xl hover:bg-[#b0ff00]">
+                  <Button type="submit" disabled={loading} className="w-full h-auto bg-lime-500 text-black py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] transition-all flex items-center justify-center gap-4 shadow-2xl hover:bg-lime-400">
                     {loading ? 'Saving...' : 'Update Profile'}
                   </Button>
                 </m.form>
@@ -461,7 +461,7 @@ const GameModal: React.FC<ModalProps> = ({
                         <div key={key} className="space-y-3">
                           <div className="flex justify-between items-center px-2">
                             <label className="text-[10px] font-black uppercase tracking-widest text-white/40">{key}</label>
-                            <span className="text-sm font-black text-[#C6FF00]">{statsForm[key]}</span>
+                            <span className="text-sm font-black text-lime-500">{statsForm[key]}</span>
                           </div>
                           <input
                             type="range"
@@ -469,7 +469,7 @@ const GameModal: React.FC<ModalProps> = ({
                             max="99"
                             value={statsForm[key]}
                             onChange={e => setStatsForm({ ...statsForm, [key]: parseInt(e.target.value) })}
-                            className="w-full h-1.5 bg-white/10 rounded-full appearance-none cursor-pointer accent-[#C6FF00]"
+                            className="w-full h-1.5 bg-white/10 rounded-full appearance-none cursor-pointer accent-lime-500"
                           />
                         </div>
                       ))}
@@ -518,7 +518,7 @@ const GameModal: React.FC<ModalProps> = ({
                     </div>
                   </div>
 
-                  <button type="submit" disabled={loading} className="w-full bg-[#C6FF00] text-black py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] transition-all flex items-center justify-center gap-4 shadow-2xl">
+                  <button type="submit" disabled={loading} className="w-full bg-lime-500 text-black py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] transition-all flex items-center justify-center gap-4 shadow-2xl">
                     {loading ? 'Saving...' : 'Update Pro Stats'}
                   </button>
                 </m.form>
@@ -532,12 +532,12 @@ const GameModal: React.FC<ModalProps> = ({
                       <ICONS.Logo />
                     </div>
                     <div className="relative mt-4">
-                      <img src={player.avatar} className="w-40 h-40 rounded-full border-4 border-[#C6FF00] shadow-2xl object-cover" />
-                      <div className="absolute -bottom-2 -right-2 bg-[#C6FF00] text-black w-14 h-14 rounded-full flex items-center justify-center font-black text-xl italic uppercase shadow-xl">PRO</div>
+                      <img src={player.avatar} className="w-40 h-40 rounded-full border-4 border-lime-500 shadow-2xl object-cover" />
+                      <div className="absolute -bottom-2 -right-2 bg-lime-500 text-black w-14 h-14 rounded-full flex items-center justify-center font-black text-xl italic uppercase shadow-xl">PRO</div>
                     </div>
                     <div className="space-y-1">
                       <h3 className="text-3xl font-black italic uppercase tracking-tighter leading-none">{player.name}</h3>
-                      <p className="text-[#C6FF00] font-black uppercase tracking-widest text-[9px]">{player.mainSport} Elite</p>
+                      <p className="text-lime-500 font-black uppercase tracking-widest text-[9px]">{player.mainSport} Elite</p>
                     </div>
                     <div className="w-full grid grid-cols-3 gap-4 py-4 border-y border-white/5">
                       <div>
@@ -560,7 +560,7 @@ const GameModal: React.FC<ModalProps> = ({
                   </div>
                   <button
                     onClick={onShareProfile}
-                    className="w-full bg-[#C6FF00] text-black py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] transition-all flex items-center justify-center gap-4 shadow-2xl"
+                    className="w-full bg-lime-500 text-black py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] transition-all flex items-center justify-center gap-4 shadow-2xl"
                   >
                     <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71" /><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71" /></svg>
                     Copy Pro Profile Link
@@ -575,14 +575,14 @@ const GameModal: React.FC<ModalProps> = ({
                     <div className="space-y-2">
                       <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-4">Discipline</label>
                       <Select value={createForm.sport} onValueChange={(v) => setCreateForm({ ...createForm, sport: v })}>
-                        <SelectTrigger className="w-full bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-full px-6 py-4 h-auto text-white font-bold outline-none transition-all shadow-sm focus:ring-0">
+                        <SelectTrigger className="w-full bg-white/5 border-2 border-white/5 focus:border-lime-500 rounded-full px-6 py-4 h-auto text-white font-bold outline-none transition-all shadow-sm focus:ring-0">
                           <SelectValue placeholder="Select Sport" />
                         </SelectTrigger>
                         <SelectContent className="bg-zinc-900 border border-white/10 rounded-[20px] shadow-2xl overflow-hidden p-1 z-[250]">
                           {['Football', 'Basketball', 'Tennis', 'Padel', 'Badminton'].map(sport => (
                             <SelectItem key={sport} value={sport} className="focus:bg-white/10 focus:text-white rounded-xl py-3 px-4 font-bold cursor-pointer text-white/80">
                               <div className="flex items-center gap-3">
-                                <span className="text-[#C6FF00]">{SPORT_ICONS[sport]}</span>
+                                <span className="text-lime-500">{SPORT_ICONS[sport]}</span>
                                 <span>{sport}</span>
                               </div>
                             </SelectItem>
@@ -598,7 +598,7 @@ const GameModal: React.FC<ModalProps> = ({
                         value={createForm.title}
                         onChange={e => setCreateForm({ ...createForm, title: e.target.value })}
                         placeholder="e.g. Saturday Night 5v5"
-                        className="w-full h-auto bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-full px-6 py-4 text-white font-bold outline-none transition-all focus-visible:ring-0 placeholder:text-white/20"
+                        className="w-full h-auto bg-white/5 border-2 border-white/5 focus:border-lime-500 rounded-full px-6 py-4 text-white font-bold outline-none transition-all focus-visible:ring-0 placeholder:text-white/20"
                       />
                     </div>
                   </div>
@@ -610,12 +610,12 @@ const GameModal: React.FC<ModalProps> = ({
                       value={createForm.location}
                       onChange={e => setCreateForm({ ...createForm, location: e.target.value })}
                       placeholder="e.g. City Sports Arena, Pitch 4"
-                      className="w-full h-auto bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-full px-6 py-4 text-white font-bold outline-none transition-all focus-visible:ring-0 placeholder:text-white/20"
+                      className="w-full h-auto bg-white/5 border-2 border-white/5 focus:border-lime-500 rounded-full px-6 py-4 text-white font-bold outline-none transition-all focus-visible:ring-0 placeholder:text-white/20"
                     />
                   </div>
 
                   <div className="bg-white/5 p-1 rounded-full flex relative mb-6">
-                    <div className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-[#C6FF00] rounded-full transition-transform duration-300 ${createForm.visibility === 'private' ? 'translate-x-full' : 'translate-x-0'}`} />
+                    <div className={`absolute top-1 bottom-1 left-1 w-[calc(50%-4px)] bg-lime-500 rounded-full transition-transform duration-300 ${createForm.visibility === 'private' ? 'translate-x-full' : 'translate-x-0'}`} />
                     <button
                       type="button"
                       onClick={() => setCreateForm({ ...createForm, visibility: 'public' })}
@@ -640,11 +640,11 @@ const GameModal: React.FC<ModalProps> = ({
                           <Button
                             variant={"ghost"}
                             className={cn(
-                              "w-full h-auto bg-white/5 border-2 border-white/5 data-[state=open]:border-[#C6FF00] rounded-full px-6 py-4 text-white font-bold outline-none transition-all justify-start text-left hover:bg-white/5 hover:text-white",
+                              "w-full h-auto bg-white/5 border-2 border-white/5 data-[state=open]:border-lime-500 rounded-full px-6 py-4 text-white font-bold outline-none transition-all justify-start text-left hover:bg-white/5 hover:text-white",
                               !date && "text-muted-foreground"
                             )}
                           >
-                            <CalendarIcon className="mr-2 h-4 w-4 text-[#C6FF00]" />
+                            <CalendarIcon className="mr-2 h-4 w-4 text-lime-500" />
                             {date ? format(date, "EEE, MMM d") : <span>Pick a date</span>}
                           </Button>
                         </PopoverTrigger>
@@ -669,7 +669,7 @@ const GameModal: React.FC<ModalProps> = ({
                         type="time"
                         value={createForm.time}
                         onChange={e => setCreateForm({ ...createForm, time: e.target.value })}
-                        className="w-full h-auto bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-full px-6 py-4 text-white font-bold outline-none transition-all focus-visible:ring-0 placeholder:text-white/20"
+                        className="w-full h-auto bg-white/5 border-2 border-white/5 focus:border-lime-500 rounded-full px-6 py-4 text-white font-bold outline-none transition-all focus-visible:ring-0 placeholder:text-white/20"
                       />
                     </div>
                     <div className="space-y-2">
@@ -680,7 +680,7 @@ const GameModal: React.FC<ModalProps> = ({
                         min="2"
                         value={createForm.spotsTotal}
                         onChange={e => setCreateForm({ ...createForm, spotsTotal: parseInt(e.target.value) })}
-                        className="w-full h-auto bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-full px-6 py-4 text-white font-bold outline-none transition-all focus-visible:ring-0 placeholder:text-white/20"
+                        className="w-full h-auto bg-white/5 border-2 border-white/5 focus:border-lime-500 rounded-full px-6 py-4 text-white font-bold outline-none transition-all focus-visible:ring-0 placeholder:text-white/20"
                       />
                     </div>
                   </div>
@@ -698,14 +698,14 @@ const GameModal: React.FC<ModalProps> = ({
                               setCreateForm({ ...createForm, price: newPrice });
                             }}
                           >
-                            <SelectTrigger className="w-full bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-full px-4 py-4 h-auto text-white font-bold outline-none transition-all shadow-sm focus:ring-0">
+                            <SelectTrigger className="w-full bg-white/5 border-2 border-white/5 focus:border-lime-500 rounded-full px-4 py-4 h-auto text-white font-bold outline-none transition-all shadow-sm focus:ring-0">
                               <SelectValue placeholder="GHS" />
                             </SelectTrigger>
                             <SelectContent className="bg-zinc-900 border border-white/10 rounded-[20px] shadow-2xl max-h-[300px] overflow-y-auto p-1 z-[250]">
                               {CURRENCIES.map(c => (
                                 <SelectItem key={c.code} value={c.code} className="focus:bg-white/10 focus:text-white rounded-xl py-3 px-4 font-bold cursor-pointer text-white/80">
                                   <div className="flex items-center gap-3">
-                                    <span className="text-[#C6FF00] font-black tracking-wider">{c.code}</span>
+                                    <span className="text-lime-500 font-black tracking-wider">{c.code}</span>
                                     <span className="text-white/50 font-serif italic">{c.symbol}</span>
                                   </div>
                                 </SelectItem>
@@ -725,14 +725,14 @@ const GameModal: React.FC<ModalProps> = ({
                             setCreateForm({ ...createForm, price: newPrice });
                           }}
                           placeholder="0.00"
-                          className="flex-1 h-auto bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-full px-6 py-4 text-white font-bold outline-none transition-all focus-visible:ring-0 placeholder:text-white/20"
+                          className="flex-1 h-auto bg-white/5 border-2 border-white/5 focus:border-lime-500 rounded-full px-6 py-4 text-white font-bold outline-none transition-all focus-visible:ring-0 placeholder:text-white/20"
                         />
                       </div>
                     </div>
                     <div className="space-y-2">
                       <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-4">Skill Required</label>
                       <Select value={createForm.skillLevel} onValueChange={(v) => setCreateForm({ ...createForm, skillLevel: v as any })}>
-                        <SelectTrigger className="w-full bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-full px-6 py-4 h-auto text-white font-bold outline-none transition-all shadow-sm focus:ring-0">
+                        <SelectTrigger className="w-full bg-white/5 border-2 border-white/5 focus:border-lime-500 rounded-full px-6 py-4 h-auto text-white font-bold outline-none transition-all shadow-sm focus:ring-0">
                           <SelectValue placeholder="Select Level" />
                         </SelectTrigger>
                         <SelectContent className="bg-zinc-900 border border-white/10 rounded-[20px] shadow-2xl overflow-hidden p-1 z-[250]">
@@ -750,7 +750,7 @@ const GameModal: React.FC<ModalProps> = ({
                     <Button
                       type="submit"
                       disabled={loading}
-                      className="w-full bg-[#C6FF00] text-black py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] shadow-2xl h-auto hover:bg-[#b0ff00]"
+                      className="w-full bg-lime-500 text-black py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] shadow-2xl h-auto hover:bg-lime-400"
                     >
                       {loading ? 'Publishing...' : 'Publish Match to Feed'}
                     </Button>
@@ -764,27 +764,27 @@ const GameModal: React.FC<ModalProps> = ({
 
                   {isEditing ? (
                     <form onSubmit={handleUpdateMatch} className="space-y-6 bg-white/5 p-8 rounded-[40px] border border-white/10">
-                      <h3 className="text-2xl font-black italic uppercase tracking-tighter text-[#C6FF00]">Edit Match Details</h3>
+                      <h3 className="text-2xl font-black italic uppercase tracking-tighter text-lime-500">Edit Match Details</h3>
                       <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div className="space-y-2">
                           <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-4">Title</label>
-                          <input value={editForm.title} onChange={e => setEditForm({ ...editForm, title: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-full px-6 py-3 font-bold outline-none focus:border-[#C6FF00]" />
+                          <input value={editForm.title} onChange={e => setEditForm({ ...editForm, title: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-full px-6 py-3 font-bold outline-none focus:border-lime-500" />
                         </div>
                         <div className="space-y-2">
                           <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-4">Location</label>
-                          <input value={editForm.location} onChange={e => setEditForm({ ...editForm, location: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-full px-6 py-3 font-bold outline-none focus:border-[#C6FF00]" />
+                          <input value={editForm.location} onChange={e => setEditForm({ ...editForm, location: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-full px-6 py-3 font-bold outline-none focus:border-lime-500" />
                         </div>
                         <div className="space-y-2">
                           <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-4">Time</label>
-                          <input value={editForm.time} onChange={e => setEditForm({ ...editForm, time: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-full px-6 py-3 font-bold outline-none focus:border-[#C6FF00]" />
+                          <input value={editForm.time} onChange={e => setEditForm({ ...editForm, time: e.target.value })} className="w-full bg-white/5 border border-white/10 rounded-full px-6 py-3 font-bold outline-none focus:border-lime-500" />
                         </div>
                         <div className="space-y-2">
                           <label className="text-[9px] font-black uppercase tracking-widest text-white/30 ml-4">Max Spots</label>
-                          <input type="number" value={editForm.spotsTotal} onChange={e => setEditForm({ ...editForm, spotsTotal: parseInt(e.target.value) })} className="w-full bg-white/5 border border-white/10 rounded-full px-6 py-3 font-bold outline-none focus:border-[#C6FF00]" />
+                          <input type="number" value={editForm.spotsTotal} onChange={e => setEditForm({ ...editForm, spotsTotal: parseInt(e.target.value) })} className="w-full bg-white/5 border border-white/10 rounded-full px-6 py-3 font-bold outline-none focus:border-lime-500" />
                         </div>
                       </div>
                       <div className="flex gap-4">
-                        <button type="submit" disabled={loading} className="flex-1 bg-[#C6FF00] text-black py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all">
+                        <button type="submit" disabled={loading} className="flex-1 bg-lime-500 text-black py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all">
                           {loading ? 'Saving...' : 'Save Changes'}
                         </button>
                         <button type="button" onClick={() => setIsEditing(false)} className="flex-1 bg-white/10 py-4 rounded-full font-black uppercase tracking-widest text-[10px]">Cancel</button>
@@ -793,17 +793,17 @@ const GameModal: React.FC<ModalProps> = ({
                   ) : (
                     <div className="flex justify-between items-center bg-white/5 p-6 rounded-[32px] border border-white/10">
                       <div className="flex items-center gap-6">
-                        <div className="w-16 h-16 rounded-[20px] bg-[#C6FF00] flex items-center justify-center text-black font-black text-xl italic uppercase">{(game.sport || '?')[0]}</div>
+                        <div className="w-16 h-16 rounded-[20px] bg-lime-500 flex items-center justify-center text-black font-black text-xl italic uppercase">{(game.sport || '?')[0]}</div>
                         <div>
                           <p className="text-white font-black italic text-xl uppercase tracking-tighter">{game.location}</p>
-                          <p className="text-[10px] font-black text-[#C6FF00] uppercase tracking-widest">{game.date} • {game.time}</p>
+                          <p className="text-[10px] font-black text-lime-500 uppercase tracking-widest">{game.date} • {game.time}</p>
                         </div>
                       </div>
                       <div className="flex gap-2">
                         <button onClick={() => onShareMatch?.(game)} className="bg-white/5 hover:bg-white/10 p-3 rounded-full transition-all border border-white/10">
                           <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /><polyline points="16 6 12 2 8 6" /><line x1="12" y1="2" x2="12" y2="15" /></svg>
                         </button>
-                        <button onClick={() => setIsEditing(true)} className="bg-white/10 hover:bg-[#C6FF00] hover:text-black px-6 py-3 rounded-full text-[9px] font-black uppercase tracking-widest transition-all">Edit Match</button>
+                        <button onClick={() => setIsEditing(true)} className="bg-white/10 hover:bg-lime-500 hover:text-black px-6 py-3 rounded-full text-[9px] font-black uppercase tracking-widest transition-all">Edit Match</button>
                       </div>
                     </div>
                   )}
@@ -825,7 +825,7 @@ const GameModal: React.FC<ModalProps> = ({
                               </div>
                             </div>
                             <div className="flex gap-2">
-                              <button onClick={() => onManageRequest?.(game.id, req.id, true)} className="w-9 h-9 bg-[#C6FF00] text-black rounded-full flex items-center justify-center hover:scale-110 transition-all shadow-lg"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg></button>
+                              <button onClick={() => onManageRequest?.(game.id, req.id, true)} className="w-9 h-9 bg-lime-500 text-black rounded-full flex items-center justify-center hover:scale-110 transition-all shadow-lg"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12" /></svg></button>
                               <button onClick={() => onManageRequest?.(game.id, req.id, false)} className="w-9 h-9 bg-white/10 text-white rounded-full flex items-center justify-center hover:bg-red-500 transition-all"><ICONS.X /></button>
                             </div>
                           </m.div>
@@ -846,7 +846,7 @@ const GameModal: React.FC<ModalProps> = ({
                               <img src={p.avatar} className="w-9 h-9 rounded-full border border-white/10" alt={p.name} />
                               <div>
                                 <span className="text-xs font-black italic uppercase block">{p.name}</span>
-                                {p.role === 'Host' && <span className="text-[7px] font-black text-[#C6FF00] uppercase tracking-widest">Organizer</span>}
+                                {p.role === 'Host' && <span className="text-[7px] font-black text-lime-500 uppercase tracking-widest">Organizer</span>}
                               </div>
                             </div>
                             {p.role !== 'Host' && (
@@ -872,18 +872,18 @@ const GameModal: React.FC<ModalProps> = ({
                     <img src={game.imageUrl} className="w-full h-full object-cover" alt={game.title} />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent" />
                     <div className="absolute bottom-6 left-6 flex items-center gap-4">
-                      <div className="w-12 h-12 rounded-full bg-[#C6FF00] flex items-center justify-center text-black font-black text-xs italic">
+                      <div className="w-12 h-12 rounded-full bg-lime-500 flex items-center justify-center text-black font-black text-xs italic">
                         {game.sport ? game.sport.substring(0, 1) : '?'}
                       </div>
                       <div>
                         <p className="text-white text-xs font-black uppercase tracking-widest">{game.sport || 'Multi'}</p>
-                        <p className="text-[#C6FF00] text-sm font-black">{game.price}</p>
+                        <p className="text-lime-500 text-sm font-black">{game.price}</p>
                       </div>
                     </div>
                     {/* Floating Share Button on Image */}
                     <button
                       onClick={() => onShareMatch?.(game)}
-                      className="absolute top-6 right-6 bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-full text-white hover:bg-[#C6FF00] hover:text-black transition-all"
+                      className="absolute top-6 right-6 bg-white/10 backdrop-blur-md border border-white/20 p-3 rounded-full text-white hover:bg-lime-500 hover:text-black transition-all"
                     >
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /><polyline points="16 6 12 2 8 6" /><line x1="12" y1="2" x2="12" y2="15" /></svg>
                     </button>
@@ -923,7 +923,7 @@ const GameModal: React.FC<ModalProps> = ({
                           </div>
                           <button
                             onClick={() => pushView('contact-organizer', game)}
-                            className="bg-white/10 hover:bg-[#C6FF00] hover:text-black p-2 rounded-lg transition-all"
+                            className="bg-white/10 hover:bg-lime-500 hover:text-black p-2 rounded-lg transition-all"
                           >
                             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z" /></svg>
                           </button>
@@ -954,7 +954,7 @@ const GameModal: React.FC<ModalProps> = ({
                     <button
                       onClick={handleJoinSubmit}
                       disabled={loading || (game.spotsTaken || 0) >= (game.spotsTotal || 1)}
-                      className="w-full bg-[#C6FF00] text-black py-5 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] transition-all flex items-center justify-center gap-4 shadow-xl disabled:opacity-50 disabled:grayscale"
+                      className="w-full bg-lime-500 text-black py-5 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] transition-all flex items-center justify-center gap-4 shadow-xl disabled:opacity-50 disabled:grayscale"
                     >
                       {loading ? 'Processing...' : ((game.spotsTaken || 0) >= (game.spotsTotal || 1) ? 'Match Full' : 'Join This Match')}
                     </button>
@@ -965,7 +965,7 @@ const GameModal: React.FC<ModalProps> = ({
               {/* Contact Organizer View */}
               {type === 'contact-organizer' && game && (
                 <m.div key="contact-view" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, y: 0 }} className="space-y-8">
-                  <p className="text-white/60 font-bold leading-relaxed">Sending a message to <span className="text-white">{game.organizer || 'Host'}</span> regarding <span className="text-[#C6FF00]">{game.title}</span>.</p>
+                  <p className="text-white/60 font-bold leading-relaxed">Sending a message to <span className="text-white">{game.organizer || 'Host'}</span> regarding <span className="text-lime-500">{game.title}</span>.</p>
                   <form onSubmit={handleContactSubmit} className="space-y-6">
                     <div className="space-y-2">
                       <label className="text-[10px] font-black uppercase tracking-widest text-white/30 ml-4">Inquiry Details</label>
@@ -973,11 +973,11 @@ const GameModal: React.FC<ModalProps> = ({
                         value={contactMessage}
                         onChange={(e) => setContactMessage(e.target.value)}
                         placeholder="Ask about parking, equipment, or late arrival..."
-                        className="w-full h-40 bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-[32px] p-6 text-white font-bold outline-none transition-all resize-none"
+                        className="w-full h-40 bg-white/5 border-2 border-white/5 focus:border-lime-500 rounded-[32px] p-6 text-white font-bold outline-none transition-all resize-none"
                         required
                       />
                     </div>
-                    <button disabled={loading} className="w-full bg-[#C6FF00] text-black py-5 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] transition-all flex items-center justify-center gap-4 shadow-xl">
+                    <button disabled={loading} className="w-full bg-lime-500 text-black py-5 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] transition-all flex items-center justify-center gap-4 shadow-xl">
                       {loading ? 'Sending...' : 'Send Message to Host'}
                     </button>
                   </form>
@@ -988,7 +988,7 @@ const GameModal: React.FC<ModalProps> = ({
               {type === 'profile' && player && (
                 <m.div key="profile" initial={{ opacity: 0, x: 20 }} animate={{ opacity: 1, x: 0 }} exit={{ opacity: 0, x: -20 }} className="space-y-8 md:space-y-10">
                   <div className="flex flex-col md:flex-row gap-6 md:gap-8 items-center md:items-start">
-                    <img src={player.avatar} className="w-28 h-28 md:w-32 md:h-32 rounded-full border-4 border-[#C6FF00]" />
+                    <img src={player.avatar} className="w-28 h-28 md:w-32 md:h-32 rounded-full border-4 border-lime-500" />
                     <div className="flex-1 space-y-4 text-center md:text-left">
                       <div>
                         <h4 className="text-white/30 text-[9px] md:text-[10px] font-black uppercase tracking-widest">Main Discipline</h4>
@@ -997,7 +997,7 @@ const GameModal: React.FC<ModalProps> = ({
                       <div className="grid grid-cols-2 gap-4 md:gap-6">
                         <div>
                           <h4 className="text-white/30 text-[9px] md:text-[10px] font-black uppercase tracking-widest">Win Rate</h4>
-                          <p className="text-[#C6FF00] text-2xl md:text-3xl font-black">{player.stats.winRate}</p>
+                          <p className="text-lime-500 text-2xl md:text-3xl font-black">{player.stats.winRate}</p>
                         </div>
                         <div>
                           <h4 className="text-white/30 text-[9px] md:text-[10px] font-black uppercase tracking-widest">Reliability</h4>
@@ -1009,7 +1009,7 @@ const GameModal: React.FC<ModalProps> = ({
 
                   <div className="pt-6 border-t border-white/10 grid grid-cols-1 sm:grid-cols-2 gap-3 md:gap-4">
                     <button onClick={() => pushView('detailed-stats')} className="bg-white/5 text-white py-4 md:py-5 rounded-full font-black uppercase tracking-widest text-[10px] md:text-[11px] hover:bg-white/10 transition-all">View Detailed Stats</button>
-                    <button onClick={() => pushView('challenge')} className="bg-[#C6FF00] text-black rounded-full py-4 md:py-5 font-black uppercase tracking-widest text-[10px] md:text-[11px] hover:scale-[1.05] transition-all flex items-center justify-center gap-2 md:gap-3 shadow-xl shadow-lime-500/10">
+                    <button onClick={() => pushView('challenge')} className="bg-lime-500 text-black rounded-full py-4 md:py-5 font-black uppercase tracking-widest text-[10px] md:text-[11px] hover:scale-[1.05] transition-all flex items-center justify-center gap-2 md:gap-3 shadow-xl shadow-lime-500/10">
                       <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2L15.09 8.26L22 9.27L17 14.14L18.18 21.02L12 17.77L5.82 21.02L7 14.14L2 9.27L8.91 8.26L12 2Z" /></svg>
                       Issue Challenge
                     </button>
@@ -1027,14 +1027,14 @@ const GameModal: React.FC<ModalProps> = ({
                         <div key={attr} className="space-y-2">
                           <div className="flex justify-between items-end">
                             <span className="text-[10px] font-black uppercase tracking-widest text-white/40">{attr}</span>
-                            <span className="text-sm font-black text-[#C6FF00]">{val}</span>
+                            <span className="text-sm font-black text-lime-500">{val}</span>
                           </div>
                           <div className="h-1.5 bg-white/5 rounded-full overflow-hidden">
                             <m.div
                               initial={{ width: 0 }}
                               animate={{ width: `${val}%` }}
                               transition={{ duration: 1, delay: 0.2 }}
-                              className={`h-full ${val > 85 ? 'bg-[#C6FF00]' : 'bg-white/40'}`}
+                              className={`h-full ${val > 85 ? 'bg-lime-500' : 'bg-white/40'}`}
                             />
                           </div>
                         </div>
@@ -1062,7 +1062,7 @@ const GameModal: React.FC<ModalProps> = ({
                       {player.matchHistory?.map(match => (
                         <div key={match.id} className="bg-white/5 rounded-2xl p-4 flex items-center justify-between border border-white/5">
                           <div className="flex items-center gap-4">
-                            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-xs ${match.result === 'W' ? 'bg-[#C6FF00] text-black' : match.result === 'L' ? 'bg-red-500 text-white' : 'bg-white/10 text-white'}`}>
+                            <div className={`w-10 h-10 rounded-full flex items-center justify-center font-black text-xs ${match.result === 'W' ? 'bg-lime-500 text-black' : match.result === 'L' ? 'bg-red-500 text-white' : 'bg-white/10 text-white'}`}>
                               {match.result === 'Win' ? 'W' : match.result === 'Loss' ? 'L' : 'D'}
                             </div>
                             <div>
@@ -1071,7 +1071,7 @@ const GameModal: React.FC<ModalProps> = ({
                             </div>
                           </div>
                           <div className="text-right">
-                            <p className="font-black text-[#C6FF00] text-lg leading-none">{match.rating}</p>
+                            <p className="font-black text-lime-500 text-lg leading-none">{match.rating}</p>
                             <p className="text-[9px] font-black text-white/30 uppercase tracking-widest">Rating</p>
                           </div>
                         </div>
@@ -1104,11 +1104,11 @@ const GameModal: React.FC<ModalProps> = ({
                     <textarea
                       value={challengeMsg} onChange={(e) => setChallengeMsg(e.target.value)}
                       placeholder="Drop some trash talk or match rules..."
-                      className="w-full h-32 bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-[32px] p-6 text-white font-bold placeholder:text-white/20 outline-none transition-all resize-none"
+                      className="w-full h-32 bg-white/5 border-2 border-white/5 focus:border-lime-500 rounded-[32px] p-6 text-white font-bold placeholder:text-white/20 outline-none transition-all resize-none"
                       required
                     />
                   </div>
-                  <button disabled={loading} className="w-full bg-[#C6FF00] text-black py-5 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] transition-all flex items-center justify-center gap-4 shadow-xl">
+                  <button disabled={loading} className="w-full bg-lime-500 text-black py-5 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-[1.02] transition-all flex items-center justify-center gap-4 shadow-xl">
                     {loading ? 'Issuing...' : 'Send Challenge Request'}
                   </button>
                 </m.form>

@@ -17,7 +17,7 @@ interface AppDashboardProps {
 
 const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGames, risingStars, onViewMatch, onNavigate }) => {
   return (
-    <section className="pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20 px-4 sm:px-6 md:px-12 min-h-screen bg-[#FDFDFB]">
+    <section className="pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20 px-4 sm:px-6 md:px-12 min-h-screen bg-surface-app">
       <div className="max-w-7xl mx-auto space-y-8 sm:space-y-10 md:space-y-16">
         {/* Welcome Header */}
         <header className="flex flex-col gap-6 sm:gap-8">
@@ -31,7 +31,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
             <h1
               className="animate-in fade-in slide-in-from-bottom-5 [animation-duration:400ms] [animation-delay:100ms] fill-mode-both text-4xl sm:text-5xl md:text-6xl lg:text-8xl font-black italic tracking-tighter uppercase leading-[0.85]"
             >
-              Welcome back, <br /> <span className="text-[#C6FF00] bg-black px-3 sm:px-5 inline-block -rotate-1 shadow-2xl">{player.name.split(' ')[0]}</span>
+              Welcome back, <br /> <span className="text-lime-500 bg-black px-3 sm:px-5 inline-block -rotate-1 shadow-2xl">{player.name.split(' ')[0]}</span>
             </h1>
           </div>
           <div
@@ -40,9 +40,9 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
             <div className="absolute top-0 right-0 p-4 sm:p-6 opacity-5 rotate-12"><ICONS.Logo /></div>
             <div className="text-right">
               <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">City Rank</p>
-              <p className="text-2xl sm:text-3xl md:text-4xl font-black italic text-[#C6FF00]">#1,242</p>
+              <p className="text-2xl sm:text-3xl md:text-4xl font-black italic text-lime-500">#1,242</p>
             </div>
-            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-[#C6FF00] text-black flex items-center justify-center font-black shadow-xl">
+            <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-lime-500 text-black flex items-center justify-center font-black shadow-xl">
               <ICONS.UpArrow />
             </div>
           </div>
@@ -61,11 +61,11 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
                 alt={upcomingGames[0].title}
                 fill
                 sizes="(max-width: 768px) 100vw, 66vw"
-                className="object-cover transition-transform duration-[2s] group-hover:scale-110"
+                className="object-cover transition-transform [transition-duration:2000ms] group-hover:scale-110"
               />
               <div className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent" />
               <div className="absolute inset-0 p-6 sm:p-8 md:p-10 lg:p-14 flex flex-col justify-end sm:justify-center">
-                <span className="bg-[#C6FF00] text-black px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-full text-[8px] sm:text-[9px] md:text-[10px] font-black uppercase tracking-widest mb-3 sm:mb-4 md:mb-6 inline-block w-fit shadow-lg">Spotlight Match Today</span>
+                <span className="bg-lime-500 text-black px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-full text-[8px] sm:text-[9px] md:text-[10px] font-black uppercase tracking-widest mb-3 sm:mb-4 md:mb-6 inline-block w-fit shadow-lg">Spotlight Match Today</span>
                 <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-black text-white italic uppercase tracking-tighter mb-3 sm:mb-4 md:mb-6 leading-none">{upcomingGames[0].title}</h2>
                 <div className="flex flex-wrap items-center gap-4 sm:gap-6 md:gap-8 text-white/70 font-black uppercase tracking-widest text-[8px] sm:text-[9px] md:text-[10px]">
                   <div className="flex items-center gap-2 sm:gap-3"><ICONS.Clock /> {upcomingGames[0].time}</div>
@@ -78,13 +78,13 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 md:gap-6">
               {[
                 { label: 'Win Rate', value: player.stats.winRate, icon: <div className="scale-50 sm:scale-75"><ICONS.Logo /></div>, bg: "bg-white", textColor: "text-black", labelColor: "text-black/30", iconColor: "text-black/10" },
-                { label: 'Season MVPs', value: player.stats.mvps, icon: <ICONS.UpArrow />, bg: "bg-black", textColor: "text-[#C6FF00]", labelColor: "text-white/40", iconColor: "text-[#C6FF00]/30" },
+                { label: 'Season MVPs', value: player.stats.mvps, icon: <ICONS.UpArrow />, bg: "bg-black", textColor: "text-lime-500", labelColor: "text-white/40", iconColor: "text-lime-500/30" },
                 { label: 'Match Reliability', value: player.stats.reliability, icon: <ICONS.Clock />, bg: "bg-white", textColor: "text-black", labelColor: "text-black/30", iconColor: "text-black/10" }
               ].map((stat, i) => (
                 <m.div
                   key={i}
                   whileHover={{ y: -8 }}
-                  className={`${stat.bg} border-2 ${stat.bg === 'bg-black' ? 'border-white/10' : 'border-black/5'} rounded-[32px] sm:rounded-[40px] md:rounded-[44px] p-6 sm:p-8 md:p-10 hover:border-[#C6FF00] transition-all shadow-sm flex flex-col justify-between min-h-[140px] sm:min-h-[160px]`}
+                  className={`${stat.bg} border-2 ${stat.bg === 'bg-black' ? 'border-white/10' : 'border-black/5'} rounded-[32px] sm:rounded-[40px] md:rounded-[44px] p-6 sm:p-8 md:p-10 hover:border-lime-500 transition-all shadow-sm flex flex-col justify-between min-h-[140px] sm:min-h-[160px]`}
                 >
                   <div className={`${stat.iconColor} mb-4 sm:mb-6 md:mb-8`}>{stat.icon}</div>
                   <div>
@@ -111,13 +111,13 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
                   >
                     <Image src={game.imageUrl} alt={game.title} width={96} height={96} className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-[20px] sm:rounded-[28px] md:rounded-[32px] object-cover shadow-lg shrink-0" />
                     <div className="flex-1 min-w-0">
-                      <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-black/40 group-hover:text-[#C6FF00] mb-1 sm:mb-2 block">{game.sport}</span>
+                      <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-black/40 group-hover:text-lime-500 mb-1 sm:mb-2 block">{game.sport}</span>
                       <h4 className="text-base sm:text-lg md:text-xl font-black italic uppercase tracking-tighter group-hover:text-white transition-colors truncate">{game.title}</h4>
                       <div className="flex items-center gap-3 sm:gap-4 mt-1 sm:mt-2 text-[9px] sm:text-[10px] font-black uppercase tracking-widest opacity-40">
                         <ICONS.Clock /> {game.time}
                       </div>
                     </div>
-                    <div className="p-3 sm:p-4 bg-black/5 group-hover:bg-[#C6FF00] group-hover:text-black rounded-full transition-all shrink-0">
+                    <div className="p-3 sm:p-4 bg-black/5 group-hover:bg-lime-500 group-hover:text-black rounded-full transition-all shrink-0">
                       <ICONS.ChevronRight />
                     </div>
                   </m.div>
@@ -132,10 +132,10 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
             <div className="bg-black text-white rounded-[40px] sm:rounded-[48px] md:rounded-[60px] p-6 sm:p-8 md:p-10 space-y-6 sm:space-y-8 md:space-y-10 shadow-2xl relative overflow-hidden">
               <div className="absolute top-0 right-0 p-6 sm:p-8 md:p-10 opacity-10 pointer-events-none"><ICONS.Logo /></div>
               <div className="flex items-center gap-5 sm:gap-6 md:gap-8 relative z-10">
-                <Image src={player.avatar} alt={player.name} width={96} height={96} className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full border-3 sm:border-4 border-[#C6FF00] shadow-2xl" />
+                <Image src={player.avatar} alt={player.name} width={96} height={96} className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-full border-3 sm:border-4 border-lime-500 shadow-2xl" />
                 <div className="min-w-0">
                   <h4 className="text-lg sm:text-xl md:text-2xl font-black italic uppercase tracking-tighter leading-none truncate">{player.name}</h4>
-                  <p className="text-[9px] sm:text-[10px] md:text-[11px] font-black uppercase tracking-widest text-[#C6FF00] mt-1 sm:mt-2">{player.mainSport} Elite</p>
+                  <p className="text-[9px] sm:text-[10px] md:text-[11px] font-black uppercase tracking-widest text-lime-500 mt-1 sm:mt-2">{player.mainSport} Elite</p>
                 </div>
               </div>
               <div className="grid grid-cols-2 gap-3 sm:gap-4 py-5 sm:py-6 md:py-8 border-y border-white/10">
@@ -149,14 +149,14 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
                 </div>
               </div>
               <div className="space-y-3 sm:space-y-4 pt-2">
-                <button onClick={() => onNavigate('stats')} className="w-full bg-[#C6FF00] text-black py-4 sm:py-5 rounded-full font-black uppercase tracking-widest text-[10px] sm:text-[11px] hover:scale-105 transition-all shadow-xl shadow-lime-500/10">Manage Pro Profile</button>
+                <button onClick={() => onNavigate('stats')} className="w-full bg-lime-500 text-black py-4 sm:py-5 rounded-full font-black uppercase tracking-widest text-[10px] sm:text-[11px] hover:scale-105 transition-all shadow-xl shadow-lime-500/10">Manage Pro Profile</button>
                 <button onClick={() => onNavigate('community')} className="w-full bg-white/5 border border-white/10 py-4 sm:py-5 rounded-full font-black uppercase tracking-widest text-[10px] sm:text-[11px] hover:bg-white/10 transition-all">Scout Competitors</button>
               </div>
             </div>
 
             {/* My Games Quick Access */}
             {myGames && (
-              <div className="bg-white border-2 border-black/5 rounded-[40px] sm:rounded-[48px] p-6 sm:p-8 space-y-5 shadow-sm hover:border-[#C6FF00] transition-all">
+              <div className="bg-white border-2 border-black/5 rounded-[40px] sm:rounded-[48px] p-6 sm:p-8 space-y-5 shadow-sm hover:border-lime-500 transition-all">
                 <div className="flex items-center justify-between">
                   <h3 className="text-lg sm:text-xl font-black italic uppercase tracking-tighter">My Games</h3>
                   <button onClick={() => onNavigate('mygames')} className="text-[9px] font-black uppercase tracking-widest text-black/40 hover:text-black transition-colors">View All</button>
@@ -173,13 +173,13 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
                 </div>
                 {myGames.hostedGames.filter(g => g.visibility === 'private').length > 0 && (
                   <div className="flex items-center gap-2 text-[9px] font-bold text-black/40">
-                    <span className="bg-black text-[#C6FF00] px-2 py-0.5 rounded-full text-[7px] font-black uppercase">Private</span>
+                    <span className="bg-black text-lime-500 px-2 py-0.5 rounded-full text-[7px] font-black uppercase">Private</span>
                     <span>{myGames.hostedGames.filter(g => g.visibility === 'private').length} private game(s)</span>
                   </div>
                 )}
                 <button
                   onClick={() => onNavigate('mygames')}
-                  className="w-full bg-black text-[#C6FF00] py-3.5 rounded-full font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all"
+                  className="w-full bg-black text-lime-500 py-3.5 rounded-full font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all"
                 >
                   Manage My Games
                 </button>
@@ -198,7 +198,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
                       onClick={() => onNavigate(`/profile/${star.slug || star.id}`)}
                     >
                       <div className="flex items-center gap-3 sm:gap-4 md:gap-5 min-w-0">
-                        <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-xl sm:rounded-2xl bg-black text-[#C6FF00] flex items-center justify-center font-black text-[10px] sm:text-xs italic shrink-0">#{i + 1}</div>
+                        <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-xl sm:rounded-2xl bg-black text-lime-500 flex items-center justify-center font-black text-[10px] sm:text-xs italic shrink-0">#{i + 1}</div>
                         {star.avatar ? (
                           <Image
                             src={star.avatar}
@@ -208,7 +208,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
                             className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-xl object-cover shrink-0"
                           />
                         ) : (
-                          <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-xl bg-gradient-to-br from-[#C6FF00] to-[#8BC34A] flex items-center justify-center text-black font-black text-sm shrink-0">
+                          <div className="w-9 h-9 sm:w-10 sm:h-10 md:w-11 md:h-11 rounded-xl bg-gradient-to-br from-lime-500 to-lime-600 flex items-center justify-center text-black font-black text-sm shrink-0">
                             {star.name.charAt(0).toUpperCase()}
                           </div>
                         )}

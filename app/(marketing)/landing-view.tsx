@@ -28,7 +28,7 @@ export default function LandingView({
       <div
         className={
           overlapHero
-            ? 'bg-[#FDFDFB] -mt-20 pt-8 md:pt-16 relative z-20 rounded-t-[60px] md:rounded-t-[100px] border-t border-black/5 shadow-[0_-40px_100px_rgba(0,0,0,0.1)]'
+            ? 'bg-surface-app -mt-20 pt-8 md:pt-16 relative z-20 rounded-t-[60px] md:rounded-t-[100px] border-t border-black/5 shadow-[0_-40px_100px_rgba(0,0,0,0.1)]'
             : undefined
         }
       >

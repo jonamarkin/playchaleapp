@@ -23,7 +23,7 @@ function Calendar({
                 months: "flex flex-col sm:flex-row space-y-4 sm:space-x-4 sm:space-y-0",
                 month: "space-y-4",
                 caption: "flex justify-center pt-1 relative items-center",
-                caption_label: "text-sm font-black uppercase tracking-widest text-[#C6FF00]",
+                caption_label: "text-sm font-black uppercase tracking-widest text-lime-500",
                 nav: "space-x-1 flex items-center",
                 nav_button: cn(
                     buttonVariants({ variant: "outline" }),
@@ -39,11 +39,11 @@ function Calendar({
                 cell: "h-9 w-9 text-center text-sm p-0 relative focus-within:relative focus-within:z-20",
                 day: cn(
                     buttonVariants({ variant: "ghost" }),
-                    "h-9 w-9 p-0 font-bold text-white hover:bg-white/10 hover:text-[#C6FF00] rounded-full aria-selected:bg-[#C6FF00] aria-selected:text-black focus-visible:ring-0 focus-visible:ring-offset-0"
+                    "h-9 w-9 p-0 font-bold text-white hover:bg-white/10 hover:text-lime-500 rounded-full aria-selected:bg-lime-500 aria-selected:text-black focus-visible:ring-0 focus-visible:ring-offset-0"
                 ),
                 day_range_end: "day-range-end",
                 day_selected:
-                    "bg-[#C6FF00] text-black hover:bg-[#C6FF00] hover:text-black focus:bg-[#C6FF00] focus:text-black",
+                    "bg-lime-500 text-black hover:bg-lime-500 hover:text-black focus:bg-lime-500 focus:text-black",
                 day_today: "bg-white/10 text-white",
                 day_outside:
                     "day-outside text-muted-foreground opacity-50 aria-selected:bg-accent/50 aria-selected:text-muted-foreground aria-selected:opacity-30",

@@ -8,7 +8,7 @@ export default function GameNotFound() {
                 <p className="font-black uppercase tracking-widest text-xs opacity-50">This game does not exist or has been removed.</p>
                 <Link
                     href="/discover"
-                    className="mt-4 bg-[#C6FF00] text-black px-6 py-3 rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all"
+                    className="mt-4 bg-lime-500 text-black px-6 py-3 rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all"
                 >
                     Discover Games
                 </Link>

@@ -98,7 +98,7 @@ export function Features() {
   }, []);
 
   return (
-    <section className="relative py-24 md:py-40 bg-[#FDFDFB] overflow-hidden">
+    <section className="relative py-24 md:py-40 bg-surface-app overflow-hidden">
       {/* Background Watermark Text */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full select-none pointer-events-none overflow-hidden opacity-[0.03]">
         <h2 className="text-[20rem] md:text-[35rem] font-black italic tracking-tighter leading-none text-black whitespace-nowrap">
@@ -114,12 +114,12 @@ export function Features() {
             viewport={{ once: true }}
             className="space-y-6 max-w-3xl"
           >
-            <div className="inline-flex items-center gap-3 bg-black text-[#C6FF00] px-5 py-2 rounded-full font-black text-[10px] uppercase tracking-[0.4em]">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#C6FF00] animate-pulse"></span>
+            <div className="inline-flex items-center gap-3 bg-black text-lime-500 px-5 py-2 rounded-full font-black text-[10px] uppercase tracking-[0.4em]">
+              <span className="w-1.5 h-1.5 rounded-full bg-lime-500 animate-pulse"></span>
               CORE ADVANTAGE
             </div>
             <h2 className="text-5xl md:text-8xl font-black tracking-tighter italic leading-[0.85] uppercase text-black">
-              Everything <br /> you need to <span className="text-[#C6FF00] bg-black px-4 inline-block transform -rotate-1">Win.</span>
+              Everything <br /> you need to <span className="text-lime-500 bg-black px-4 inline-block transform -rotate-1">Win.</span>
             </h2>
           </m.div>
           <m.p
@@ -152,17 +152,17 @@ export function Features() {
             >
               {/* Highlight bar on hover */}
               <m.div
-                className="absolute top-0 left-10 right-10 h-1 bg-[#C6FF00] rounded-b-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500"
+                className="absolute top-0 left-10 right-10 h-1 bg-lime-500 rounded-b-full scale-x-0 group-hover:scale-x-100 transition-transform duration-500"
               />
 
-              <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-50 rounded-3xl flex items-center justify-center mb-10 group-hover:bg-[#C6FF00] transition-colors duration-500">
+              <div className="w-16 h-16 md:w-20 md:h-20 bg-gray-50 rounded-3xl flex items-center justify-center mb-10 group-hover:bg-lime-500 transition-colors duration-500">
                 <div className="text-black transition-transform duration-500 group-hover:scale-110">
                   {feature.icon}
                 </div>
               </div>
 
               <div className="space-y-3 mb-12">
-                <h3 className="font-black text-2xl md:text-3xl leading-none tracking-tighter italic uppercase text-black group-hover:text-[#C6FF00] transition-colors">
+                <h3 className="font-black text-2xl md:text-3xl leading-none tracking-tighter italic uppercase text-black group-hover:text-lime-500 transition-colors">
                   {feature.title}
                 </h3>
                 <p className="text-sm font-bold tracking-tight text-black/30 group-hover:text-white/40 transition-colors">
@@ -179,7 +179,7 @@ export function Features() {
                     {feature.label}
                   </div>
                 </div>
-                <div className="w-12 h-12 rounded-full border border-black/5 flex items-center justify-center text-black/10 group-hover:text-[#C6FF00] group-hover:border-[#C6FF00] transition-all group-hover:rotate-45">
+                <div className="w-12 h-12 rounded-full border border-black/5 flex items-center justify-center text-black/10 group-hover:text-lime-500 group-hover:border-lime-500 transition-all group-hover:rotate-45">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                 </div>
               </div>

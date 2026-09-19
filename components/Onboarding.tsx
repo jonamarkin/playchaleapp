@@ -103,7 +103,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
       {/* Progress Bar */}
       <div className="absolute top-0 left-0 right-0 h-1.5 bg-white/5 flex z-50">
         <m.div
-          className="h-full bg-[#C6FF00] shadow-[0_0_20px_#C6FF00]"
+          className="h-full bg-lime-500 shadow-[0_0_20px_hsl(var(--lime-500))]"
           initial={{ width: '0%' }}
           animate={{ width: `${(step / TOTAL_STEPS) * 100}%` }}
         />
@@ -128,7 +128,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
           <div className="flex items-center gap-4">
             <a
               href="/login"
-              className="text-[#C6FF00] text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] hover:text-white transition-colors border border-[#C6FF00]/30 px-4 py-2 rounded-full hover:bg-[#C6FF00]/10"
+              className="text-lime-500 text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em] hover:text-white transition-colors border border-lime-500/30 px-4 py-2 rounded-full hover:bg-lime-500/10"
             >
               Sign In
             </a>
@@ -155,7 +155,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                 className="w-full space-y-12 text-center"
               >
                 <div className="space-y-4">
-                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">PHASE 01: ARENA</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-lime-500">PHASE 01: ARENA</span>
                   <h2 className="text-4xl md:text-9xl font-black italic tracking-tighter uppercase leading-[0.85]">Select your <br /> disciplines.</h2>
                   <p className="text-white/40 text-[10px] uppercase tracking-widest">Select all that apply</p>
                 </div>
@@ -173,7 +173,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                               : [...data.sports, s.name];
                             setData({ ...data, sports: newSports });
                           }}
-                          className={`group border-2 p-6 md:p-10 rounded-[32px] md:rounded-[48px] hover:scale-105 transition-all duration-500 flex flex-col items-center gap-3 md:gap-6 ${isSelected ? 'bg-[#C6FF00] border-[#C6FF00] text-black scale-105' : 'bg-white/5 border-white/5 hover:bg-white/10 text-white'}`}
+                          className={`group border-2 p-6 md:p-10 rounded-[32px] md:rounded-[48px] hover:scale-105 transition-all duration-500 flex flex-col items-center gap-3 md:gap-6 ${isSelected ? 'bg-lime-500 border-lime-500 text-black scale-105' : 'bg-white/5 border-white/5 hover:bg-white/10 text-white'}`}
                         >
                           <span className={`text-3xl md:text-5xl transition-transform ${isSelected ? 'scale-125' : 'group-hover:scale-125'}`}>{s.icon}</span>
                           <span className="text-[9px] md:text-[10px] font-black uppercase tracking-[0.3em]">{s.name}</span>
@@ -185,7 +185,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                   <Button
                     onClick={nextStep}
                     disabled={data.sports.length === 0}
-                    className="px-12 py-6 rounded-full bg-white text-black font-black uppercase tracking-widest text-xs hover:bg-[#C6FF00] disabled:opacity-30 disabled:hover:bg-white transition-all w-full md:w-auto"
+                    className="px-12 py-6 rounded-full bg-white text-black font-black uppercase tracking-widest text-xs hover:bg-lime-500 disabled:opacity-30 disabled:hover:bg-white transition-all w-full md:w-auto"
                   >
                     Confirm Selection ({data.sports.length})
                   </Button>
@@ -202,7 +202,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                 className="w-full space-y-12 text-center"
               >
                 <div className="space-y-4">
-                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">PHASE 02: LEVEL</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-lime-500">PHASE 02: LEVEL</span>
                   <h2 className="text-4xl md:text-9xl font-black italic tracking-tighter uppercase leading-[0.85]">What's your <br /> level?</h2>
                 </div>
 
@@ -231,17 +231,17 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                 className="w-full space-y-12 text-center"
               >
                 <div className="space-y-4">
-                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">PHASE 03: REGION</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-lime-500">PHASE 03: REGION</span>
                   <h2 className="text-4xl md:text-9xl font-black italic tracking-tighter uppercase leading-[0.85]">Where do <br /> you play?</h2>
                 </div>
 
                 <div className="max-w-md mx-auto w-full px-4">
                   <div className="relative group w-full">
-                    <div className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#C6FF00] transition-colors z-10"><ICONS.MapPin /></div>
+                    <div className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-lime-500 transition-colors z-10"><ICONS.MapPin /></div>
                     <Input
                       type="text"
                       placeholder="Enter your city..."
-                      className="w-full h-auto bg-white/5 border-2 border-white/10 rounded-full pl-16 pr-8 py-6 text-base md:text-xl font-black outline-none focus:border-[#C6FF00] transition-all focus-visible:ring-0 placeholder:text-white/20"
+                      className="w-full h-auto bg-white/5 border-2 border-white/10 rounded-full pl-16 pr-8 py-6 text-base md:text-xl font-black outline-none focus:border-lime-500 transition-all focus-visible:ring-0 placeholder:text-white/20"
                       autoFocus
                       onKeyDown={(e) => {
                         if (e.key === 'Enter' && e.currentTarget.value) {
@@ -265,19 +265,19 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                 className="w-full space-y-12 text-center"
               >
                 <div className="space-y-4">
-                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">PHASE 04: IDENTITY</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-lime-500">PHASE 04: IDENTITY</span>
                   <h2 className="text-4xl md:text-9xl font-black italic tracking-tighter uppercase leading-[0.85]">The Athlete <br /> Signature.</h2>
                 </div>
 
                 <div className="max-w-md mx-auto w-full px-4">
                   <div className="relative group w-full">
-                    <div className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-[#C6FF00] transition-colors z-10">
+                    <div className="absolute left-5 top-1/2 -translate-y-1/2 text-white/20 group-focus-within:text-lime-500 transition-colors z-10">
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
                     </div>
                     <Input
                       type="text"
                       placeholder="Name or Username..."
-                      className="w-full h-auto bg-white/5 border-2 border-white/10 rounded-full pl-16 pr-8 py-6 text-base md:text-xl font-black outline-none focus:border-[#C6FF00] transition-all focus-visible:ring-0 placeholder:text-white/20"
+                      className="w-full h-auto bg-white/5 border-2 border-white/10 rounded-full pl-16 pr-8 py-6 text-base md:text-xl font-black outline-none focus:border-lime-500 transition-all focus-visible:ring-0 placeholder:text-white/20"
                       autoFocus
                       value={data.name}
                       onChange={(e) => setData({ ...data, name: e.target.value })}
@@ -304,30 +304,30 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                 <div className="absolute top-0 right-0 p-20 opacity-5 rotate-12 hidden md:block"><ICONS.Logo /></div>
 
                 <div className="space-y-4 md:space-y-6">
-                  <span className="bg-[#C6FF00] text-black px-4 md:px-6 py-2 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest">DRAFT REPORT: {data.name.toUpperCase()}</span>
+                  <span className="bg-lime-500 text-black px-4 md:px-6 py-2 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest">DRAFT REPORT: {data.name.toUpperCase()}</span>
                   <h2 className="text-3xl md:text-7xl font-black italic tracking-tighter uppercase leading-[0.85]">Welcome to <br className="hidden md:block" /> the Elite.</h2>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 text-left w-full">
                   <div className="p-6 md:p-8 bg-black border border-white/10 rounded-[32px] md:rounded-[40px] shadow-2xl">
                     <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/30 mb-2">Projected Matches</p>
-                    <p className="text-4xl md:text-5xl font-black italic text-[#C6FF00]">{LEVEL_CONFIG[data.level]?.matches || '0'}</p>
+                    <p className="text-4xl md:text-5xl font-black italic text-lime-500">{LEVEL_CONFIG[data.level]?.matches || '0'}</p>
                     <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/30 mt-2 truncate">In {data.location}</p>
                   </div>
                   <div className="p-6 md:p-8 bg-black border border-white/10 rounded-[32px] md:rounded-[40px] shadow-2xl">
                     <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/30 mb-2">Potential Rivals</p>
-                    <p className="text-4xl md:text-5xl font-black italic text-[#C6FF00]">{LEVEL_CONFIG[data.level]?.rivals || '0'}</p>
+                    <p className="text-4xl md:text-5xl font-black italic text-lime-500">{LEVEL_CONFIG[data.level]?.rivals || '0'}</p>
                     <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/30 mt-2">Active {data.sports.join(', ')}</p>
                   </div>
                   <div className="p-6 md:p-8 bg-black border border-white/10 rounded-[32px] md:rounded-[40px] shadow-2xl">
                     <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/30 mb-2">Starting Tier</p>
-                    <p className="text-4xl md:text-5xl font-black italic text-[#C6FF00]">{LEVEL_CONFIG[data.level]?.grade || 'Bronze'}</p>
+                    <p className="text-4xl md:text-5xl font-black italic text-lime-500">{LEVEL_CONFIG[data.level]?.grade || 'Bronze'}</p>
                     <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/30 mt-2 truncate">Level: {LEVEL_CONFIG[data.level]?.drive || data.level}</p>
                   </div>
                 </div>
 
                 <div className="flex flex-col md:flex-row items-center justify-center gap-6 pt-6 md:pt-10">
-                  <Button onClick={nextStep} className="w-full md:w-auto h-auto bg-[#C6FF00] text-black px-12 py-5 md:py-6 rounded-full font-black uppercase tracking-widest text-[10px] md:text-[11px] shadow-2xl shadow-lime-500/20 hover:scale-105 hover:bg-[#b0ff00] transition-all">Sign Athlete Contract</Button>
+                  <Button onClick={nextStep} className="w-full md:w-auto h-auto bg-lime-500 text-black px-12 py-5 md:py-6 rounded-full font-black uppercase tracking-widest text-[10px] md:text-[11px] shadow-2xl shadow-lime-500/20 hover:scale-105 hover:bg-lime-400 transition-all">Sign Athlete Contract</Button>
                 </div>
               </m.div>
             )}
@@ -341,15 +341,15 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
               >
                 {/* ... existing header content ... */}
                 <div className="text-center space-y-4">
-                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-[#C6FF00]">PHASE 06: COMMISSIONING</span>
+                  <span className="text-[10px] font-black uppercase tracking-[0.5em] text-lime-500">PHASE 06: COMMISSIONING</span>
                   <h2 className="text-4xl md:text-7xl font-black italic tracking-tighter uppercase leading-[0.85]">Finalize <br /> Credentials.</h2>
                   <p className="text-white/40 text-[10px] md:text-xs font-bold uppercase tracking-widest">Commissioning profile for {data.name}</p>
                 </div>
 
                 {isLoading ? (
                   <div className="flex flex-col items-center gap-6 py-20">
-                    <div className="w-16 h-16 border-4 border-white/10 border-t-[#C6FF00] rounded-full animate-spin"></div>
-                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-[#C6FF00] animate-pulse">Commissioning Athlete...</p>
+                    <div className="w-16 h-16 border-4 border-white/10 border-t-lime-500 rounded-full animate-spin"></div>
+                    <p className="text-[10px] font-black uppercase tracking-[0.3em] text-lime-500 animate-pulse">Commissioning Athlete...</p>
                   </div>
                 ) : (
                   <div className="w-full space-y-8 md:space-y-10">
@@ -378,7 +378,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                           type="email"
                           required
                           placeholder="scout@academy.pro"
-                          className="w-full h-auto bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-full px-8 py-5 text-base font-bold outline-none transition-all placeholder:text-white/20 focus-visible:ring-0"
+                          className="w-full h-auto bg-white/5 border-2 border-white/5 focus:border-lime-500 rounded-full px-8 py-5 text-base font-bold outline-none transition-all placeholder:text-white/20 focus-visible:ring-0"
                           value={data.email}
                           onChange={(e) => setData({ ...data, email: e.target.value })}
                         />
@@ -389,7 +389,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                           type="password"
                           required
                           placeholder="••••••••"
-                          className="w-full h-auto bg-white/5 border-2 border-white/5 focus:border-[#C6FF00] rounded-full px-8 py-5 text-base font-bold outline-none transition-all placeholder:text-white/20 focus-visible:ring-0"
+                          className="w-full h-auto bg-white/5 border-2 border-white/5 focus:border-lime-500 rounded-full px-8 py-5 text-base font-bold outline-none transition-all placeholder:text-white/20 focus-visible:ring-0"
                           value={data.password}
                           onChange={(e) => setData({ ...data, password: e.target.value })}
                         />
@@ -397,7 +397,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
 
                       <Button
                         type="submit"
-                        className="w-full h-auto bg-white text-black py-6 rounded-full font-black uppercase tracking-widest text-[11px] shadow-2xl hover:bg-[#C6FF00] transition-all mt-6"
+                        className="w-full h-auto bg-white text-black py-6 rounded-full font-black uppercase tracking-widest text-[11px] shadow-2xl hover:bg-lime-500 transition-all mt-6"
                       >
                         Commission Account
                       </Button>
@@ -412,7 +412,7 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
                         Already have an account?{' '}
                         <a
                           href="/login"
-                          className="text-[#C6FF00] hover:underline font-black uppercase tracking-wider"
+                          className="text-lime-500 hover:underline font-black uppercase tracking-wider"
                         >
                           Sign In
                         </a>

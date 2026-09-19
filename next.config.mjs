@@ -1,11 +1,8 @@
-import withPWA from 'next-pwa';
+import withSerwistInit from '@serwist/next';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  // Empty turbopack config to silence Next.js 16 warning about webpack usage
-  // next-pwa requires webpack, so we're explicitly acknowledging this
-  turbopack: {},
   images: {
     // Serve modern formats; Next falls back to the original for browsers without support
     formats: ['image/avif', 'image/webp'],
@@ -29,71 +26,16 @@ const nextConfig = {
   },
 };
 
-const pwaConfig = withPWA({
-  dest: 'public',
-  register: true,
-  skipWaiting: true,
+// Replaces next-pwa, which is a webpack plugin and so produced no service worker at all
+// under Next 16's Turbopack build — while the manifest, icons and offline page all
+// claimed otherwise. Caching strategy lives in app/sw.ts.
+const withSerwist = withSerwistInit({
+  swSrc: 'app/sw.ts',
+  swDest: 'public/sw.js',
   disable: process.env.NODE_ENV === 'development',
-  fallbacks: {
-    document: '/offline.html',
-  },
-  runtimeCaching: [
-    {
-      urlPattern: /^https:\/\/images\.unsplash\.com\/.*/i,
-      handler: 'CacheFirst',
-      options: {
-        cacheName: 'unsplash-images',
-        expiration: {
-          maxEntries: 50,
-          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
-        },
-      },
-    },
-    {
-      urlPattern: /\.(?:eot|otf|ttc|ttf|woff|woff2|font.css)$/i,
-      handler: 'StaleWhileRevalidate',
-      options: {
-        cacheName: 'static-fonts',
-        expiration: {
-          maxEntries: 10,
-          maxAgeSeconds: 60 * 60 * 24 * 365, // 1 year
-        },
-      },
-    },
-    {
-      urlPattern: /\.(?:jpg|jpeg|gif|png|svg|ico|webp)$/i,
-      handler: 'StaleWhileRevalidate',
-      options: {
-        cacheName: 'static-images',
-        expiration: {
-          maxEntries: 100,
-          maxAgeSeconds: 60 * 60 * 24 * 30, // 30 days
-        },
-      },
-    },
-    {
-      urlPattern: /\.(?:js)$/i,
-      handler: 'StaleWhileRevalidate',
-      options: {
-        cacheName: 'static-js',
-        expiration: {
-          maxEntries: 50,
-          maxAgeSeconds: 60 * 60 * 24, // 1 day
-        },
-      },
-    },
-    {
-      urlPattern: /\.(?:css)$/i,
-      handler: 'StaleWhileRevalidate',
-      options: {
-        cacheName: 'static-css',
-        expiration: {
-          maxEntries: 30,
-          maxAgeSeconds: 60 * 60 * 24, // 1 day
-        },
-      },
-    },
-  ],
+  reloadOnOnline: true,
+  // The offline fallback must be in the precache, or there is nothing to serve offline
+  additionalPrecacheEntries: [{ url: '/offline.html', revision: '1' }],
 });
 
-export default pwaConfig(nextConfig);
+export default withSerwist(nextConfig);

@@ -23,7 +23,7 @@ export default function CommunityView() {
           <Button
             onClick={() => fetchNextPage()}
             disabled={isFetchingNextPage}
-            className="bg-[#C6FF00] text-black font-black uppercase tracking-widest rounded-full px-8 py-6 hover:scale-105 transition-all text-xs"
+            className="bg-lime-500 text-black font-black uppercase tracking-widest rounded-full px-8 py-6 hover:scale-105 transition-all text-xs"
           >
             {isFetchingNextPage ? 'Loading Legends...' : 'Load More Athletes'}
           </Button>

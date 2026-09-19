@@ -93,7 +93,7 @@ const MessageCenter: React.FC<MessageCenterProps> = ({
         <div className={`${mobileView !== 'games' ? 'hidden md:flex' : 'flex'} w-full md:w-20 shrink-0 md:flex-col gap-4 items-center overflow-x-auto md:overflow-visible pb-4 md:pb-0 hide-scrollbar`}>
           <button
             onClick={() => handleGameSelect('all')}
-            className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all shrink-0 ${selectedGameId === 'all' ? 'bg-[#C6FF00] text-black shadow-lg shadow-lime-500/20' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}
+            className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all shrink-0 ${selectedGameId === 'all' ? 'bg-lime-500 text-black shadow-lg shadow-lime-500/20' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}
           >
             <span className="font-black text-xs italic uppercase">All</span>
           </button>
@@ -102,7 +102,7 @@ const MessageCenter: React.FC<MessageCenterProps> = ({
             <button
               key={game.id}
               onClick={() => handleGameSelect(game.id)}
-              className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all relative shrink-0 ${selectedGameId === game.id ? 'bg-[#C6FF00] text-black shadow-lg shadow-lime-500/20' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}
+              className={`w-14 h-14 rounded-2xl flex items-center justify-center transition-all relative shrink-0 ${selectedGameId === game.id ? 'bg-lime-500 text-black shadow-lg shadow-lime-500/20' : 'bg-white/5 text-white/40 hover:bg-white/10'}`}
             >
               <ICONS.TennisBall className="scale-75" />
               {messages.some(m => m.gameId === game.id && !m.isRead) && (
@@ -155,11 +155,11 @@ const MessageCenter: React.FC<MessageCenterProps> = ({
                   {thread.type === 'challenge' && (
                     <div className="absolute -bottom-1 -right-1 bg-red-500 w-5 h-5 rounded-full flex items-center justify-center text-[8px] font-black">VS</div>
                   )}
-                  {thread.messages.some(m => !m.isRead) && <div className="absolute top-0 right-0 w-3 h-3 bg-[#C6FF00] rounded-full border-2 border-black" />}
+                  {thread.messages.some(m => !m.isRead) && <div className="absolute top-0 right-0 w-3 h-3 bg-lime-500 rounded-full border-2 border-black" />}
                 </div>
                 <div className="overflow-hidden">
                   <h5 className="font-black italic uppercase tracking-tight truncate">{thread.user.name}</h5>
-                  <p className={`text-[10px] font-black uppercase tracking-widest truncate ${thread.type === 'challenge' ? 'text-red-500' : 'text-[#C6FF00]'}`}>
+                  <p className={`text-[10px] font-black uppercase tracking-widest truncate ${thread.type === 'challenge' ? 'text-red-500' : 'text-lime-500'}`}>
                     {thread.type === 'challenge' ? 'CHALLENGE' : hostedGames.find(g => g.id === thread.gameId)?.title.split(' ')[0]}
                   </p>
                   <p className="text-[10px] text-white/30 truncate mt-1">{thread.messages[0].content}</p>
@@ -183,11 +183,11 @@ const MessageCenter: React.FC<MessageCenterProps> = ({
                 <div className="p-6 md:p-10 border-b border-white/5 flex justify-between items-center bg-white/5 backdrop-blur-md relative z-10 shrink-0">
                   <div className="flex items-center gap-3 md:gap-5">
                     <button onClick={() => setMobileView('threads')} className="md:hidden p-2 bg-white/5 rounded-full"><ICONS.ChevronRight className="rotate-180" /></button>
-                    <Image src={activeThread.user.avatar} alt={activeThread.user.name} width={56} height={56} className="w-10 h-10 md:w-14 md:h-14 rounded-full border-2 border-[#C6FF00]" />
+                    <Image src={activeThread.user.avatar} alt={activeThread.user.name} width={56} height={56} className="w-10 h-10 md:w-14 md:h-14 rounded-full border-2 border-lime-500" />
                     <div className="overflow-hidden">
                       <h3 className="text-xl md:text-3xl font-black italic uppercase tracking-tighter truncate">{activeThread.user.name}</h3>
                       <div className="hidden sm:flex items-center gap-3">
-                        <span className={`text-[9px] font-black uppercase px-3 py-1 rounded-full shrink-0 ${activeThread.type === 'challenge' ? 'bg-red-500 text-white' : 'bg-[#C6FF00] text-black'}`}>
+                        <span className={`text-[9px] font-black uppercase px-3 py-1 rounded-full shrink-0 ${activeThread.type === 'challenge' ? 'bg-red-500 text-white' : 'bg-lime-500 text-black'}`}>
                           {activeThread.type === 'challenge' ? 'Opponent' : 'Inquiry'}
                         </span>
                         <span className="text-[9px] font-black uppercase text-white/30 tracking-widest truncate">
@@ -243,7 +243,7 @@ const MessageCenter: React.FC<MessageCenterProps> = ({
                             )}
 
                             {msg.challengeDetails.status !== 'pending' && (
-                              <div className={`py-4 text-center rounded-full font-black uppercase text-xs tracking-widest ${msg.challengeDetails.status === 'accepted' ? 'bg-[#C6FF00] text-black' : 'bg-white/5 text-white/40'}`}>
+                              <div className={`py-4 text-center rounded-full font-black uppercase text-xs tracking-widest ${msg.challengeDetails.status === 'accepted' ? 'bg-lime-500 text-black' : 'bg-white/5 text-white/40'}`}>
                                 Challenge {msg.challengeDetails.status.toUpperCase()}
                               </div>
                             )}
@@ -251,7 +251,7 @@ const MessageCenter: React.FC<MessageCenterProps> = ({
                         )}
 
                         <div className={`flex ${msg.senderId === 'host-user' ? 'justify-end' : 'justify-start'}`}>
-                          <div className={`max-w-[85%] md:max-w-[70%] rounded-[28px] md:rounded-[32px] p-5 md:p-6 ${msg.senderId === 'host-user' ? (msg.type === 'challenge' ? 'bg-red-500 text-white' : 'bg-[#C6FF00] text-black') : 'bg-white/10 text-white border border-white/5'}`}>
+                          <div className={`max-w-[85%] md:max-w-[70%] rounded-[28px] md:rounded-[32px] p-5 md:p-6 ${msg.senderId === 'host-user' ? (msg.type === 'challenge' ? 'bg-red-500 text-white' : 'bg-lime-500 text-black') : 'bg-white/10 text-white border border-white/5'}`}>
                             <p className="text-sm md:text-base font-bold leading-relaxed">{msg.content}</p>
                             <p className={`text-[8px] font-black uppercase tracking-widest mt-2 ${msg.senderId === 'host-user' ? 'text-white/40' : 'text-white/20'}`}>{msg.timestamp}</p>
                           </div>
@@ -267,11 +267,11 @@ const MessageCenter: React.FC<MessageCenterProps> = ({
                       value={replyText}
                       onChange={(e) => setReplyText(e.target.value)}
                       placeholder={activeThread.type === 'challenge' ? "Drop some trash talk..." : "Type pro-response..."}
-                      className="flex-1 bg-white/5 border border-white/10 rounded-[28px] md:rounded-[32px] p-4 md:p-6 text-sm font-bold text-white outline-none focus:border-[#C6FF00] transition-all resize-none h-16 md:h-20"
+                      className="flex-1 bg-white/5 border border-white/10 rounded-[28px] md:rounded-[32px] p-4 md:p-6 text-sm font-bold text-white outline-none focus:border-lime-500 transition-all resize-none h-16 md:h-20"
                     />
                     <button
                       onClick={handleSendReply}
-                      className={`${activeThread.type === 'challenge' ? 'bg-red-500' : 'bg-[#C6FF00]'} text-black w-16 h-16 md:w-20 md:h-20 rounded-[28px] md:rounded-[32px] flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl shrink-0`}
+                      className={`${activeThread.type === 'challenge' ? 'bg-red-500' : 'bg-lime-500'} text-black w-16 h-16 md:w-20 md:h-20 rounded-[28px] md:rounded-[32px] flex items-center justify-center hover:scale-105 active:scale-95 transition-all shadow-xl shrink-0`}
                     >
                       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="22" y1="2" x2="11" y2="13" /><polyline points="22 2 15 22 11 13 2 9 22 2" /></svg>
                     </button>

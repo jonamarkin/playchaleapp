@@ -24,7 +24,7 @@ const Programs: React.FC<ProgramsProps> = ({ onOpenDetails }) => {
   };
 
   return (
-    <section className="py-20 md:py-40 px-6 md:px-12 bg-[#FDFDFB] overflow-hidden">
+    <section className="py-20 md:py-40 px-6 md:px-12 bg-surface-app overflow-hidden">
       <div className="max-w-7xl mx-auto">
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-12 md:mb-24 gap-8">
           <m.div 
@@ -34,10 +34,10 @@ const Programs: React.FC<ProgramsProps> = ({ onOpenDetails }) => {
             className="space-y-4"
           >
             <div className="inline-flex items-center gap-2 text-[10px] md:text-xs font-black uppercase tracking-[0.4em] text-black/30">
-              <span className="w-2 h-2 rounded-full bg-[#C6FF00]"></span>
+              <span className="w-2 h-2 rounded-full bg-lime-500"></span>
               TRAINING PROGRAMS
             </div>
-            <h2 className="text-5xl md:text-8xl font-black text-[#111111] leading-[0.9] tracking-tighter">
+            <h2 className="text-5xl md:text-8xl font-black text-ink-900 leading-[0.9] tracking-tighter">
               Master the Court. <br className="hidden md:block" /> Every Step.
             </h2>
           </m.div>
@@ -50,7 +50,7 @@ const Programs: React.FC<ProgramsProps> = ({ onOpenDetails }) => {
           >
             <button 
               onClick={() => scroll('left')}
-              className="w-16 h-16 rounded-full border-2 border-gray-100 flex items-center justify-center hover:bg-white hover:border-[#C6FF00] transition-all shadow-sm active:scale-90"
+              className="w-16 h-16 rounded-full border-2 border-gray-100 flex items-center justify-center hover:bg-white hover:border-lime-500 transition-all shadow-sm active:scale-90"
             >
               <div className="rotate-180">
                 <ICONS.ChevronRight />
@@ -58,7 +58,7 @@ const Programs: React.FC<ProgramsProps> = ({ onOpenDetails }) => {
             </button>
             <button 
               onClick={() => scroll('right')}
-              className="w-16 h-16 rounded-full bg-black text-white flex items-center justify-center hover:bg-[#C6FF00] hover:text-black transition-all shadow-xl active:scale-90"
+              className="w-16 h-16 rounded-full bg-black text-white flex items-center justify-center hover:bg-lime-500 hover:text-black transition-all shadow-xl active:scale-90"
             >
               <ICONS.ChevronRight />
             </button>

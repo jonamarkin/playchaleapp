@@ -15,7 +15,7 @@ const GameModal = dynamic(() => import('@/components/GameModal'), {
   ssr: false,
   loading: () => (
     <div className="fixed inset-0 bg-black/60 backdrop-blur-xl z-[200] flex items-center justify-center">
-      <div className="w-16 h-16 border-4 border-[#C6FF00] border-t-transparent rounded-full animate-spin" />
+      <div className="w-16 h-16 border-4 border-lime-500 border-t-transparent rounded-full animate-spin" />
     </div>
   ),
 });
@@ -79,7 +79,7 @@ export default function AppChrome() {
             initial={{ opacity: 0, y: 50 }}
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: 50 }}
-            className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[300] bg-black text-[#C6FF00] px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] shadow-2xl"
+            className="fixed bottom-10 left-1/2 -translate-x-1/2 z-[300] bg-black text-lime-500 px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] shadow-2xl"
           >
             {showToast}
           </m.div>

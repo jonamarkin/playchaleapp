@@ -95,19 +95,19 @@ const CalendarView = ({ games, onSelectDate, selectedDate }: { games: Game[], on
               key={d}
               onClick={() => onSelectDate(isSelected ? "" : d.toString())}
               className={`aspect-square rounded-2xl md:rounded-[28px] flex flex-col items-center justify-center gap-1 transition-all relative border 
-                ${isSelected ? 'bg-[#C6FF00] text-black border-[#C6FF00] scale-105 shadow-lg shadow-[#C6FF00]/30' :
-                  isToday ? 'bg-white/10 border-[#C6FF00]/50' :
-                    gameCount > 0 ? 'bg-white/5 border-white/10 hover:border-[#C6FF00]/50 hover:bg-white/10' :
+                ${isSelected ? 'bg-lime-500 text-black border-lime-500 scale-105 shadow-lg shadow-lime-500/30' :
+                  isToday ? 'bg-white/10 border-lime-500/50' :
+                    gameCount > 0 ? 'bg-white/5 border-white/10 hover:border-lime-500/50 hover:bg-white/10' :
                       'bg-white/5 border-white/5 hover:border-white/20'}`}
             >
-              <span className={`text-sm md:text-lg font-black ${isToday && !isSelected ? 'text-[#C6FF00]' : ''}`}>{d}</span>
+              <span className={`text-sm md:text-lg font-black ${isToday && !isSelected ? 'text-lime-500' : ''}`}>{d}</span>
               {gameCount > 0 && !isSelected && (
                 <div className="flex items-center gap-0.5">
                   {Array.from({ length: Math.min(gameCount, 3) }).map((_, i) => (
-                    <div key={i} className={`w-1.5 h-1.5 rounded-full bg-[#C6FF00] ${isToday ? 'animate-pulse' : ''}`}></div>
+                    <div key={i} className={`w-1.5 h-1.5 rounded-full bg-lime-500 ${isToday ? 'animate-pulse' : ''}`}></div>
                   ))}
                   {gameCount > 3 && (
-                    <span className="text-[8px] font-black text-[#C6FF00] ml-0.5">+{gameCount - 3}</span>
+                    <span className="text-[8px] font-black text-lime-500 ml-0.5">+{gameCount - 3}</span>
                   )}
                 </div>
               )}
@@ -126,7 +126,7 @@ const CalendarView = ({ games, onSelectDate, selectedDate }: { games: Game[], on
           {nextMonthWithGames ? (
             <button
               onClick={() => setCurrentMonth(nextMonthWithGames.date)}
-              className="inline-flex items-center gap-3 bg-[#C6FF00] text-black px-6 py-3 rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all"
+              className="inline-flex items-center gap-3 bg-lime-500 text-black px-6 py-3 rounded-full font-black uppercase text-[10px] tracking-widest hover:scale-105 transition-all"
             >
               <span>⚡</span>
               Jump to {nextMonthWithGames.monthName} ({nextMonthWithGames.count} games)
@@ -180,7 +180,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
           {user ? (
             <button
               onClick={() => router.push('/home')}
-              className="touch-scale-sm touch-target bg-black text-[#C6FF00] px-6 py-3 rounded-full font-black uppercase tracking-widest text-[10px] transition-all shadow-lg"
+              className="touch-scale-sm touch-target bg-black text-lime-500 px-6 py-3 rounded-full font-black uppercase tracking-widest text-[10px] transition-all shadow-lg"
             >
               Go to Dashboard
             </button>
@@ -199,7 +199,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
           <div className="flex flex-col lg:flex-row lg:items-end justify-between mb-10 md:mb-16 gap-8">
             <div className="space-y-6 md:space-y-8 max-w-full lg:max-w-4xl w-full">
               <div className="animate-in fade-in slide-in-from-left-5 [animation-duration:400ms] inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.5em] text-black/50">
-                <span className="w-2 h-2 rounded-full bg-[#C6FF00] shadow-[0_0_10px_#C6FF00]"></span>
+                <span className="w-2 h-2 rounded-full bg-lime-500 shadow-[0_0_10px_hsl(var(--lime-500))]"></span>
                 GAME ARENA
               </div>
               <h2 className="font-black text-black leading-[0.85] md:leading-[0.8] tracking-tighter italic text-5xl sm:text-7xl md:text-[9rem]">
@@ -251,7 +251,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
                           <SelectItem
                             key={s}
                             value={s}
-                            className="text-[10px] font-black uppercase tracking-widest cursor-pointer hover:bg-gray-100 focus:bg-[#C6FF00] focus:text-black"
+                            className="text-[10px] font-black uppercase tracking-widest cursor-pointer hover:bg-gray-100 focus:bg-lime-500 focus:text-black"
                           >
                             {s}
                           </SelectItem>
@@ -266,7 +266,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
                       <button
                         key={p}
                         onClick={() => setPriceFilter(p)}
-                        className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${priceFilter === p ? 'bg-[#C6FF00] text-black' : 'bg-gray-100 text-black/70 hover:bg-gray-200'}`}
+                        className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all ${priceFilter === p ? 'bg-lime-500 text-black' : 'bg-gray-100 text-black/70 hover:bg-gray-200'}`}
                       >
                         {p}
                       </button>
@@ -280,12 +280,12 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
           <div className="flex flex-col md:flex-row md:items-end justify-between mb-10 md:mb-16 px-4 gap-6">
             <div className="space-y-4">
               <div className="inline-flex items-center gap-3 text-[10px] font-black uppercase tracking-[0.4em] text-black/30">
-                <span className="w-1.5 h-1.5 rounded-full bg-[#C6FF00]"></span>
+                <span className="w-1.5 h-1.5 rounded-full bg-lime-500"></span>
                 LIVE GAMES
               </div>
               <h2 className="text-4xl md:text-6xl font-black italic uppercase tracking-tighter">Games Near You</h2>
             </div>
-            <button onClick={() => router.push('/discover')} className="touch-scale-sm touch-target bg-black text-[#C6FF00] px-8 py-4 rounded-full text-[10px] font-black uppercase tracking-widest transition-all w-full md:w-auto">Explore Full Feed</button>
+            <button onClick={() => router.push('/discover')} className="touch-scale-sm touch-target bg-black text-lime-500 px-8 py-4 rounded-full text-[10px] font-black uppercase tracking-widest transition-all w-full md:w-auto">Explore Full Feed</button>
           </div>
         )}
 
@@ -299,7 +299,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
                 <h4 className="text-lg font-black italic uppercase tracking-tighter">
                   {selectedDay ? `Games on Oct ${selectedDay}` : 'Available Games'}
                 </h4>
-                <span className="bg-black text-[#C6FF00] px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">{filteredGames.length} Found</span>
+                <span className="bg-black text-lime-500 px-3 py-1 rounded-full text-[9px] font-black uppercase tracking-widest">{filteredGames.length} Found</span>
               </div>
               <div className="space-y-4 max-h-[700px] overflow-y-auto pr-2 hide-scrollbar">
                 <AnimatePresence mode="popLayout">

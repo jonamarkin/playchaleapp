@@ -46,6 +46,30 @@ Server Components (page.tsx) ── serverApi ── in-process ─────�
 - **UI state lives in Zustand, read through selectors** (`useUIStore((s) => s.showToast)`), so a toast doesn't re-render the whole app.
 - **Session:** `useSession()`. Auth hooks set it, then call `router.refresh()` so Server Components render again with the new cookie.
 
+## Design system
+
+Tokens live in `app/globals.css` as HSL channels and are consumed by `tailwind.config.ts`, so
+Tailwind's opacity modifiers keep working (`bg-lime-500/20`). See `/styleguide` for the rendered
+set (dev only; in production it needs `ENABLE_STYLEGUIDE=true`).
+
+- **Colour:** `lime` and `ink` ramps (50–950). Lime is a background and accent — never text on a
+  light surface (~1.5:1). Accent text uses `text-brand`, which resolves per polarity.
+- **Surfaces and polarity:** `<Surface polarity="light|dark">` sets `--fg`, `--fg-muted`,
+  `--fg-subtle`, `--line` and `--ring-color` for its subtree. Components read those instead of
+  guessing, which is why there are no `dark:` variants and why `text-white/30` should not come back.
+- **Type:** `Display` / `Heading` / `Eyebrow` / `Text` in `components/ui/typography.tsx`. The scale
+  has a 12px floor; the old `text-[8px]`–`text-[11px]` labels map onto `Eyebrow`.
+- **Radius, elevation, depth, motion:** `rounded-chip|field|card|card-lg|card-xl`, `shadow-e1..e3`
+  plus `shadow-lime`, `z-header|overlay|modal|toast|tooltip`, `duration-fast|base|slow`.
+- **`cn()` is extended** (`lib/utils.ts`) so tailwind-merge understands these custom scales. Without
+  that it mis-groups them — `shadow-e1` was being read as a shadow *colour* and silently
+  recolouring arbitrary shadows merged with it.
+- **Accessibility is built into primitives rather than swept up later:** `IconButton` requires a
+  `label`, and (planned) `Field` owns its own id/`htmlFor` pairing.
+
+Raw hex in `className` is gone (291 replaced by codemod); the only literals left are the metadata
+theme colour and `ProgramCard`, which Phase 1 deletes.
+
 ## Performance rules
 
 The look depends on heavy type, big imagery and motion. These rules keep that fast:
@@ -61,6 +85,9 @@ The look depends on heavy type, big imagery and motion. These rules keep that fa
    - AVIF and WebP are enabled.
 5. **Navigate with `<Link>`.** It prefetches routes, and route-level `loading.tsx` files (re-exporting `components/RouteLoading.tsx`) give feedback straight away. Keep that fallback taller than the viewport so streamed content never shifts anything visible. Game and profile pages deliberately have no loading fallback, so `notFound()` still returns a real HTTP 404.
 6. **Prefetch in `page.tsx`** anything the first screen needs. Client-only fetching is for data that appears after an interaction.
+7. **The production build runs webpack** (`next build --webpack`). Service-worker plugins hook into
+   webpack; under Turbopack no service worker is emitted at all, which is exactly how the PWA was
+   silently broken before. `next dev` still uses Turbopack.
 
 ### Measured impact
 
@@ -97,8 +124,13 @@ Lighthouse's simulated LCP is worse on `/discover` and `/community`. Its model c
 3. **Loading skeletons for each route,** matching the real layout, instead of the shared spinner.
 4. **Optimistic updates** for joining a game, MVP votes and stat approvals, so taps feel instant.
 5. **Error boundaries (`error.tsx`) for each route group,** with an on-brand retry screen.
-6. **Fix the PWA.** `next-pwa` is a webpack plugin and generates nothing under Turbopack builds, so the service worker and offline page currently don't exist. Migrate to Serwist.
-7. **Mobile navigation:** a bottom tab bar, so the app feels native on phones.
+6. ~~**Fix the PWA.**~~ Done: `next-pwa` → Serwist (`app/sw.ts`), with a `--webpack` production
+   build. Verified in-browser: the worker installs and controls the page, document navigations fall
+   back to `/offline.html`, `/api/games` is cached (network-first, 5s timeout) and `/api/auth/*`
+   and every non-GET are never cached. Manifest fixed: `start_url` `/home`, `id`, `scope`,
+   padded maskable icons, shortcuts, and the broken screenshot entry removed.
+7. ~~**Mobile navigation:**~~ Done: `components/app-shell/BottomNav.tsx` below `lg`, with the
+   header's hamburger drawer retired there (Log Out moved onto the profile page).
 8. **Generate types from the OpenAPI spec** (`openapi-typescript`) and delete the hand-written mirrors in `lib/api/types.ts`.
 9. **Tests and CI:**
    - Vitest for hooks and utilities.

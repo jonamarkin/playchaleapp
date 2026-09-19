@@ -45,7 +45,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
   };
 
   return (
-    <section className={`relative overflow-hidden ${isFullPage ? 'bg-[#FDFDFB] pt-24 sm:pt-32 md:pt-40 pb-20 sm:pb-32 md:pb-40' : 'py-20 sm:py-24 md:py-32 bg-black text-white rounded-[40px] sm:rounded-[60px] md:rounded-[120px] mx-2 md:mx-10 mb-20 shadow-2xl'}`}>
+    <section className={`relative overflow-hidden ${isFullPage ? 'bg-surface-app pt-24 sm:pt-32 md:pt-40 pb-20 sm:pb-32 md:pb-40' : 'py-20 sm:py-24 md:py-32 bg-black text-white rounded-[40px] sm:rounded-[60px] md:rounded-[120px] mx-2 md:mx-10 mb-20 shadow-2xl'}`}>
       {!isFullPage && (
         <>
           <div className="absolute top-0 right-0 w-[300px] sm:w-[500px] h-[300px] sm:h-[500px] bg-[radial-gradient(closest-side,rgba(198,255,0,0.10),transparent)] rounded-full -mr-20 sm:-mr-40 -mt-20 sm:-mt-40 pointer-events-none opacity-50"></div>
@@ -60,7 +60,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
             initial={{ opacity: 0, y: 20 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className={`inline-flex items-center gap-3 sm:gap-4 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em] sm:tracking-[0.6em] ${isFullPage ? 'text-black/30' : 'text-[#C6FF00]'}`}
+            className={`inline-flex items-center gap-3 sm:gap-4 text-[9px] sm:text-[10px] font-black uppercase tracking-[0.4em] sm:tracking-[0.6em] ${isFullPage ? 'text-black/30' : 'text-lime-500'}`}
           >
             <span className={`w-2 h-2 sm:w-2.5 sm:h-2.5 rounded-full ${isFullPage ? 'bg-black' : 'bg-white animate-pulse'}`}></span>
             {isFullPage ? 'THE COMMUNITY HUB' : 'CITY HALL OF FAME'}
@@ -149,7 +149,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                   textClasses = "text-black group-hover:text-white";
                   metaClasses = "text-black/40 group-hover:text-white/50";
                   borderClasses = "border-black/5 group-hover:border-white/10";
-                  nameHoverClasses = "group-hover:text-[#C6FF00]";
+                  nameHoverClasses = "group-hover:text-lime-500";
                 } else {
                   // BLACK Card -> WHITE Hover
                   cardClasses = "bg-black hover:bg-white";
@@ -164,7 +164,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                 textClasses = "text-white";
                 metaClasses = "text-white/40";
                 borderClasses = "border-white/10";
-                nameHoverClasses = "group-hover:text-[#C6FF00]";
+                nameHoverClasses = "group-hover:text-lime-500";
               }
 
               return (
@@ -195,9 +195,9 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                           width={192}
                           height={192}
                           priority={isFullPage && idx < 2}
-                          className="w-24 h-24 sm:w-36 sm:h-36 md:w-48 md:h-48 rounded-full object-cover border-[6px] sm:border-[8px] border-black/5 group-hover:border-[#C6FF00] transition-all duration-500 shadow-2xl"
+                          className="w-24 h-24 sm:w-36 sm:h-36 md:w-48 md:h-48 rounded-full object-cover border-[6px] sm:border-[8px] border-black/5 group-hover:border-lime-500 transition-all duration-500 shadow-2xl"
                         />
-                        <div className="absolute -bottom-2 -right-2 bg-[#C6FF00] text-black w-9 h-9 sm:w-14 sm:h-14 rounded-full flex items-center justify-center font-black text-base sm:text-2xl shadow-2xl border-4 border-black group-hover:scale-110 transition-transform">
+                        <div className="absolute -bottom-2 -right-2 bg-lime-500 text-black w-9 h-9 sm:w-14 sm:h-14 rounded-full flex items-center justify-center font-black text-base sm:text-2xl shadow-2xl border-4 border-black group-hover:scale-110 transition-transform">
                           #{idx + 1}
                         </div>
                       </div>
@@ -207,7 +207,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                     <div className="flex-1 min-w-0 w-full flex flex-col justify-between">
                       <div className="space-y-4 sm:space-y-5 mb-5 sm:mb-8 text-center md:text-left">
                         <div className="flex flex-wrap justify-center md:justify-start gap-2 items-center">
-                          <span className="bg-[#C6FF00] text-black text-[8px] sm:text-[9px] font-black uppercase tracking-widest px-3 sm:px-4 py-1.5 rounded-full shadow-lg">
+                          <span className="bg-lime-500 text-black text-[8px] sm:text-[9px] font-black uppercase tracking-widest px-3 sm:px-4 py-1.5 rounded-full shadow-lg">
                             {player.mainSport}
                           </span>
                           <span className={`text-[8px] sm:text-[9px] font-black uppercase tracking-widest transition-colors ${metaClasses}`}>
@@ -228,7 +228,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                           <p className={`text-[7px] sm:text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] transition-colors ${metaClasses} truncate`}>Win Rate</p>
                         </div>
                         <div className={`text-center border-x px-1 sm:px-4 transition-colors ${borderClasses}`}>
-                          <p className={`text-lg sm:text-2xl md:text-3xl font-black italic drop-shadow-sm transition-transform group-hover:scale-110 ${!isFullPage || isEven ? 'text-black group-hover:text-[#C6FF00]' : 'text-[#C6FF00] group-hover:text-black'}`}>
+                          <p className={`text-lg sm:text-2xl md:text-3xl font-black italic drop-shadow-sm transition-transform group-hover:scale-110 ${!isFullPage || isEven ? 'text-black group-hover:text-lime-500' : 'text-lime-500 group-hover:text-black'}`}>
                             {previewStat.value}
                           </p>
                           <p className={`text-[7px] sm:text-[8px] md:text-[9px] font-black uppercase tracking-[0.2em] transition-colors ${metaClasses} truncate`}>{previewStat.label}</p>
@@ -249,7 +249,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
                             "{player.bio}"
                           </p>
                         </div>
-                        <div className={`p-2 sm:p-3 rounded-2xl transition-all group-hover:translate-x-1 shrink-0 bg-[#C6FF00] text-black`}>
+                        <div className={`p-2 sm:p-3 rounded-2xl transition-all group-hover:translate-x-1 shrink-0 bg-lime-500 text-black`}>
                           <ICONS.ChevronRight className="w-4 h-4 sm:w-5 sm:h-5" />
                         </div>
                       </div>
@@ -265,10 +265,10 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
           <m.div initial={{ opacity: 0, y: 20 }} whileInView={{ opacity: 1, y: 0 }} viewport={{ once: true }} className="mt-16 sm:mt-24 md:mt-32 text-center">
             <button
               onClick={onViewAll}
-              className="touch-scale-sm touch-target bg-white text-black px-8 sm:px-12 md:px-20 py-6 md:py-8 rounded-full font-black uppercase tracking-[0.2em] text-[10px] md:text-[11px] hover:bg-[#C6FF00] hover:text-black transition-all shadow-2xl flex items-center gap-3 sm:gap-5 mx-auto"
+              className="touch-scale-sm touch-target bg-white text-black px-8 sm:px-12 md:px-20 py-6 md:py-8 rounded-full font-black uppercase tracking-[0.2em] text-[10px] md:text-[11px] hover:bg-lime-500 hover:text-black transition-all shadow-2xl flex items-center gap-3 sm:gap-5 mx-auto"
             >
               View Full City Rankings
-              <div className="bg-black text-[#C6FF00] p-2 rounded-full"><ICONS.ChevronRight /></div>
+              <div className="bg-black text-lime-500 p-2 rounded-full"><ICONS.ChevronRight /></div>
             </button>
           </m.div>
         )}

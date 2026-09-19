@@ -16,10 +16,10 @@ const Testimonials: React.FC = () => {
           className="text-center space-y-6 mb-24 md:mb-40"
         >
           <div className="inline-flex items-center gap-3 text-[10px] md:text-xs font-black uppercase tracking-[0.4em] text-black/30">
-            <span className="w-3 h-3 rounded-full bg-[#C6FF00] shadow-[0_0_15px_#C6FF00]"></span>
+            <span className="w-3 h-3 rounded-full bg-lime-500 shadow-[0_0_15px_hsl(var(--lime-500))]"></span>
             OUR COMMUNITY
           </div>
-          <h2 className="text-6xl md:text-9xl font-black text-[#111111] leading-[0.85] tracking-tighter">
+          <h2 className="text-6xl md:text-9xl font-black text-ink-900 leading-[0.85] tracking-tighter">
             Real Stories. <br className="hidden md:block" /> Real Growth.
           </h2>
         </m.div>

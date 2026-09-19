@@ -28,6 +28,22 @@ async function generateIcons() {
         console.log(`✅ Generated icon-${size}x${size}.png`);
     }
 
+    // Maskable variants: Android crops icons to its own shape, so the artwork needs a
+    // safe zone. Without these, declaring "maskable" (as the manifest did for every icon)
+    // means the logo gets clipped on most Android launchers.
+    for (const size of [192, 512]) {
+        const pad = Math.round(size * 0.2);
+        const inner = size - pad * 2;
+        await sharp({
+            create: { width: size, height: size, channels: 4, background: '#111111' },
+        })
+            .composite([{ input: await sharp(inputPath).resize(inner, inner).png().toBuffer(), top: pad, left: pad }])
+            .png()
+            .toFile(path.join(outputDir, `maskable-${size}x${size}.png`));
+
+        console.log(`✅ Generated maskable-${size}x${size}.png`);
+    }
+
     // Also create favicon
     const faviconPath = path.join(__dirname, '..', 'public', 'favicon.ico');
     await sharp(inputPath)

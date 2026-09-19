@@ -31,7 +31,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick, priority = false }) 
           fill
           priority={priority}
           sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
-          className="object-cover group-hover:scale-110 transition-transform duration-[1.5s] ease-out"
+          className="object-cover group-hover:scale-110 transition-transform [transition-duration:1500ms] ease-out"
         />
 
         {/* Gradient Overlay for Tag Visibility */}
@@ -43,7 +43,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick, priority = false }) 
             <span className="glass px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] text-white backdrop-blur-md">
               {game.sport}
             </span>
-            <span className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-lg ${isFull ? 'bg-red-500 text-white' : 'bg-[#C6FF00] text-black'}`}>
+            <span className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-[0.2em] shadow-lg ${isFull ? 'bg-red-500 text-white' : 'bg-lime-500 text-black'}`}>
               {isFull ? 'SQUAD FULL' : `${game.spotsTotal - game.spotsTaken} OPEN`}
             </span>
           </div>
@@ -57,7 +57,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick, priority = false }) 
       {/* Content Section */}
       <div className="flex-1 flex flex-col px-4 pb-4">
         <div className="mb-10">
-          <h3 className="text-3xl md:text-5xl font-black tracking-tighter italic leading-[0.9] uppercase text-black group-hover:text-[#C6FF00] mb-5 transition-colors duration-300">
+          <h3 className="text-3xl md:text-5xl font-black tracking-tighter italic leading-[0.9] uppercase text-black group-hover:text-lime-500 mb-5 transition-colors duration-300">
             {game.title}
           </h3>
 
@@ -86,7 +86,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick, priority = false }) 
               <m.div
                 initial={{ width: 0 }}
                 whileInView={{ width: `${fillPercentage}%` }}
-                className={`h-full transition-all duration-1000 ${fillPercentage > 85 ? 'bg-red-500' : 'bg-black group-hover:bg-[#C6FF00]'}`}
+                className={`h-full transition-all duration-1000 ${fillPercentage > 85 ? 'bg-red-500' : 'bg-black group-hover:bg-lime-500'}`}
               />
             </div>
           </div>
@@ -106,7 +106,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick, priority = false }) 
 
             <button
               disabled={isFull}
-              className={`h-16 pl-10 pr-8 rounded-l-full rounded-r-none text-[11px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-4 shrink-0 ${isFull ? 'bg-gray-100 text-black/20 cursor-not-allowed' : 'bg-black text-white group-hover:bg-[#C6FF00] group-hover:text-black shadow-[-20px_0_40px_rgba(0,0,0,0.1)] group-hover:shadow-[-20px_0_40px_rgba(198,255,0,0.2)]'}`}
+              className={`h-16 pl-10 pr-8 rounded-l-full rounded-r-none text-[11px] font-black uppercase tracking-[0.2em] transition-all flex items-center justify-center gap-4 shrink-0 ${isFull ? 'bg-gray-100 text-black/20 cursor-not-allowed' : 'bg-black text-white group-hover:bg-lime-500 group-hover:text-black shadow-[-20px_0_40px_rgba(0,0,0,0.1)] group-hover:shadow-[-20px_0_40px_rgba(198,255,0,0.2)]'}`}
             >
               {isFull ? 'SQUAD FULL' : 'JOIN MATCH'}
               {!isFull && <div className="group-hover:translate-x-1 transition-transform duration-300"><ICONS.ChevronRight /></div>}
