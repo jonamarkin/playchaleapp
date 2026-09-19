@@ -87,7 +87,8 @@ The look depends on heavy type, big imagery and motion. These rules keep that fa
 6. **Prefetch in `page.tsx`** anything the first screen needs. Client-only fetching is for data that appears after an interaction.
 7. **The production build runs webpack** (`next build --webpack`). Service-worker plugins hook into
    webpack; under Turbopack no service worker is emitted at all, which is exactly how the PWA was
-   silently broken before. `next dev` still uses Turbopack.
+   silently broken before. `next dev` still uses Turbopack, and `next.config.mjs` imports Serwist
+   lazily so dev never loads it — importing it there adds a webpack config Turbopack can't use.
 
 ### Measured impact
 
