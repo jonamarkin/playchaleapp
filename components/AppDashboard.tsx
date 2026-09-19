@@ -7,7 +7,7 @@ import { m } from 'framer-motion';
 import { Player, Game, MyGames } from '@/types';
 import GameCard from '@/components/GameCard';
 import { useSportName } from '@/features/sports/hooks';
-import { formatGameWhen, primaryStats, reliability, winRate } from '@/lib/format';
+import { formatGameWhen, primaryStats, relativeDay, reliability, winRate } from '@/lib/format';
 
 interface AppDashboardProps {
   player: Player;
@@ -22,6 +22,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
   const sportName = useSportName();
   // Career numbers are derived from approved results, so a new player legitimately has none
   const record = primaryStats(player.careerStats, player.mainSport);
+  const [spotlight] = upcomingGames;
 
   return (
     <section className="pt-24 sm:pt-28 md:pt-32 pb-12 sm:pb-16 md:pb-20 px-4 sm:px-6 md:px-12 min-h-screen bg-surface-app">
@@ -59,27 +60,43 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
           {/* Main Feed */}
           <div className="lg:col-span-8 space-y-8 sm:space-y-10 md:space-y-12">
             {/* Spotlight Match */}
-            <div
-              className="animate-in fade-in slide-in-from-bottom-[30px] [animation-duration:400ms] [animation-delay:200ms] fill-mode-both relative aspect-[4/3] sm:aspect-video md:aspect-[21/9] rounded-[32px] sm:rounded-[48px] md:rounded-[56px] overflow-hidden group cursor-pointer shadow-2xl border-2 sm:border-4 border-black/5"
-              onClick={() => onViewMatch(upcomingGames[0])}
-            >
-              <Image
-                src={upcomingGames[0].imageUrl}
-                alt={upcomingGames[0].title}
-                fill
-                sizes="(max-width: 768px) 100vw, 66vw"
-                className="object-cover transition-transform [transition-duration:2000ms] group-hover:scale-110"
-              />
-              <div className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent" />
-              <div className="absolute inset-0 p-6 sm:p-8 md:p-10 lg:p-14 flex flex-col justify-end sm:justify-center">
-                <span className="bg-lime-500 text-black px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-full text-[8px] sm:text-[9px] md:text-[10px] font-black uppercase tracking-widest mb-3 sm:mb-4 md:mb-6 inline-block w-fit shadow-lg">Spotlight Match Today</span>
-                <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-black text-white italic uppercase tracking-tighter mb-3 sm:mb-4 md:mb-6 leading-none">{upcomingGames[0].title}</h2>
-                <div className="flex flex-wrap items-center gap-4 sm:gap-6 md:gap-8 text-white/70 font-black uppercase tracking-widest text-[8px] sm:text-[9px] md:text-[10px]">
-                  <div className="flex items-center gap-2 sm:gap-3"><ICONS.Clock /> {formatGameWhen(upcomingGames[0].startsAt, upcomingGames[0].timezone)}</div>
-                  <div className="flex items-center gap-2 sm:gap-3"><ICONS.MapPin /> {upcomingGames[0].locationText.split('•')[0]}</div>
+            {spotlight ? (
+              <div
+                className="animate-in fade-in slide-in-from-bottom-[30px] [animation-duration:400ms] [animation-delay:200ms] fill-mode-both relative aspect-[4/3] sm:aspect-video md:aspect-[21/9] rounded-[32px] sm:rounded-[48px] md:rounded-[56px] overflow-hidden group cursor-pointer shadow-2xl border-2 sm:border-4 border-black/5"
+                onClick={() => onViewMatch(spotlight)}
+              >
+                <Image
+                  src={spotlight.imageUrl}
+                  alt=""
+                  fill
+                  priority
+                  sizes="(max-width: 768px) 100vw, 66vw"
+                  className="object-cover transition-transform [transition-duration:2000ms] group-hover:scale-110"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-black via-black/50 to-transparent" />
+                <div className="absolute inset-0 p-6 sm:p-8 md:p-10 lg:p-14 flex flex-col justify-end sm:justify-center">
+                  <span className="bg-lime-500 text-black px-3 sm:px-4 md:px-5 py-1.5 sm:py-2 rounded-full text-[8px] sm:text-[9px] md:text-[10px] font-black uppercase tracking-widest mb-3 sm:mb-4 md:mb-6 inline-block w-fit shadow-lg">
+                    {relativeDay(spotlight.startsAt, spotlight.timezone) ?? 'Next up'}
+                  </span>
+                  <h2 className="text-2xl sm:text-3xl md:text-4xl lg:text-6xl font-black text-white italic uppercase tracking-tighter mb-3 sm:mb-4 md:mb-6 leading-none">{spotlight.title}</h2>
+                  <div className="flex flex-wrap items-center gap-4 sm:gap-6 md:gap-8 text-white/70 font-black uppercase tracking-widest text-[8px] sm:text-[9px] md:text-[10px]">
+                    <div className="flex items-center gap-2 sm:gap-3"><ICONS.Clock /> {formatGameWhen(spotlight.startsAt, spotlight.timezone)}</div>
+                    <div className="flex items-center gap-2 sm:gap-3"><ICONS.MapPin /> {spotlight.locationText.split('•')[0]}</div>
+                  </div>
                 </div>
               </div>
-            </div>
+            ) : (
+              <div className="rounded-[32px] sm:rounded-[48px] border-2 border-dashed border-black/10 p-10 sm:p-16 text-center space-y-4">
+                <p className="text-xl sm:text-2xl font-black italic uppercase tracking-tighter">Nothing on yet.</p>
+                <p className="text-black/40 text-sm font-bold">Be the one who calls the game — host it and the rest will come.</p>
+                <button
+                  onClick={() => onNavigate('/games/new')}
+                  className="bg-black text-lime-500 px-8 py-4 rounded-full font-black uppercase tracking-widest text-[10px] hover:scale-105 transition-all"
+                >
+                  Host a match
+                </button>
+              </div>
+            )}
 
             {/* Quick Actions & Stats */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 sm:gap-5 md:gap-6">

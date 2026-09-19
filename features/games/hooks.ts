@@ -5,7 +5,7 @@ import { api } from '@/lib/api/browser';
 import type { Game, GameInput, GameUpdate } from '@/lib/api/types';
 import { gameKeys, gameQuery, gamesListQuery, myGamesQuery } from './queries';
 
-export function useGames(sport = 'All') {
+export function useGames(sport?: string) {
     return useInfiniteQuery({
         ...gamesListQuery(api, sport),
         // Flatten pages for components that render a simple list

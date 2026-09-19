@@ -7,6 +7,9 @@ import GameCard from '@/components/GameCard';
 import { m, AnimatePresence } from 'framer-motion';
 import { Game } from '@/types';
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+import { useRouter } from 'next/navigation';
+import { useSession } from '@/features/auth/session';
+import { useSports } from '@/features/sports/hooks';
 
 interface DiscoverProps {
   games: Game[];
@@ -133,10 +136,6 @@ const CalendarView = ({ games, onSelectDate, selectedDate }: { games: Game[], on
     </div>
   );
 };
-
-import { useRouter } from 'next/navigation';
-import { useSession } from '@/features/auth/session';
-import { useSports } from '@/features/sports/hooks';
 
 const DiscoverGames: React.FC<DiscoverProps> = ({ games, isFullPage = false }) => {
   const router = useRouter();

@@ -8,17 +8,17 @@ How the web app is put together, why, and what comes next. The API contract live
 Browser                                   Next.js server                        Backend
 ───────                                   ──────────────                        ───────
 Client Components ── React Query ──┐
-  (views, modals, forms)           │ fetch /api/*          app/api/[...path] ─┐
-                                   └──────────────────────────────────────────┤
-                                                                               ├─ mocks/api (today)
+  (views, sheets, forms)           │ fetch /api/*          app/api/[...path] ─┐
+                                   └──────────────────────────────────────────┤ API_ORIGIN unset
+                                                                               ├─ mocks/api
 Server Components (page.tsx) ── serverApi ── in-process ──────────────────────┘
-  prefetch + HydrationBoundary              or HTTP + forwarded cookie ─────────── real REST API (later)
+  prefetch + HydrationBoundary              or HTTP + forwarded cookie ─────────── Go service (API_ORIGIN set)
 ```
 
-- **One API contract.** Everything goes through `createApi()` in `lib/api/client.ts`, which maps each endpoint in the OpenAPI spec to a function. It has two transports:
-  - `lib/api/browser.ts` fetches `/api/*` (or `NEXT_PUBLIC_API_URL`) from Client Components.
-  - `lib/api/server.ts` is used while rendering. With the mock it calls `mocks/api/router.ts` in-process; with the real backend it makes an HTTP request and forwards the session cookie.
-- **Switching to the real backend** means setting `NEXT_PUBLIC_API_URL`. The mock route then turns itself off, and no component changes.
+- **One API contract.** Everything goes through `createApi()` in `lib/api/client.ts`, which maps each endpoint in [api/openapi.yaml](api/openapi.yaml) to a function. Shapes are **generated** into `lib/api/schema.ts` (`pnpm gen:api`), so a spec change is a compile error rather than a runtime surprise. Two transports:
+  - `lib/api/browser.ts` always fetches this app's own `/api/*`.
+  - `lib/api/server.ts` is used while rendering. With the mock it calls `mocks/api/router.ts` in-process; with a backend it requests it directly and forwards the session cookie.
+- **The browser never talks to the backend directly.** `app/api/[...path]/route.ts` serves the mock when `API_ORIGIN` is unset and reverse-proxies to that origin when it is set. Same-origin means the session cookie stays first-party and no write pays for a CORS preflight — on a Ghanaian mobile link that preflight would roughly double the latency of every Join. `API_ORIGIN` has no `NEXT_PUBLIC_` prefix on purpose: it is read per request and never enters the client bundle, so one build artefact serves dev, staging and production.
 - **Server-rendered data.** Each `page.tsx` is a Server Component. It prefetches that page's queries through `<Prefetch>` (`lib/query/prefetch.tsx`) and hands them to React Query. The client view reads the same query keys, so the first paint already has data: no spinner, no layout shift, and real HTML for SEO and link previews.
 - **Sessions.** An httpOnly `pc_session` cookie.
   - `proxy.ts` sends requests without the cookie away from private routes before anything renders.
@@ -30,7 +30,10 @@ Server Components (page.tsx) ── serverApi ── in-process ─────�
 | Path | What lives there |
 | --- | --- |
 | `app/` | Routes. `page.tsx` is a thin server file (guards, metadata, prefetch); `*-view.tsx` next to it is the client UI. |
-| `app/api/[...path]/route.ts` | Serves the mock API over HTTP. |
+| `app/api/[...path]/route.ts` | The app's own API surface: mock when `API_ORIGIN` is unset, reverse proxy when it is set. |
+| `docs/api/openapi.yaml` | The contract. Both the mock and the Go service implement it; `lib/api/schema.ts` is generated from it. |
+| `tests/contract/` | One journey, run against either implementation (`--target=mock\|go`), every response validated against the spec. |
+| `tests/e2e/smoke.mjs` | Browser smoke test: host a game through the form and find it again. |
 | `features/<domain>/queries.ts` | Query keys and `queryOptions` factories. Safe to import on the server. |
 | `features/<domain>/hooks.ts` | Client hooks (`useGames`, `useJoinGame`, ...). |
 | `features/auth/` | `SessionProvider`, `useSession`, login/signup/logout/onboarding hooks, `useGatedModal`. |
@@ -138,34 +141,68 @@ Lighthouse's simulated LCP is worse on `/discover` and `/community`. Its model c
    padded maskable icons, shortcuts, and the broken screenshot entry removed.
 7. ~~**Mobile navigation:**~~ Done: `components/app-shell/BottomNav.tsx` below `lg`, with the
    header's hamburger drawer retired there (Log Out moved onto the profile page).
-8. **Generate types from the OpenAPI spec** (`openapi-typescript`) and delete the hand-written mirrors in `lib/api/types.ts`.
+8. ~~**Generate types from the OpenAPI spec**~~ Done in Phase 2: `pnpm gen:api` writes
+   `lib/api/schema.ts`, and `lib/api/types.ts` is aliases over it.
 9. **Tests and CI:**
-   - Vitest for hooks and utilities.
-   - Playwright for the key flows: sign-in, onboarding, discover → join, host → results → approval.
-   - A Lighthouse CI budget, so performance can't silently regress.
+   - ~~A contract suite~~ Done: `pnpm test:contract` walks signup → host → join → report →
+     approve → career stat, validating every response against the spec by JSON pointer. It runs
+     against the mock today and the Go service later, unchanged.
+   - ~~A browser smoke test~~ Done: `pnpm test:e2e`.
+   - Still to do: Vitest for hooks and utilities, the remaining Playwright flows (onboarding,
+     phone OTP, stat approval), and a Lighthouse CI budget so performance can't silently regress.
 10. **Accessibility:** remove `userScalable: false` and `maximumScale: 1` from the viewport (they block pinch zoom), and fix the malformed star SVG in `Features.tsx`.
 
 ### Backend
 
-The contract is REST + OpenAPI; the language and framework are still open. A **modular monolith** fits this stage: one deployable service with clear internal modules. It scales far enough for a city-by-city launch without microservice overhead.
+The contract is REST + OpenAPI. The service is **Go**, in its own repo at `playchale/playchale-api`,
+built as a **modular monolith**: one deployable with clear internal modules. That scales far enough
+for a city-by-city launch without microservice overhead, and it is the right shape for one developer.
+
+Until it exists, `mocks/api` implements the same spec and the app is developed against it. The mock
+does not get thrown away when the service lands — it stays as the local dev backend, which is why
+`pnpm test:contract` runs against both.
 
 | Concern | Recommendation |
 | --- | --- |
 | Modules | auth, profiles, games (+ participants), results (stats, approvals, MVP), messaging, notifications |
 | Database | PostgreSQL. Relational data with strong consistency around joins, capacity and approvals. Add PostGIS when "games near me" arrives. |
-| Cache / realtime | Redis for rate limits, caching hot lists (discover, leaderboards) and presence |
-| Realtime | WebSockets or SSE for messages, join requests and approval prompts |
-| Background jobs | A queue for recalculating player stats once results are approved, and for notifications |
+| Router / data | chi, pgx + sqlc (no ORM — the aggregation query is one you want to read), goose migrations embedded via `embed.FS`, oapi-codegen so contract conformance is a compile error |
+| Cache / realtime | Neither at first. Redis and SSE arrive with chat (Phase 6), not before |
+| Background jobs | Not yet. Career stats are recomputed from source in the same transaction, which is idempotent, so a nightly job can later prove them correct |
+| Concurrency | Joins take the game row `FOR UPDATE`. Without it, twelve people tapping Join on a ten-spot game all get in — that test comes before the handler |
 | Files | Object storage (S3 or Cloudflare R2) with presigned uploads for avatars and game images |
 | Auth | Session cookie on a same-site API subdomain (`api.playchale.app`, cookie domain `.playchale.app`), so `lib/api/server.ts` can forward it. Add OAuth (Google) there. |
 | Payments | Mobile money (MoMo) for paid games. Keep amounts in minor units plus a currency. |
 | Observability | Structured logs, request tracing, error tracking |
 
-**Contract changes to make when the backend lands** (marked `TODO(backend)` in the code and spec):
-- `Game.date`/`time` become one ISO `startsAt` timestamp. `price` becomes `amount` (minor units) plus `currency`.
-- Joins go through a participant `status` (requested → confirmed), so hosts can approve players.
-- Player career stats (`sportStats`) become aggregates computed from approved `player_game_stats`, not fields clients write.
-- The avatar flow switches to presigned uploads.
+**Contract changes made in Phase 2**, ahead of the backend, so they were done once rather than twice:
+- `date`/`time` strings became one ISO `startsAt` plus an IANA `timezone`; `price: "₵25"` became
+  `fee: { amountMinor, currency }`, where `0` means free rather than a missing value.
+- Joining goes through a six-state participant lifecycle
+  (`requested | waitlisted | confirmed | declined | cancelled | removed`), with waitlist promotion.
+- Career stats are counts (`wins`, `noShows`, per-sport `counters`), derived from approved results
+  only and never written by a client. A win rate is a rendering decision — see `lib/format.ts`.
+- Per-viewer state moved into a `viewer` envelope, so the rest of a game stays cacheable.
+- Lists are keyset-paginated; writes accept an `Idempotency-Key`.
+- A `/sports` registry carries each sport's result and stat fields, so adding a sport is a row
+  rather than a deploy, and the post-game form builds itself from it.
+
+Still outstanding: the avatar flow should switch to presigned uploads.
+
+### How the stats stay worth trusting
+
+The profile is the product, so the rules that make its numbers mean something are deliberate:
+
+- The host reports what happened; **each player approves their own line**, and only approved lines
+  reach a career total.
+- A stat line counts only when its game's **result** is approved too, and only when the approval was
+  given against the **current** result version — so a host who re-enters the score cannot keep the
+  approvals the old score earned.
+- The result's approval threshold is measured over **the other participants' lines only**. The host
+  entered the report, so counting their own approval towards it would let a host certify their own
+  stats; a game nobody else was in therefore never produces an approved result. The contract suite
+  covers each of these directly — the first two were found by it, not by review.
+- Self-rated attributes exist, but they are rendered apart from the record and labelled as such.
 
 ## Removed in Phase 1
 

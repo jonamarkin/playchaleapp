@@ -9,15 +9,16 @@ import type { Api } from '@/lib/api/client';
 export const gameKeys = {
     all: ['games'] as const,
     lists: () => [...gameKeys.all, 'list'] as const,
-    list: (sport = 'All') => [...gameKeys.lists(), { sport }] as const,
+    list: (sport?: string) => [...gameKeys.lists(), { sport: sport ?? 'all' }] as const,
     detail: (idOrSlug: string) => [...gameKeys.all, 'detail', idOrSlug] as const,
     mine: () => ['me', 'games'] as const,
 };
 
-export const gamesListQuery = (client: Api, sport = 'All') =>
+/** `sport` is a code from the registry; omit it for every sport. No sentinel values reach the API. */
+export const gamesListQuery = (client: Api, sport?: string) =>
     infiniteQueryOptions({
         queryKey: gameKeys.list(sport),
-        queryFn: ({ pageParam }) => client.games.list({ cursor: pageParam, sport }),
+        queryFn: ({ pageParam }) => client.games.list({ cursor: pageParam, ...(sport ? { sport } : {}) }),
         initialPageParam: undefined as string | undefined,
         getNextPageParam: (lastPage) => lastPage.nextCursor ?? undefined,
     });
