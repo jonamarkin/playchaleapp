@@ -1,4 +1,3 @@
-import withSerwistInit from '@serwist/next';
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
@@ -26,16 +25,23 @@ const nextConfig = {
   },
 };
 
-// Replaces next-pwa, which is a webpack plugin and so produced no service worker at all
-// under Next 16's Turbopack build — while the manifest, icons and offline page all
-// claimed otherwise. Caching strategy lives in app/sw.ts.
-const withSerwist = withSerwistInit({
-  swSrc: 'app/sw.ts',
-  swDest: 'public/sw.js',
-  disable: process.env.NODE_ENV === 'development',
-  reloadOnOnline: true,
-  // The offline fallback must be in the precache, or there is nothing to serve offline
-  additionalPrecacheEntries: [{ url: '/offline.html', revision: '1' }],
-});
-
-export default withSerwist(nextConfig);
+/**
+ * Service worker (production builds only).
+ *
+ * Serwist replaces next-pwa, which was a webpack plugin and so emitted no service worker at
+ * all under Next 16's Turbopack build, while the manifest, icons and offline page all claimed
+ * otherwise. Serwist is a webpack plugin too, hence `next build --webpack` in package.json.
+ *
+ * It is imported lazily so that `next dev` (Turbopack) never loads it: importing it there adds
+ * a webpack config Turbopack can't use — the "Turbopack with a webpack config" error — and
+ * prints a Turbopack incompatibility warning. No service worker is built in dev anyway.
+ */
+export default process.env.NODE_ENV === 'production'
+  ? (await import('@serwist/next')).default({
+    swSrc: 'app/sw.ts',
+    swDest: 'public/sw.js',
+    reloadOnOnline: true,
+    // The offline fallback must be in the precache, or there is nothing to serve offline
+    additionalPrecacheEntries: [{ url: '/offline.html', revision: '1' }],
+  })(nextConfig)
+  : nextConfig;
