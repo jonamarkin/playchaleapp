@@ -55,11 +55,6 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
     { name: 'Competitive', label: 'Play to win', intensity: 'Pro' }
   ];
 
-  const LEVEL_CONFIG: Record<string, { matches: string, rivals: string, grade: string, drive: string }> = {
-    'Beginner': { matches: '0', rivals: '12', grade: 'Bronze', drive: 'Rookie' },
-    'Intermediate': { matches: '24', rivals: '156', grade: 'Silver', drive: 'Semi-Pro' },
-    'Competitive': { matches: '89', rivals: '482', grade: 'Gold', drive: 'Pro' }
-  };
 
   const nextStep = () => setStep(step + 1);
   const prevStep = () => setStep(Math.max(1, step - 1));
@@ -305,24 +300,21 @@ const Onboarding: React.FC<OnboardingProps> = ({ onComplete, onSkip }) => {
 
                 <div className="space-y-4 md:space-y-6">
                   <span className="bg-lime-500 text-black px-4 md:px-6 py-2 rounded-full text-[9px] md:text-[10px] font-black uppercase tracking-widest">DRAFT REPORT: {data.name.toUpperCase()}</span>
-                  <h2 className="text-3xl md:text-7xl font-black italic tracking-tighter uppercase leading-[0.85]">Welcome to <br className="hidden md:block" /> the Elite.</h2>
+                  <h2 className="text-3xl md:text-7xl font-black italic tracking-tighter uppercase leading-[0.85]">Here's your <br className="hidden md:block" /> starting line.</h2>
                 </div>
 
                 <div className="grid grid-cols-1 md:grid-cols-3 gap-4 md:gap-8 text-left w-full">
                   <div className="p-6 md:p-8 bg-black border border-white/10 rounded-[32px] md:rounded-[40px] shadow-2xl">
-                    <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/30 mb-2">Projected Matches</p>
-                    <p className="text-4xl md:text-5xl font-black italic text-lime-500">{LEVEL_CONFIG[data.level]?.matches || '0'}</p>
-                    <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/30 mt-2 truncate">In {data.location}</p>
+                    <p className="text-eyebrow font-black uppercase tracking-widest text-white/40 mb-2">Sports</p>
+                    <p className="text-2xl md:text-3xl font-black italic text-lime-500 leading-tight">{data.sports.join(', ')}</p>
                   </div>
                   <div className="p-6 md:p-8 bg-black border border-white/10 rounded-[32px] md:rounded-[40px] shadow-2xl">
-                    <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/30 mb-2">Potential Rivals</p>
-                    <p className="text-4xl md:text-5xl font-black italic text-lime-500">{LEVEL_CONFIG[data.level]?.rivals || '0'}</p>
-                    <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/30 mt-2">Active {data.sports.join(', ')}</p>
+                    <p className="text-eyebrow font-black uppercase tracking-widest text-white/40 mb-2">Level</p>
+                    <p className="text-2xl md:text-3xl font-black italic text-lime-500 leading-tight">{data.level}</p>
                   </div>
                   <div className="p-6 md:p-8 bg-black border border-white/10 rounded-[32px] md:rounded-[40px] shadow-2xl">
-                    <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/30 mb-2">Starting Tier</p>
-                    <p className="text-4xl md:text-5xl font-black italic text-lime-500">{LEVEL_CONFIG[data.level]?.grade || 'Bronze'}</p>
-                    <p className="text-[8px] md:text-[9px] font-black uppercase tracking-widest text-white/30 mt-2 truncate">Level: {LEVEL_CONFIG[data.level]?.drive || data.level}</p>
+                    <p className="text-eyebrow font-black uppercase tracking-widest text-white/40 mb-2">Playing around</p>
+                    <p className="text-2xl md:text-3xl font-black italic text-lime-500 leading-tight">{data.location}</p>
                   </div>
                 </div>
 

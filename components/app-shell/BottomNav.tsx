@@ -3,7 +3,6 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { Home, Compass, CalendarCheck, User, Plus } from 'lucide-react';
-import { useGatedModal } from '@/features/auth/hooks';
 import { cn } from '@/lib/utils';
 
 /**
@@ -20,7 +19,6 @@ const ITEMS = [
 
 export default function BottomNav() {
     const pathname = usePathname();
-    const openModal = useGatedModal();
 
     const [left, right] = [ITEMS.slice(0, 2), ITEMS.slice(2)];
 
@@ -34,14 +32,13 @@ export default function BottomNav() {
                 {left.map((item) => <NavItem key={item.href} {...item} active={pathname === item.href} />)}
 
                 <li className="flex items-center">
-                    <button
-                        type="button"
-                        onClick={() => openModal('create')}
+                    <Link
+                        href="/games/new"
                         className="-mt-6 flex h-14 w-14 items-center justify-center rounded-pill bg-lime-500 text-ink-900 shadow-lime transition-transform duration-fast active:scale-95 touch-target"
                     >
                         <Plus aria-hidden="true" className="h-6 w-6" strokeWidth={3} />
                         <span className="sr-only">Host a game</span>
-                    </button>
+                    </Link>
                 </li>
 
                 {right.map((item) => <NavItem key={item.href} {...item} active={pathname.startsWith(item.href)} />)}

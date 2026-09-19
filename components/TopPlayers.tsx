@@ -267,7 +267,7 @@ const TopPlayers: React.FC<TopPlayersProps> = ({ players, onOpenPlayer, isFullPa
               onClick={onViewAll}
               className="touch-scale-sm touch-target bg-white text-black px-8 sm:px-12 md:px-20 py-6 md:py-8 rounded-full font-black uppercase tracking-[0.2em] text-[10px] md:text-[11px] hover:bg-lime-500 hover:text-black transition-all shadow-2xl flex items-center gap-3 sm:gap-5 mx-auto"
             >
-              View Full City Rankings
+              View all players
               <div className="bg-black text-lime-500 p-2 rounded-full"><ICONS.ChevronRight /></div>
             </button>
           </m.div>

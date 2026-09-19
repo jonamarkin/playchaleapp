@@ -10,7 +10,6 @@ import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@
 
 interface DiscoverProps {
   games: Game[];
-  onOpenGame: (game: Game) => void;
   isFullPage?: boolean;
 }
 
@@ -146,7 +145,7 @@ import { useSession } from '@/features/auth/session';
 
 // ... existing code ...
 
-const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage = false }) => {
+const DiscoverGames: React.FC<DiscoverProps> = ({ games, isFullPage = false }) => {
   const router = useRouter();
   const { user } = useSession();
   const [filter, setFilter] = useState('All');
@@ -304,27 +303,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
               <div className="space-y-4 max-h-[700px] overflow-y-auto pr-2 hide-scrollbar">
                 <AnimatePresence mode="popLayout">
                   {filteredGames.map((game) => (
-                    <m.div
-                      key={game.id}
-                      initial={{ opacity: 0, x: 20 }}
-                      animate={{ opacity: 1, x: 0 }}
-                      exit={{ opacity: 0, x: -20 }}
-                      className="touch-target bg-gray-50 rounded-[28px] p-5 flex gap-5 items-center border border-black/5 hover:border-black transition-all cursor-pointer group"
-                      onClick={() => onOpenGame(game)}
-                    >
-                      <Image src={game.imageUrl} alt={game.title} width={80} height={80} className="w-20 h-20 rounded-[20px] object-cover" />
-                      <div className="flex-1">
-                        <div className="flex justify-between">
-                          <span className="text-[9px] font-black uppercase text-black/40 tracking-wider">{game.sport}</span>
-                          <span className="text-[9px] font-black uppercase text-black tracking-wider">{game.price}</span>
-                        </div>
-                        <h5 className="text-base font-black tracking-tight">{game.title}</h5>
-                        <div className="flex items-center gap-3 mt-1 text-[11px] font-bold text-black/40">
-                          <div className="flex items-center gap-1"><ICONS.Clock /> {game.time}</div>
-                          <div className="flex items-center gap-1"><ICONS.MapPin /> {game.location.split(' ').slice(0, 2).join(' ')}</div>
-                        </div>
-                      </div>
-                    </m.div>
+                    <GameCard key={game.id} game={game} variant="row" />
                   ))}
                 </AnimatePresence>
                 {filteredGames.length === 0 && (
@@ -337,7 +316,7 @@ const DiscoverGames: React.FC<DiscoverProps> = ({ games, onOpenGame, isFullPage 
           <m.div layout className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8 md:gap-12">
             <AnimatePresence mode="popLayout">
               {filteredGames.map((game, index) => (
-                <GameCard key={game.id} game={game} priority={isFullPage && index < 2} onClick={() => onOpenGame(game)} />
+                <GameCard key={game.id} game={game} priority={isFullPage && index < 2} />
               ))}
             </AnimatePresence>
           </m.div>

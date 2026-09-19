@@ -19,14 +19,12 @@ interface DashboardProps {
   isOwner?: boolean;
   /** Shown on the owner's own profile: below lg this is the only way out, since the header drawer is desktop-only. */
   onSignOut?: () => void;
-  onEditStats: () => void;
-  onEditProfile: () => void;
   onShareProfile: () => void;
   onViewMatch: (match: any) => void;
 }
 
 const ProfileDashboard: React.FC<DashboardProps> = ({
-  player, isOwner = false, onEditStats, onEditProfile, onShareProfile, onViewMatch, onSignOut
+  player, isOwner = false, onShareProfile, onViewMatch, onSignOut
 }) => {
   const uploadAvatar = useAvatarUploader();
   const [activeSport, setActiveSport] = React.useState(player.mainSport);
@@ -125,15 +123,6 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
               </div>
 
               <div className="grid grid-cols-1 gap-4 pt-4">
-                {isOwner && (
-                  <button
-                    onClick={onEditProfile}
-                    className="w-full bg-white/10 text-white py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:bg-white/20 transition-all border border-white/5 flex items-center justify-center gap-3 min-h-[64px]"
-                  >
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M12 20h9" /><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" /></svg>
-                    Edit Profile
-                  </button>
-                )}
                 <button
                   onClick={onShareProfile}
                   className="w-full bg-lime-500 text-black py-6 rounded-full font-black uppercase tracking-widest text-[11px] hover:scale-105 transition-all flex items-center justify-center gap-3 min-h-[64px] shadow-xl shadow-lime-500/10"
@@ -141,14 +130,6 @@ const ProfileDashboard: React.FC<DashboardProps> = ({
                   <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8" /><polyline points="16 6 12 2 8 6" /><line x1="12" y1="2" x2="12" y2="15" /></svg>
                   Share Pro Card
                 </button>
-                {isOwner && (
-                  <button
-                    onClick={onEditStats}
-                    className="w-full bg-white/5 text-white/60 py-4 rounded-full font-black uppercase tracking-widest text-[9px] hover:bg-white/10 transition-all flex items-center justify-center gap-2"
-                  >
-                    Update Season Stats
-                  </button>
-                )}
                 {isOwner && onSignOut && (
                   <button
                     onClick={onSignOut}

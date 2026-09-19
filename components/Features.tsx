@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useState, useRef, useEffect } from 'react';
-import Image from 'next/image';
+import Link from 'next/link';
 import { m } from 'framer-motion';
 
 const IconUsers = () => (
@@ -32,43 +32,31 @@ export function Features() {
       icon: <IconUsers />,
       title: "Connect with players",
       subtitle: "Find athletes in your local area",
-      stat: "12.5K",
-      label: "Active Players"
     },
     {
       icon: <IconCalendar />,
       title: "Create & join games",
       subtitle: "Instant match organization",
-      stat: "342",
-      label: "Live Games"
     },
     {
       icon: <IconTrendingUp />,
       title: "Track performance",
       subtitle: "Data-driven growth analytics",
-      stat: "2.8K",
-      label: "Matches Today"
     },
     {
       icon: <IconStar />,
       title: "Build your legacy",
       subtitle: "Showcase skills & badges",
-      stat: "45",
-      label: "Avg Games/Mo"
     },
     {
       icon: <IconClock />,
       title: "Real-time updates",
       subtitle: "Never miss a local kickoff",
-      stat: "24/7",
-      label: "Live Support"
     },
     {
       icon: <IconUserPlus />,
       title: "Join communities",
       subtitle: "Niche sport circles & squads",
-      stat: "156",
-      label: "Tribes"
     }
   ];
 
@@ -170,15 +158,7 @@ export function Features() {
                 </p>
               </div>
 
-              <div className="mt-auto pt-8 border-t border-black/5 group-hover:border-white/10 flex items-end justify-between transition-colors">
-                <div>
-                  <div className="text-4xl md:text-5xl font-black italic tracking-tighter text-black group-hover:text-white leading-none mb-1 transition-colors">
-                    {feature.stat}
-                  </div>
-                  <div className="text-[10px] font-black uppercase tracking-[0.2em] text-black/20 group-hover:text-white/20 transition-colors">
-                    {feature.label}
-                  </div>
-                </div>
+              <div className="mt-auto pt-8 border-t border-black/5 group-hover:border-white/10 flex items-end justify-end transition-colors">
                 <div className="w-12 h-12 rounded-full border border-black/5 flex items-center justify-center text-black/10 group-hover:text-lime-500 group-hover:border-lime-500 transition-all group-hover:rotate-45">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
                 </div>
@@ -194,18 +174,12 @@ export function Features() {
           viewport={{ once: true }}
           className="mt-20 md:mt-32 text-center"
         >
-          <div className="inline-block p-1 bg-gray-100 rounded-full">
-            <div className="flex items-center gap-2 px-6 py-3">
-              <div className="flex -space-x-3">
-                {[1, 2, 3, 4].map(i => (
-                  <Image key={i} className="w-8 h-8 rounded-full border-2 border-white" src={`https://i.pravatar.cc/100?u=${i}`} alt="user" width={32} height={32} />
-                ))}
-              </div>
-              <p className="text-[11px] font-black uppercase tracking-widest text-black/60">
-                Join <span className="text-black">5,000+</span> athletes in your area
-              </p>
-            </div>
-          </div>
+          <Link
+            href="/discover"
+            className="inline-flex items-center gap-4 rounded-pill bg-ink-900 px-8 py-5 text-eyebrow font-black uppercase tracking-widest text-lime-500 transition-transform duration-base hover:scale-105 touch-target"
+          >
+            Find a game near you
+          </Link>
         </m.div>
       </div>
     </section>

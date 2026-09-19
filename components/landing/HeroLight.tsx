@@ -67,24 +67,6 @@ const HeroLight: React.FC = () => {
                 </div>
               </Link>
 
-              <div className="flex items-center gap-4 justify-center sm:justify-start">
-                <div className="flex -space-x-3">
-                  {[11, 12, 13].map((i) => (
-                    <Image
-                      key={i}
-                      className="w-10 h-10 rounded-full border-4 border-surface-app object-cover"
-                      src={`https://i.pravatar.cc/100?u=${i}`}
-                      alt=""
-                      width={40}
-                      height={40}
-                    />
-                  ))}
-                </div>
-                <div className="text-left">
-                  <p className="text-[11px] font-black uppercase tracking-widest text-black">482 Players Active</p>
-                  <p className="text-[9px] font-black uppercase tracking-widest text-black/30">Live in your vicinity</p>
-                </div>
-              </div>
             </div>
           </div>
 
@@ -109,9 +91,8 @@ const HeroLight: React.FC = () => {
               </div>
 
               <div className="absolute bottom-6 left-6 right-6 text-white">
-                <p className="text-[9px] font-black uppercase tracking-[0.3em] text-lime-500 mb-1">This week</p>
                 <p className="text-3xl md:text-4xl font-black italic tracking-tighter uppercase leading-none">
-                  342 matches <br /> played
+                  Your city. <br /> Your game.
                 </p>
               </div>
             </div>

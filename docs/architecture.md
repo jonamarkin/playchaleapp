@@ -119,8 +119,14 @@ Lighthouse's simulated LCP is worse on `/discover` and `/community`. Its model c
 
 ### Web app, next steps
 
-1. **Split `GameModal.tsx` (1,100 lines, ten modal types) into one lazily loaded component per modal.** Only the open modal's code downloads, and each one gets easier to change.
+1. ~~**Split `GameModal.tsx`**~~ Done: eight of its ten modes were fake, so they were deleted.
+   `create` became the route `app/(app)/games/new/`, `join` became
+   `features/games/components/JoinGameSheet.tsx`, and all overlays now use one Radix-based
+   `components/ui/dialog.tsx` (focus trap, Escape, scroll lock, `role="dialog"`). The modal bus
+   in `useUIStore` is down to `'join' | null`.
 2. **Move domain components into `features/*/components`** as you touch them. There's no need for a big-bang move.
+   The five game-card implementations are now one `components/GameCard.tsx` with `feature` and
+   `row` variants, rendered as links rather than clickable divs.
 3. **Loading skeletons for each route,** matching the real layout, instead of the shared spinner.
 4. **Optimistic updates** for joining a game, MVP votes and stat approvals, so taps feel instant.
 5. **Error boundaries (`error.tsx`) for each route group,** with an on-brand retry screen.
@@ -159,3 +165,23 @@ The contract is REST + OpenAPI; the language and framework are still open. A **m
 - Joins go through a participant `status` (requested → confirmed), so hosts can approve players.
 - Player career stats (`sportStats`) become aggregates computed from approved `player_game_stats`, not fields clients write.
 - The avatar flow switches to presigned uploads.
+
+## Removed in Phase 1
+
+Deleted because the UI existed with no backend and no path to one in the MVP: in-app messaging
+(`MessageCenter`, `/messages`), challenges, programs, testimonials, and eight `GameModal` modes
+(manage-game, edit-profile, edit-stats, share-profile, contact-organizer, match-detail, profile,
+detailed-stats). `Message`, `Challenge`, `JoinRequest`, `Program` and `Testimonial` left `types.ts`
+with them; `Game.requests` went too, since the API never returned it.
+
+Every invented metric is gone: the six feature-card counters, "Join 5,000+ athletes",
+"12,482 Players Active in 42 Cities", "482 Players Active", "342 matches played", the onboarding
+"projected matches/rivals" and the "#1,242 City Rank" that sat inside the signed-in dashboard (now
+the player's real game count). The rule from here: a number on screen comes from the API, or it is
+not a number.
+
+Also fixed while here: 9 of the 34 seeded Unsplash URLs were dead upstream — including both Padel
+and both Badminton covers, so creating a game in those sports always produced a broken image.
+
+Chat returns in Phase 6 as game-scoped threads, rebuilt rather than resurrected: the old inbox was
+host-centric and keyed off a magic `'host-user'` id.

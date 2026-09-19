@@ -10,7 +10,6 @@ export default function ProfileView({ slug }: { slug: string }) {
     const router = useRouter();
     const { user } = useSession();
     const { data: player } = usePlayer(slug);
-    const openModal = useUIStore((state) => state.openModal);
     const triggerToast = useUIStore((state) => state.triggerToast);
 
     if (!player) return null;
@@ -27,8 +26,6 @@ export default function ProfileView({ slug }: { slug: string }) {
             <ProfileDashboard
                 player={player}
                 isOwner={isOwner}
-                onEditStats={() => isOwner && openModal('stats', player)}
-                onEditProfile={() => isOwner && openModal('edit-profile', player)}
                 onShareProfile={handleShare}
                 onViewMatch={(match) => router.push(`/game/${match.slug || match.id}`)}
             />

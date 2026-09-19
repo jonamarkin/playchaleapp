@@ -5,7 +5,7 @@ import Image from 'next/image';
 import Link from 'next/link';
 import { ICONS } from '@/constants';
 import { m, AnimatePresence } from 'framer-motion';
-import { Game, PlayerProfile, JoinRequest, Participant, MatchRecord } from '@/types';
+import { Game, PlayerProfile, Participant, MatchRecord } from '@/types';
 import SportIcon from '@/components/SportIcon';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -17,7 +17,6 @@ interface GameDetailProps {
     currentUser?: PlayerProfile;
     onJoin?: (id: string) => void;
     onUpdate?: (id: string, updates: Partial<Game>) => void;
-    onManageRequest?: (gameId: string, requestId: string, accept: boolean) => void;
     onRemoveParticipant?: (gameId: string, playerId: string) => void;
     onShare?: (item: any) => void;
     onClose?: () => void; // Optional, maybe for back navigation
@@ -25,7 +24,7 @@ interface GameDetailProps {
 
 
 const GameDetailView: React.FC<GameDetailProps> = ({
-    type, data, currentUser, onJoin, onUpdate, onManageRequest, onRemoveParticipant, onShare
+    type, data, currentUser, onJoin, onUpdate, onRemoveParticipant, onShare
 }) => {
     const [loading, setLoading] = useState(false);
     const [isEditing, setIsEditing] = useState(false);
@@ -296,31 +295,6 @@ const GameDetailView: React.FC<GameDetailProps> = ({
                                 </div>
                             )}
                         </div>
-
-                        {/* Join Requests (Organizer Only) */}
-                        {type === 'manage' && game.requests && game.requests.length > 0 && (
-                            <div className="bg-lime-500/10 border border-lime-500/20 rounded-[40px] p-8">
-                                <h3 className="text-lime-500 font-black italic uppercase mb-6">Pending Requests</h3>
-                                <div className="space-y-4">
-                                    {game.requests.map(req => (
-                                        <div key={req.id} className="bg-black p-4 rounded-2xl flex items-center justify-between">
-                                            <div className="flex items-center gap-3">
-                                                <Image src={req.avatar} alt={req.name} width={32} height={32} className="w-8 h-8 rounded-full object-cover" />
-                                                <span className="text-white font-bold text-sm">{req.name}</span>
-                                            </div>
-                                            <div className="flex gap-2">
-                                                <button onClick={() => onManageRequest?.(game.id, req.id, true)} className="w-8 h-8 bg-lime-500 rounded-full flex items-center justify-center text-black">
-                                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3"><polyline points="20 6 9 17 4 12" /></svg>
-                                                </button>
-                                                <button onClick={() => onManageRequest?.(game.id, req.id, false)} className="w-8 h-8 bg-white/10 rounded-full flex items-center justify-center text-white">
-                                                    <ICONS.X />
-                                                </button>
-                                            </div>
-                                        </div>
-                                    ))}
-                                </div>
-                            </div>
-                        )}
 
                     </div>
                 </div>

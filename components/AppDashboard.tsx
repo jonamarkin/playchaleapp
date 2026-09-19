@@ -5,6 +5,7 @@ import Image from 'next/image';
 import { ICONS } from '@/constants';
 import { m } from 'framer-motion';
 import { PlayerProfile, Game } from '@/types';
+import GameCard from '@/components/GameCard';
 
 interface AppDashboardProps {
   player: PlayerProfile;
@@ -39,8 +40,8 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
           >
             <div className="absolute top-0 right-0 p-4 sm:p-6 opacity-5 rotate-12"><ICONS.Logo /></div>
             <div className="text-right">
-              <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">City Rank</p>
-              <p className="text-2xl sm:text-3xl md:text-4xl font-black italic text-lime-500">#1,242</p>
+              <p className="text-[9px] sm:text-[10px] font-black uppercase tracking-widest text-white/40 mb-1">Games played</p>
+              <p className="text-2xl sm:text-3xl md:text-4xl font-black italic text-lime-500">{player.stats.gamesPlayed}</p>
             </div>
             <div className="w-10 h-10 sm:w-12 sm:h-12 rounded-full bg-lime-500 text-black flex items-center justify-center font-black shadow-xl">
               <ICONS.UpArrow />
@@ -103,24 +104,7 @@ const AppDashboard: React.FC<AppDashboardProps> = ({ player, upcomingGames, myGa
               </div>
               <div className="grid grid-cols-1 gap-4 sm:gap-6 md:gap-8">
                 {upcomingGames.slice(1, 3).map(game => (
-                  <m.div
-                    key={game.id}
-                    whileHover={{ scale: 1.02 }}
-                    onClick={() => onViewMatch(game)}
-                    className="bg-white border-2 border-black/5 p-5 sm:p-6 md:p-8 rounded-[32px] sm:rounded-[40px] md:rounded-[48px] flex gap-4 sm:gap-5 md:gap-6 items-center hover:bg-black hover:text-white transition-all cursor-pointer group shadow-sm"
-                  >
-                    <Image src={game.imageUrl} alt={game.title} width={96} height={96} className="w-16 h-16 sm:w-20 sm:h-20 md:w-24 md:h-24 rounded-[20px] sm:rounded-[28px] md:rounded-[32px] object-cover shadow-lg shrink-0" />
-                    <div className="flex-1 min-w-0">
-                      <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-black/40 group-hover:text-lime-500 mb-1 sm:mb-2 block">{game.sport}</span>
-                      <h4 className="text-base sm:text-lg md:text-xl font-black italic uppercase tracking-tighter group-hover:text-white transition-colors truncate">{game.title}</h4>
-                      <div className="flex items-center gap-3 sm:gap-4 mt-1 sm:mt-2 text-[9px] sm:text-[10px] font-black uppercase tracking-widest opacity-40">
-                        <ICONS.Clock /> {game.time}
-                      </div>
-                    </div>
-                    <div className="p-3 sm:p-4 bg-black/5 group-hover:bg-lime-500 group-hover:text-black rounded-full transition-all shrink-0">
-                      <ICONS.ChevronRight />
-                    </div>
-                  </m.div>
+                  <GameCard key={game.id} game={game} variant="row" />
                 ))}
               </div>
             </div>

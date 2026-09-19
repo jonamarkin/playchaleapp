@@ -6,45 +6,7 @@ import { m, AnimatePresence } from 'framer-motion';
 import { useRouter } from 'next/navigation';
 import { useMyGames } from '@/features/games/hooks';
 import { ICONS } from '@/constants';
-import { Game } from '@/types';
-
-const GameCard = ({ game, isHost, onClick }: { game: Game; isHost: boolean; onClick: () => void }) => (
-    <m.div
-        whileHover={{ scale: 1.02 }}
-        onClick={onClick}
-        className="bg-white border-2 border-black/5 p-5 sm:p-6 rounded-[28px] sm:rounded-[32px] flex gap-4 sm:gap-5 items-center hover:border-lime-500 transition-all cursor-pointer group shadow-sm"
-    >
-        <Image
-            src={game.imageUrl}
-            alt={game.title}
-            width={80}
-            height={80}
-            className="w-16 h-16 sm:w-20 sm:h-20 rounded-[16px] sm:rounded-[20px] object-cover shadow-lg shrink-0"
-        />
-        <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-1">
-                <span className="text-[8px] sm:text-[9px] font-black uppercase tracking-widest text-black/40">{game.sport}</span>
-                {game.visibility === 'private' && (
-                    <span className="bg-black text-lime-500 px-2 py-0.5 rounded-full text-[7px] sm:text-[8px] font-black uppercase tracking-wider">Private</span>
-                )}
-                {isHost && (
-                    <span className="bg-lime-500 text-black px-2 py-0.5 rounded-full text-[7px] sm:text-[8px] font-black uppercase tracking-wider">Host</span>
-                )}
-            </div>
-            <h4 className="text-base sm:text-lg font-black italic uppercase tracking-tighter truncate">{game.title}</h4>
-            <div className="flex items-center gap-3 sm:gap-4 mt-1 text-[9px] sm:text-[10px] font-bold text-black/40">
-                <div className="flex items-center gap-1"><ICONS.Clock /> {game.date} • {game.time}</div>
-                <div className="flex items-center gap-1">
-                    <svg className="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M12 4.354a4 4 0 110 5.292M15 21H3v-1a6 6 0 0112 0v1zm0 0h6v-1a6 6 0 00-9-5.197M13 7a4 4 0 11-8 0 4 4 0 018 0z" /></svg>
-                    {game.spotsTaken}/{game.spotsTotal}
-                </div>
-            </div>
-        </div>
-        <div className="p-3 bg-black/5 group-hover:bg-lime-500 group-hover:text-black rounded-full transition-all shrink-0">
-            <ICONS.ChevronRight />
-        </div>
-    </m.div>
-);
+import GameCard from '@/components/GameCard';
 
 export default function MyGamesView() {
     const router = useRouter();
@@ -138,21 +100,11 @@ export default function MyGamesView() {
                             )}
 
                             {activeTab === 'hosted' && hostedGames.map((game) => (
-                                <GameCard
-                                    key={game.id}
-                                    game={game}
-                                    isHost={true}
-                                    onClick={() => router.push(`/game/${game.slug || game.id}`)}
-                                />
+                                <GameCard key={game.id} game={game} variant="row" isHost={true} />
                             ))}
 
                             {activeTab === 'joined' && joinedGames.map((game) => (
-                                <GameCard
-                                    key={game.id}
-                                    game={game}
-                                    isHost={false}
-                                    onClick={() => router.push(`/game/${game.slug || game.id}`)}
-                                />
+                                <GameCard key={game.id} game={game} variant="row" isHost={false} />
                             ))}
                         </AnimatePresence>
                     </m.div>

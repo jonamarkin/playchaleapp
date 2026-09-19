@@ -4,8 +4,6 @@ import React from 'react';
 import DiscoverGames from '@/components/DiscoverGames';
 import { Features } from '@/components/Features';
 import TopPlayers from '@/components/TopPlayers';
-import Programs from '@/components/Programs';
-import Testimonials from '@/components/Testimonials';
 import { useRouter } from 'next/navigation';
 import { useGames } from '@/features/games/hooks';
 import { usePlayers } from '@/features/players/hooks';
@@ -34,8 +32,7 @@ export default function LandingView({
       >
         <DiscoverGames
           games={games.slice(0, 3)}
-          onOpenGame={(game) => router.push(`/game/${game.slug || game.id}`)}
-          isFullPage={false}
+            isFullPage={false}
         />
       </div>
       <Features />
@@ -46,8 +43,6 @@ export default function LandingView({
           onViewAll={() => router.push('/community')}
         />
       </div>
-      <Programs onOpenDetails={() => router.push('/discover')} />
-      <Testimonials />
     </div>
   );
 }

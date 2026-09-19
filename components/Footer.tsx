@@ -106,7 +106,7 @@ const Footer: React.FC = () => {
           <div className="flex items-center gap-3 bg-white/5 px-5 py-2.5 rounded-full border border-white/10">
             <span className="w-1.5 h-1.5 rounded-full bg-lime-500 animate-pulse"></span>
             <span className="text-[9px] font-black uppercase tracking-widest text-white/40">
-              12,482 Players Active in 42 Cities
+              Built in Accra for players in Ghana
             </span>
           </div>
 

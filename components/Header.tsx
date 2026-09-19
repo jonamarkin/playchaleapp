@@ -6,12 +6,11 @@ import { usePathname } from 'next/navigation';
 import { ICONS } from '@/constants';
 import { m, AnimatePresence } from 'framer-motion';
 import { useSession } from '@/features/auth/session';
-import { useLogout, useGatedModal } from '@/features/auth/hooks';
+import { useLogout } from '@/features/auth/hooks';
 
 const Header: React.FC = () => {
   const { user } = useSession();
   const logout = useLogout();
-  const openModal = useGatedModal();
   const pathname = usePathname();
   const activeView = pathname.split('/')[1] || 'landing';
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -34,8 +33,7 @@ const Header: React.FC = () => {
     { label: 'Home', id: 'home' },
     { label: 'Discover', id: 'discover' },
     { label: 'Community', id: 'community' },
-    { label: 'My Stats', id: 'stats' },
-    { label: 'Inbox', id: 'messages' }
+    { label: 'My Stats', id: 'stats' }
   ];
 
   // Logic to determine if we should use the dark theme (white text, transparent bg)
@@ -78,15 +76,15 @@ const Header: React.FC = () => {
         </div>
 
         <div className="animate-in fade-in slide-in-from-right-5 duration-500 flex items-center gap-2 md:gap-3">
-          <button
-            onClick={() => openModal('create')}
+          <Link
+            href="/games/new"
             className={`transition-all duration-300 px-3 sm:px-5 md:px-7 py-2 md:py-2.5 rounded-full flex items-center gap-2 md:gap-3 group shadow-lg ${headerTheme === 'light' ? 'bg-black text-white hover:bg-lime-500 hover:text-black' : 'bg-lime-500 text-black hover:bg-white'}`}
           >
             <span className="hidden sm:block text-[10px] md:text-xs font-black uppercase tracking-widest">Create Game</span>
             <div className={`rounded-full p-1 transition-transform group-hover:translate-x-1 ${headerTheme === 'light' ? 'bg-white/10' : 'bg-black/10'}`}>
               <ICONS.Plus />
             </div>
-          </button>
+          </Link>
 
           <button
             aria-label={isMenuOpen ? 'Close menu' : 'Open menu'}
